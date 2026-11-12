@@ -1,0 +1,38 @@
+:root {
+  font-family: system-ui, sans-serif;
+  color: #252525;
+  background: #f7f5f0;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+}
+
+.app {
+  box-sizing: border-box;
+  display: flex;
+  min-height: 100vh;
+  padding: 32px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+h1 {
+  margin: 0 0 16px;
+  font-family: Georgia, serif;
+  font-size: 48px;
+  font-weight: 400;
+}
+
+p {
+  max-width: 40ch;
+  margin: 0;
+  line-height: 1.6;
+}

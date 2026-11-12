@@ -35,6 +35,7 @@ Tauri uses the OS WebView: **WebKitGTK on Linux, WKWebView on macOS, WebView2 on
 A **Collection** groups notes; a **Thread** is an ordered thought-path; a **Connection** is a pairwise semantic link. **Knot** and **Loop** are *derived graph concepts* in v1, not mandatory persisted entities. A note can belong to multiple threads/collections. Archive ≠ delete. Delete collection must not delete its notes.
 
 ## Boundary rules
+- Frontend modules follow the documented [`app/features/shared/data` structure and dependency rules](../../src/README.md). The application wires concrete services; features consume their typed contracts.
 - UI calls typed `NoteService`, `CollectionService`, `ThreadService`, `ConnectionService`, `SearchService`; platform-specific SQL/file APIs are isolated behind repository/adapters.
 - IDs are stable; transactions keep membership, FTS updates and edge removal consistent.
 - Autosave is acknowledged only AFTER the write is durable; retry/recovery if failed. Optimistic UI must never falsely say “saved”.
