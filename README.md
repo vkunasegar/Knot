@@ -19,45 +19,31 @@ KNOT is a premium, local-first desktop note-taking application with a distinctiv
 
 ## Development
 
-Prerequisites: **Node.js 24 LTS**, **pnpm 12.18.0**, and **Rust 1.100.0 through rustup**. The Node major is recorded in `.node-version`, pnpm in `package.json`, and Rust in `rust-toolchain.toml`. Install Node and [rustup](https://rustup.rs/) first, then install the pinned package manager:
+Follow the [CachyOS / Arch / KDE development guide](docs/development/CACHYOS.md)
+for tool installation, native WebKitGTK dependencies, release builds,
+AppImage installation and troubleshooting.
 
-```sh
-npm install --global pnpm@12.18.0
-```
-
-On CachyOS / Arch, install the native development dependencies in a host terminal, following the [Tauri Linux prerequisites](https://v2.tauri.app/start/prerequisites/#linux):
-
-```sh
-sudo pacman -Syu
-sudo pacman -S --needed base-devel webkit2gtk-4.1 curl wget file openssl \
-  appmenu-gtk-module libappindicator-gtk3 librsvg xdotool
-```
-
-Use WebKitGTK **4.1**; the 4.0 package is not a substitute. If Cargo reports missing `gtk+-3.0`, `javascriptcoregtk-4.1`, `libsoup-3.0`, or `webkit2gtk-4.1`, check that their development files are available in the environment where Cargo runs. A Flatpak terminal may not expose packages installed on the host; run these commands in a host terminal such as Konsole.
+With Node.js 24, pnpm 12.18.0, Rust 1.100.0 and the native libraries prepared,
+run from the repository root:
 
 ```sh
 pnpm install --frozen-lockfile
 pnpm dev
 ```
 
-`pnpm dev` starts Vite on port 1420 and opens the native Tauri window. The first run downloads and compiles Rust dependencies. Port 1420 must be available; close the window or press Ctrl+C to stop development.
+`pnpm dev` launches the native Tauri app. `pnpm build` creates release artifacts;
+`pnpm build --bundles appimage -- --locked` selects AppImage for CachyOS.
+`pnpm check` checks TypeScript and `pnpm build:web` builds only the frontend.
+The [guide](docs/development/CACHYOS.md) distinguishes browser checks from native
+and installed-app verification, which is still pending on a prepared host.
 
-| Command | Purpose |
-| --- | --- |
-| `pnpm dev` | Native desktop app with hot reload |
-| `pnpm check` | Type-check frontend and Vite configuration |
-| `pnpm build:web` | Type-check and bundle frontend into `dist/` |
-| `pnpm build` | Build native release app and platform packages |
-| `pnpm build --no-bundle -- --locked` | Build native release executable using the existing Cargo lockfile |
-| `pnpm dev:web` | Frontend-only development server |
-| `pnpm preview` | Browser preview of an existing frontend build |
-| `cargo fmt --manifest-path src-tauri/Cargo.toml -- --check` | Check Rust formatting |
+Windows development requires the Microsoft C++ build tools and WebView2;
+macOS requires Xcode command-line tools. Build and verify on each target OS,
+using the [platform prerequisites](https://v2.tauri.app/start/prerequisites/).
 
-On Linux, the release executable is `src-tauri/target/release/knot`; packages are written below `src-tauri/target/release/bundle/`. The release app embeds `dist/` and does not need Vite or Node at runtime. Native WebKitGTK/GTK runtime libraries are still required. Linux package installation and installed-app verification remain part of the foundation issue; a `.deb` is not an Arch package.
-
-Commit both `pnpm-lock.yaml` and `src-tauri/Cargo.lock`. No database, filesystem, shell, or external-link plugin is enabled. The bundled icons are Tauri template placeholders pending the dedicated app-configuration step.
-
-Windows development requires the Microsoft C++ build tools and WebView2; macOS requires Xcode command-line tools. Build and verify on each target OS, using the [platform prerequisites](https://v2.tauri.app/start/prerequisites/).
+The bundled icons are Tauri template placeholders pending the dedicated
+app-configuration step. No database, filesystem, shell, or external-link
+plugin is enabled.
 
 ## Planned user experience
 
