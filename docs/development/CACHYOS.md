@@ -70,9 +70,16 @@ is normally `2.x`.
 
 ```sh
 pnpm install --frozen-lockfile
+pnpm check:linux
 pnpm tauri info
 pnpm dev
 ```
+
+`pnpm check:linux` checks the pinned tool versions, C compiler and native
+development libraries in the current environment. It reports all missing
+requirements and exits with a nonzero status if any check fails. It does not
+install packages or verify the graphical window. Run it in Konsole on the host;
+a successful host check does not supply missing libraries inside Flatpak.
 
 `pnpm dev` invokes Tauri. Tauri starts `pnpm dev:web` on
 `http://localhost:1420`, compiles Rust and opens the native KNOT window.
@@ -186,6 +193,18 @@ they are not enabled in the application or shell defaults.
 
 ## Manual Linux verification
 
+For the first acceptance criterion, run `pnpm check:linux` and `pnpm dev`
+from the repository root in Konsole. Wait for Rust compilation, then confirm:
+
+1. A separate KNOT window appears with the heading and tagline visible.
+2. The window has native controls and no browser tabs, address bar or toolbar.
+3. Closing the window exits the native application; stop any remaining dev
+   process with Ctrl+C and confirm that `pnpm dev` starts it again.
+
+Record the date, environment and result below only after observing the window.
+A running Vite server or a successful prerequisite check alone does not satisfy
+this criterion.
+
 Record the CachyOS/Plasma version, GPU/driver, display backend and output from
 `pnpm tauri info` when checking the following:
 
@@ -202,5 +221,10 @@ The initial scaffold passed TypeScript, frontend production build, Rust
 formatting and browser smoke checks. Native compilation in the agent's
 Flatpak runtime stopped at missing `javascriptcoregtk-4.1`; native startup,
 packaging and the checks above still require verification on a prepared host.
+The acceptance-criterion start attempt on 2026-11-12 confirmed that Vite starts
+via `pnpm dev -- --locked`, but the native build is blocked by missing WebKitGTK
+4.1 development libraries in the Flatpak runtime. The host prerequisite check
+also found missing Node/pnpm/Rust on PATH and missing WebKitGTK 4.1. The native
+window criterion remains unchecked until host setup and visual verification.
 Product features and persistence are not implemented yet, so this checklist
 does not claim note-saving or search verification.

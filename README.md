@@ -29,6 +29,7 @@ run from the repository root:
 
 ```sh
 pnpm install --frozen-lockfile
+pnpm check:linux
 pnpm dev
 ```
 
