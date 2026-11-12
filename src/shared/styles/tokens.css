@@ -1,0 +1,9 @@
+:root {
+  --knot-color-canvas: #f7f5f0;
+  --knot-color-text: #252525;
+  --knot-font-body: system-ui, sans-serif;
+  --knot-font-heading: Georgia, serif;
+  --knot-font-size-title: 3rem;
+  --knot-space-16: 16px;
+  --knot-space-32: 32px;
+}

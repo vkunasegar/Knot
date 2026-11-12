@@ -23,6 +23,10 @@ Tauri uses the OS WebView: **WebKitGTK on Linux, WKWebView on macOS, WebView2 on
 
 **Linux first:** begin with CachyOS / Arch-based developer setup; validate supported WebKitGTK dependencies, KDE Plasma, both Wayland and X11 where available, HiDPI 125% and 150%. Distribute Linux AppImage and/or .deb later; do not assume a .deb works on Arch. Native menu/window decorations should be platform appropriate.
 
+The [CachyOS development guide](../development/CACHYOS.md) documents the current setup, dev/build/run commands, troubleshooting and outstanding native verification.
+
+The [portability guide](../development/PORTABILITY.md) records the initial dependency review, rules for adding native dependencies and the Linux/Windows/macOS build matrix. Build smoke checks verify compilation; runtime and installed-app checks remain separate.
+
 ## Data model (initial)
 - `note(id, title, body_json, created_at, updated_at, archived_at, deleted_at, is_favorite)`
 - `connection(id, source_note_id, target_note_id, type, direction, strength, created_at)` (unique relationship policy decided before migration)
@@ -35,6 +39,7 @@ Tauri uses the OS WebView: **WebKitGTK on Linux, WKWebView on macOS, WebView2 on
 A **Collection** groups notes; a **Thread** is an ordered thought-path; a **Connection** is a pairwise semantic link. **Knot** and **Loop** are *derived graph concepts* in v1, not mandatory persisted entities. A note can belong to multiple threads/collections. Archive ≠ delete. Delete collection must not delete its notes.
 
 ## Boundary rules
+- Frontend modules follow the documented [`app/features/shared/data` structure and dependency rules](../../src/README.md). The application wires concrete services; features consume their typed contracts.
 - UI calls typed `NoteService`, `CollectionService`, `ThreadService`, `ConnectionService`, `SearchService`; platform-specific SQL/file APIs are isolated behind repository/adapters.
 - IDs are stable; transactions keep membership, FTS updates and edge removal consistent.
 - Autosave is acknowledged only AFTER the write is durable; retry/recovery if failed. Optimistic UI must never falsely say “saved”.

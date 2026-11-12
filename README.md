@@ -8,13 +8,58 @@ KNOT is a premium, local-first desktop note-taking application with a distinctiv
 
 ## Current status
 
-**Planning and design phase.** No product implementation exists yet. Read the architecture and issue backlog before scaffolding the application.
+**M0 — initial application scaffold.** Tauri 2 hosts a minimal React/TypeScript UI built with Vite. Product features and persistence are not implemented yet.
 
 - [25 detailed GitHub issues](https://github.com/vkunasegar/Knot/issues) across M0–M4
 - [Project roadmap and milestone outcomes](docs/PROJECT-ROADMAP.md)
 - [Technical architecture (Tauri 2, React/TypeScript, Rust, SQLite)](docs/architecture/TECH-STACK.md)
+- [Frontend module structure and dependency rules](src/README.md)
+- [Desktop portability, dependency review and build checks](docs/development/PORTABILITY.md)
+- [Foundation design/architecture review, tests and screenshots](docs/development/FOUNDATION-REVIEW.md)
 - [KNOT visual and interaction contract](docs/design/knot/README.md)
 - [Automatic milestone/label bootstrap workflow](.github/workflows/bootstrap-planning.yml)
+
+## Development
+
+Follow the [CachyOS / Arch / KDE development guide](docs/development/CACHYOS.md)
+for tool installation, native WebKitGTK dependencies, release builds,
+AppImage installation and troubleshooting.
+
+With Node.js 24, pnpm 12.18.0, Rust 1.100.0 and the native libraries prepared,
+run from the repository root:
+
+```sh
+pnpm install --frozen-lockfile
+pnpm check:linux
+pnpm dev
+```
+
+`pnpm dev` launches the native Tauri app. `pnpm build` creates release artifacts;
+`pnpm build --bundles appimage -- --locked` selects AppImage for CachyOS.
+`pnpm check` checks TypeScript and `pnpm build:web` builds only the frontend.
+The native development window and installed production AppImage have been
+verified on CachyOS / KDE Wayland with visible content. The production app
+starts without a dev server. The [guide](docs/development/CACHYOS.md) records
+the four satisfied issue acceptance criteria and remaining desktop checks.
+
+Windows development requires the Microsoft C++ build tools and WebView2;
+macOS requires Xcode command-line tools. Build and verify on each target OS,
+using the [platform prerequisites](https://v2.tauri.app/start/prerequisites/).
+
+The [native desktop configuration](src-tauri/README.md) documents window
+dimensions, the stable application ID, KNOT icons and the minimal capabilities.
+No database, filesystem, shell, or external-link plugin is enabled.
+
+The [Desktop build workflow](.github/workflows/desktop-build.yml) checks native
+release compilation on Linux, Windows and macOS. See the [portability guide](docs/development/PORTABILITY.md)
+for dependency decisions, platform coverage and the distinction between build
+checks and native runtime verification.
+
+Run `pnpm test` for the Linux prerequisite regression tests. Install the browser
+once with `pnpm exec playwright install chromium`, then run `pnpm test:ui` for
+the production-frontend accessibility/layout checks in both design sizes.
+The [Foundation review](docs/development/FOUNDATION-REVIEW.md) records coverage,
+screenshots and outstanding manual checks.
 
 ## Planned user experience
 

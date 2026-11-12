@@ -1,0 +1,40 @@
+@import "../shared/styles/tokens.css";
+
+:root {
+  font-family: var(--knot-font-body);
+  color: var(--knot-color-text);
+  background: var(--knot-color-canvas);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+}
+
+.app {
+  box-sizing: border-box;
+  display: flex;
+  min-height: 100vh;
+  padding: var(--knot-space-32);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.app h1 {
+  margin: 0 0 var(--knot-space-16);
+  font-family: var(--knot-font-heading);
+  font-size: var(--knot-font-size-title);
+  font-weight: 400;
+}
+
+.app p {
+  max-width: 40ch;
+  margin: 0;
+  line-height: 1.6;
+}
