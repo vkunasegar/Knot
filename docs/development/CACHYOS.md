@@ -236,11 +236,11 @@ Record the CachyOS/Plasma version, GPU/driver, display backend and output from
 - [ ] Closing, stopping and restarting the dev app work cleanly.
 - [ ] The unbundled release executable starts after the dev server is stopped.
 - [x] The installed AppImage starts from outside the repository without a dev server, with visible content confirmed by the user.
-- [ ] The installed AppImage starts again after closing.
-- [ ] Resize, maximize, minimize and close work in KDE.
+- [x] The installed AppImage starts again after closing.
+- [x] Resize, maximize, minimize and close work in KDE; exercised through native KWin operations.
 - [ ] Title, minimum size, work-area fitting and KNOT icon work in the window/task switcher; check the packaged launcher icon separately.
 - [ ] Wayland and X11/XWayland are checked where available; record unsupported combinations.
-- [ ] KDE scaling at 125% and 150% keeps text legible and content visible.
+- [x] KDE scaling at 125% and 150% keeps text legible and content visible; native screenshots reviewed in the Foundation assessment.
 - [ ] UI review captures 1600×1000 and 1440×900 where a change affects the UI.
 
 The initial scaffold passed TypeScript, frontend production build, Rust

@@ -49,8 +49,15 @@ controls to create one. The document has an English language declaration, a
 Automated checks do not replace a manual screenreader assessment of WebKitGTK.
 
 The [CI workflow](../../.github/workflows/desktop-build.yml) includes these
-Foundation checks alongside the three native build jobs. Its first remote
-run after these changes remains pending.
+Foundation checks alongside the three native build jobs. In
+[run 43320757969](https://github.com/vkunasegar/Knot/actions/runs/43320757969),
+all three native builds passed for commit `a3c63de` (Ubuntu 24.04, Windows 2025
+and macOS 15). The Foundation job exposed a test-only portability assumption:
+the direct Node spawn of a script without a shebang failed on the developer
+host but succeeded on the runner. The test now checks the actual prerequisite
+CLI result without asserting that OS/Node implementation detail. All five
+tests pass locally after the correction; remote verification of the fix is
+still pending.
 
 ## Screenshots for review
 
@@ -77,6 +84,41 @@ The updated native production executable also compiled successfully using
 `pnpm build --no-bundle -- --locked`; the installed AppImage startup evidence
 in the Linux guide refers to the earlier installation check.
 
+### Native Linux assessment
+
+On CachyOS / Plasma 6.8.2 in the Wayland desktop session, the installed
+AppImage was closed through KWin's normal window-close operation and exited
+with status 0. It then started again from outside the repository with no
+listener on the development port. KWin confirmed native activation,
+maximize/minimize/restore and resizing to the configured 960×640 content
+minimum. The initial 1440×900 content size was also confirmed. These window
+operations were exercised through KWin's native scripting API, not by
+simulating an app workflow that does not yet exist.
+
+The Linux AT-SPI tree exposed an application/frame, web document, main
+landmark, heading named `KNOT` and the full tagline as paragraph text.
+Orca 51.1 with Speech Dispatcher 0.12.1 was then started for an actual
+screenreader assessment. The user switched to KNOT and confirmed that Say All
+reads both the heading and complete tagline. Orca was stopped after the test.
+The launch view has no interactive controls or app-level keyboard shortcuts;
+additional navigation/focus tests are required when those features exist.
+
+The external monitor was temporarily set to real KDE scales of 125% and 150%.
+Both captures below were visually checked for readable, unclipped content.
+The original 200% scale and the original KNOT window state were restored.
+These native screenshots include the window frame and scale in physical
+pixels; they supplement the exact-size browser captures above.
+
+| Native at 125% | Native at 150% |
+| --- | --- |
+| ![Native KNOT window at 125 percent scale](../review/issue-1/native-hidpi-125.png) | ![Native KNOT window at 150 percent scale](../review/issue-1/native-hidpi-150.png) |
+
+This tests the installed AppImage in a Wayland session; it does not establish
+separate native Wayland and X11 protocol coverage. The user-local standalone
+installation still has no desktop-menu entry. Its title-bar icon can fall back
+to the WebView icon until desktop integration is installed; package/source
+icons remain as documented in the native configuration guide.
+
 ### Dependency checks
 
 `pnpm audit --prod` and the full `pnpm audit` including development dependencies
@@ -102,14 +144,26 @@ cargo install cargo-audit --version 0.23.0 --locked --root node_modules/.cache/k
 ./node_modules/.cache/knot-audit/bin/cargo-audit audit --file src-tauri/Cargo.lock
 ```
 
+The findings were explicitly reviewed for M0. The locked glib source confirms
+the immutable out-pointer in `VariantStrIter::impl_get`. The application has
+no direct glib/Variant calls, IPC handlers or user-data processing; source
+searches in the locked Tauri, Wry, Tao and GTK crates found no explicit call
+to `array_iter_str`/`VariantStrIter`. This is not a proof of unreachability in
+the full native stack. `proc-macro-error` is used by build-time procedural
+macros, and runtime note content is not compiled as Rust. Both dependencies
+come from the GTK 3 stack; keep their advisories visible and revisit compatible
+upstream updates or a reviewed backport before extending native data handling
+or preparing a broader release. No GTK API migration or unreviewed fork was
+introduced to silence the audit.
+
 - [x] Design and module boundaries reviewed for the current scaffold.
 - [x] Relevant scaffold failure states have reproducible regression tests.
 - [x] Semantic structure, automated accessibility, reduced motion and text resizing checked.
 - [x] No fake product data or fake persistence in the current release path.
 - [x] Screenshots at both required reference sizes prepared for review.
-- [ ] Manual screenreader assessment in the native Linux WebView.
-- [ ] Native KDE focus/window controls and HiDPI at 125% and 150%.
-- [ ] Resolve or explicitly review the two transitive RustSec findings above.
+- [x] Native Linux AT-SPI and Orca assessment; full heading and tagline confirmed by the user.
+- [x] Native KDE activation/window operations and HiDPI at 125% and 150%; real screenshots reviewed and original settings restored.
+- [x] Explicitly review the two transitive RustSec findings; unresolved upstream dependency constraints and follow-up conditions are recorded above.
 - [ ] Remote CI results, PR with screenshots and human review/merge.
 
 Empty/loading/write-failure/recovery states belong to the features that

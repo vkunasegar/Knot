@@ -40,8 +40,6 @@ describe.skipIf(process.platform !== "linux")("Linux prerequisite CLI", () => {
   afterEach(() => rmSync(fixturePath, { recursive: true, force: true }));
 
   it("accepts pnpm's executable shell fallback without a shebang", () => {
-    const direct = spawnSync(join(fixturePath, "pnpm"), ["--version"], { encoding: "utf8" });
-    expect(direct.error).toMatchObject({ code: "ENOEXEC" });
     const result = check();
     expect(result.status, result.stderr).toBe(0);
     expect(result.stdout).toContain(`OK pnpm: ${pnpmVersion}`);
