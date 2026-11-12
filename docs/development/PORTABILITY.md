@@ -32,17 +32,27 @@ so a console window is not opened alongside the application.
 ## M0 frontend portability verification
 
 The source review on 2026-11-12 covered all current frontend implementation
-files: `src/main.tsx`, `src/app/index.ts`, `src/app/App.tsx`, `src/app/App.css`
-and `src/vite-env.d.ts`. They contain only React composition, static text,
+files: `src/main.tsx`, `src/app/index.ts`, `src/app/App.tsx`, `src/app/App.css`,
+`src/shared/styles/tokens.css` and `src/vite-env.d.ts`. They contain only React
+composition, static text,
 browser styling and Vite type declarations. There are no Node imports, native
 commands, OS branches, hardcoded Linux paths or Linux-only business APIs in
 the frontend. CSS font-smoothing prefixes do not introduce business logic.
 
-The `features`, `shared` and `data` directories currently contain architecture
-documentation, with no business logic or persistence implementation to verify.
+The `features` and `data` directories currently contain architecture
+documentation; `shared` supplies CSS tokens. There is no business logic or
+persistence implementation to verify.
 The Linux-specific prerequisite checker lives under `scripts/`, outside the
 frontend and its runtime bundle. This satisfies the frontend portability
 criterion for the current scaffold; repeat the review when adding features.
+
+The Foundation review adds development-only test tools: `vitest` 5.1.0
+(MIT), `@playwright/test` 1.65.0 (Apache-2.0) and `@axe-core/playwright` 4.14.0
+(MPL-2.0), based on their installed package metadata. Their Node requirements
+fit Node 24; Vitest supports the selected Vite 8 version. They are not imported
+by `src` or included in the production UI bundle. Browser binaries are test
+tools installed separately. The Linux-only prerequisite integration tests are
+skipped on other platforms; the browser test commands are platform-neutral.
 
 ## Rules for new dependencies
 
@@ -82,6 +92,8 @@ pnpm build --no-bundle -- --locked
 Tauri's build hook checks TypeScript and builds the frontend before compiling
 the native release executable. The three jobs run independently so a failure
 on one platform remains visible without cancelling the other platforms.
+An additional Linux Foundation job runs the prerequisite regression tests,
+then builds and checks the UI with Chromium/axe in both design reference sizes.
 Action references are pinned to release commits. The workflow uses read-only
 repository permissions and builds without release publication or signing.
 

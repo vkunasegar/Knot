@@ -2,7 +2,8 @@
   "compilerOptions": {
     "target": "ES2022",
     "lib": [
-      "ES2022"
+      "ES2022",
+      "DOM"
     ],
     "module": "ESNext",
     "moduleResolution": "bundler",
@@ -15,6 +16,9 @@
     ]
   },
   "include": [
-    "vite.config.ts"
+    "vite.config.ts",
+    "vitest.config.ts",
+    "playwright.config.ts",
+    "tests/**/*.ts"
   ]
 }

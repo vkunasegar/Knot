@@ -286,3 +286,7 @@ KDE application-menu entry or validate Windows/macOS installers.
 
 Product features and persistence are not implemented yet, so this checklist
 does not claim note-saving or search verification.
+
+The [Foundation review](FOUNDATION-REVIEW.md) covers the common design,
+architecture and Definition of Done, including reproducible regression tests,
+automated accessibility checks and review screenshots in both reference sizes.

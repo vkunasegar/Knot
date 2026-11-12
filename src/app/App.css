@@ -1,7 +1,9 @@
+@import "../shared/styles/tokens.css";
+
 :root {
-  font-family: system-ui, sans-serif;
-  color: #252525;
-  background: #f7f5f0;
+  font-family: var(--knot-font-body);
+  color: var(--knot-color-text);
+  background: var(--knot-color-canvas);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -17,21 +19,21 @@ body {
   box-sizing: border-box;
   display: flex;
   min-height: 100vh;
-  padding: 32px;
+  padding: var(--knot-space-32);
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
 }
 
-h1 {
-  margin: 0 0 16px;
-  font-family: Georgia, serif;
-  font-size: 48px;
+.app h1 {
+  margin: 0 0 var(--knot-space-16);
+  font-family: var(--knot-font-heading);
+  font-size: var(--knot-font-size-title);
   font-weight: 400;
 }
 
-p {
+.app p {
   max-width: 40ch;
   margin: 0;
   line-height: 1.6;

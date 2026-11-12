@@ -25,7 +25,7 @@ The native process lives in `../src-tauri`.
 - A feature does not import another feature. Compose workflows in `app`, or extract a genuinely shared primitive or type into `shared`.
 - Keep dependencies acyclic. `shared` and `data` do not import features or the application. Data code does not import UI components.
 - `@tauri-apps/*`, SQL and filesystem integration belong behind `data` adapters. Window/menu lifecycle wiring belongs in `app` or Rust. Shared frontend business logic uses platform-neutral values and interfaces.
-- Use a module's explicit `index.ts` for imports from outside that module. Keep private imports relative within the module. Export only the interface that callers need; create entry points when implementation exists.
+- Use a module's explicit `index.ts` for TypeScript imports from outside that module. Keep private imports relative within the module. Export only the interface that callers need; create entry points when implementation exists. The shared CSS token file is a public stylesheet imported by the app's global styles.
 - Keep tests and scoped styles next to the implementation they cover. `app/App.css` currently supplies the initial global page styles; reusable design tokens will live in `shared` when introduced.
 
 ## Growing the structure
@@ -41,7 +41,8 @@ implemented. `data/index.ts` will expose the factories needed by `app`;
 `data/contracts/index.ts` will expose types needed by features. Database
 connections, transactions and migrations belong to the Rust persistence layer.
 
-The initial scaffold contains only application composition. The remaining
+The initial scaffold contains application composition and the launch view's
+CSS tokens under `shared/styles/tokens.css`. The `features` and `data`
 directories document ownership for later implementations; they do not yet
 provide product features or persistence. These rules describe the architecture
 contract; automated import-boundary linting is not configured yet.

@@ -15,6 +15,7 @@ KNOT is a premium, local-first desktop note-taking application with a distinctiv
 - [Technical architecture (Tauri 2, React/TypeScript, Rust, SQLite)](docs/architecture/TECH-STACK.md)
 - [Frontend module structure and dependency rules](src/README.md)
 - [Desktop portability, dependency review and build checks](docs/development/PORTABILITY.md)
+- [Foundation design/architecture review, tests and screenshots](docs/development/FOUNDATION-REVIEW.md)
 - [KNOT visual and interaction contract](docs/design/knot/README.md)
 - [Automatic milestone/label bootstrap workflow](.github/workflows/bootstrap-planning.yml)
 
@@ -53,6 +54,12 @@ The [Desktop build workflow](.github/workflows/desktop-build.yml) checks native
 release compilation on Linux, Windows and macOS. See the [portability guide](docs/development/PORTABILITY.md)
 for dependency decisions, platform coverage and the distinction between build
 checks and native runtime verification.
+
+Run `pnpm test` for the Linux prerequisite regression tests. Install the browser
+once with `pnpm exec playwright install chromium`, then run `pnpm test:ui` for
+the production-frontend accessibility/layout checks in both design sizes.
+The [Foundation review](docs/development/FOUNDATION-REVIEW.md) records coverage,
+screenshots and outstanding manual checks.
 
 ## Planned user experience
 

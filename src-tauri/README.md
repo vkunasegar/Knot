@@ -83,5 +83,8 @@ launcher. Platform icon containers are generated for Windows/macOS; their
 appearance still needs verification on those systems.
 
 The configuration and icon assets can be validated without GTK/WebKitGTK.
-Native window behavior and installed-app integration cannot be confirmed in
-the agent's current Flatpak runtime because the native libraries are missing.
+Native development startup and installed AppImage startup have been verified
+on the prepared CachyOS host, with visible content confirmed by the user; see
+the [Linux results](../docs/development/CACHYOS.md#manual-linux-verification).
+Sizing, window controls, icons, HiDPI and native accessibility remain separate
+manual checks in the [Foundation review](../docs/development/FOUNDATION-REVIEW.md).
