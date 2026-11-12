@@ -36,8 +36,9 @@ pnpm dev
 `pnpm dev` launches the native Tauri app. `pnpm build` creates release artifacts;
 `pnpm build --bundles appimage -- --locked` selects AppImage for CachyOS.
 `pnpm check` checks TypeScript and `pnpm build:web` builds only the frontend.
-The [guide](docs/development/CACHYOS.md) distinguishes browser checks from native
-and installed-app verification, which is still pending on a prepared host.
+The native development window has been verified on CachyOS / KDE Wayland with
+visible content and no browser chrome. The [guide](docs/development/CACHYOS.md)
+records the result and the remaining installed-app and desktop checks.
 
 Windows development requires the Microsoft C++ build tools and WebView2;
 macOS requires Xcode command-line tools. Build and verify on each target OS,

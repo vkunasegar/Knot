@@ -25,11 +25,15 @@ function run(command, args) {
 report(process.versions.node.split(".")[0] === nodeMajor, "Node.js", `${process.version} (required ${nodeMajor}.x)`);
 
 for (const [command, required] of [["pnpm", pnpmVersion], ["rustc", rustVersion], ["cargo", rustVersion]]) {
-  const result = run(command, ["--version"]);
+  // pnpm can install a POSIX shell fallback without a shebang when npm blocks
+  // its install scripts. Let the shell handle it, just as the terminal does.
+  const result = command === "pnpm"
+    ? run("/bin/sh", ["-c", "pnpm --version"])
+    : run(command, ["--version"]);
   const output = result.stdout?.trim().split("\n")[0];
   const version = output?.match(/\d+\.\d+\.\d+/)?.[0];
   report(result.status === 0 && version === required, command,
-    `${output || "not available on PATH"} (required ${required})`);
+    `${output || result.error?.message || result.stderr?.trim().split("\n")[0] || "not available on PATH"} (required ${required})`);
 }
 
 const compiler = run("cc", ["--version"]);

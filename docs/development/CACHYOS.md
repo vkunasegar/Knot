@@ -47,6 +47,11 @@ export PATH="$HOME/.local/bin:$PATH"
 rustup toolchain install 1.100.0 --profile minimal --component rustfmt
 ```
 
+If npm reports blocked pnpm install scripts, pnpm can still run through its
+shell fallback using Node.js. Check `pnpm --version`; the warning alone does
+not mean installation failed. The Linux prerequisite check supports this
+fallback too.
+
 Keep `$HOME/.local/bin` on your shell's PATH for future sessions. If rustup was
 installed using its upstream installer, also follow its shell PATH instructions.
 Inside this repository, `rust-toolchain.toml` selects Rust without changing
@@ -208,7 +213,8 @@ this criterion.
 Record the CachyOS/Plasma version, GPU/driver, display backend and output from
 `pnpm tauri info` when checking the following:
 
-- [ ] `pnpm dev` opens a native window and stops cleanly.
+- [x] `pnpm dev` (verified with `pnpm dev -- --locked`) opens a native KNOT window with visible content and no browser chrome.
+- [ ] Closing, stopping and restarting the dev app work cleanly.
 - [ ] The release executable starts after the dev server is stopped.
 - [ ] The copied AppImage starts from outside the repository and starts again after closing.
 - [ ] Resize, maximize, minimize and close work in KDE.
@@ -219,12 +225,19 @@ Record the CachyOS/Plasma version, GPU/driver, display backend and output from
 
 The initial scaffold passed TypeScript, frontend production build, Rust
 formatting and browser smoke checks. Native compilation in the agent's
-Flatpak runtime stopped at missing `javascriptcoregtk-4.1`; native startup,
-packaging and the checks above still require verification on a prepared host.
-The acceptance-criterion start attempt on 2026-11-12 confirmed that Vite starts
-via `pnpm dev -- --locked`, but the native build is blocked by missing WebKitGTK
-4.1 development libraries in the Flatpak runtime. The host prerequisite check
-also found missing Node/pnpm/Rust on PATH and missing WebKitGTK 4.1. The native
-window criterion remains unchecked until host setup and visual verification.
+Flatpak runtime stopped at missing `javascriptcoregtk-4.1`, so native
+verification continued on the prepared host as recorded below.
+After host setup on 2026-11-12, `pnpm check:linux` passed on CachyOS with
+Plasma 6.8.2 / Wayland, Node 24.22.3, pnpm 12.18.0, Rust 1.100.0 and
+WebKitGTK 2.54.2 (API 4.1). TypeScript and the frontend production build also
+passed on the host. The earlier `MISSING pnpm` result was a diagnostic bug:
+npm's pnpm shell fallback has no shebang and needs a shell to execute it. The
+check now uses that shell invocation and preserves subprocess error details.
+`pnpm dev -- --locked` then compiled the native debug executable successfully
+and launched `target/debug/knot` in the host's desktop session.
+The user confirmed the separate KNOT window with its heading and tagline
+visible and no browser tabs or address bar. This satisfies the first
+acceptance criterion on this CachyOS/Plasma Wayland setup. Release installation,
+clean shutdown/restart and the remaining desktop checks above are still pending.
 Product features and persistence are not implemented yet, so this checklist
 does not claim note-saving or search verification.
