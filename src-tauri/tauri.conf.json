@@ -13,15 +13,26 @@
     "windows": [
       {
         "title": "KNOT",
-        "width": 800,
-        "height": 600,
-        "label": "main"
+        "width": 1440,
+        "height": 900,
+        "label": "main",
+        "minWidth": 960,
+        "minHeight": 640,
+        "center": true,
+        "preventOverflow": true,
+        "resizable": true,
+        "decorations": true,
+        "backgroundColor": "#F7F5F0"
       }
     ],
     "security": {
       "csp": "default-src 'self'; style-src 'self' 'unsafe-inline'; connect-src ipc: http://ipc.localhost",
-      "devCsp": "default-src 'self'; style-src 'self' 'unsafe-inline'; connect-src ipc: http://ipc.localhost http://localhost:1420 ws://localhost:1420"
-    }
+      "devCsp": "default-src 'self'; style-src 'self' 'unsafe-inline'; connect-src ipc: http://ipc.localhost http://localhost:1420 ws://localhost:1420",
+      "capabilities": [
+        "main-window"
+      ]
+    },
+    "withGlobalTauri": false
   },
   "bundle": {
     "active": true,

@@ -41,9 +41,9 @@ Windows development requires the Microsoft C++ build tools and WebView2;
 macOS requires Xcode command-line tools. Build and verify on each target OS,
 using the [platform prerequisites](https://v2.tauri.app/start/prerequisites/).
 
-The bundled icons are Tauri template placeholders pending the dedicated
-app-configuration step. No database, filesystem, shell, or external-link
-plugin is enabled.
+The [native desktop configuration](src-tauri/README.md) documents window
+dimensions, the stable application ID, KNOT icons and the minimal capabilities.
+No database, filesystem, shell, or external-link plugin is enabled.
 
 ## Planned user experience
 

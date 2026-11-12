@@ -80,6 +80,10 @@ The first run needs network access for packages and Rust crates and can take
 longer than subsequent runs. The window has native decorations and no browser
 address bar. Use Ctrl+C in the launching terminal to stop the dev process.
 
+The [native desktop settings](../../src-tauri/README.md) define a 1440×900
+starting content size, a 960×640 minimum and the KNOT application icons.
+The window requests centering and fitting within the monitor work area.
+
 For a reproducible Cargo resolution during development, use:
 
 ```sh
@@ -189,6 +193,7 @@ Record the CachyOS/Plasma version, GPU/driver, display backend and output from
 - [ ] The release executable starts after the dev server is stopped.
 - [ ] The copied AppImage starts from outside the repository and starts again after closing.
 - [ ] Resize, maximize, minimize and close work in KDE.
+- [ ] Title, minimum size, work-area fitting and KNOT icon work in the window/task switcher; check the packaged launcher icon separately.
 - [ ] Wayland and X11/XWayland are checked where available; record unsupported combinations.
 - [ ] KDE scaling at 125% and 150% keeps text legible and content visible.
 - [ ] UI review captures 1600×1000 and 1440×900 where a change affects the UI.
