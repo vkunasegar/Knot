@@ -14,6 +14,7 @@ KNOT is a premium, local-first desktop note-taking application with a distinctiv
 - [Project roadmap and milestone outcomes](docs/PROJECT-ROADMAP.md)
 - [Technical architecture (Tauri 2, React/TypeScript, Rust, SQLite)](docs/architecture/TECH-STACK.md)
 - [Frontend module structure and dependency rules](src/README.md)
+- [Desktop portability, dependency review and build checks](docs/development/PORTABILITY.md)
 - [KNOT visual and interaction contract](docs/design/knot/README.md)
 - [Automatic milestone/label bootstrap workflow](.github/workflows/bootstrap-planning.yml)
 
@@ -44,6 +45,11 @@ using the [platform prerequisites](https://v2.tauri.app/start/prerequisites/).
 The [native desktop configuration](src-tauri/README.md) documents window
 dimensions, the stable application ID, KNOT icons and the minimal capabilities.
 No database, filesystem, shell, or external-link plugin is enabled.
+
+The [Desktop build workflow](.github/workflows/desktop-build.yml) checks native
+release compilation on Linux, Windows and macOS. See the [portability guide](docs/development/PORTABILITY.md)
+for dependency decisions, platform coverage and the distinction between build
+checks and native runtime verification.
 
 ## Planned user experience
 

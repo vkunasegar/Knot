@@ -25,6 +25,8 @@ Tauri uses the OS WebView: **WebKitGTK on Linux, WKWebView on macOS, WebView2 on
 
 The [CachyOS development guide](../development/CACHYOS.md) documents the current setup, dev/build/run commands, troubleshooting and outstanding native verification.
 
+The [portability guide](../development/PORTABILITY.md) records the initial dependency review, rules for adding native dependencies and the Linux/Windows/macOS build matrix. Build smoke checks verify compilation; runtime and installed-app checks remain separate.
+
 ## Data model (initial)
 - `note(id, title, body_json, created_at, updated_at, archived_at, deleted_at, is_favorite)`
 - `connection(id, source_note_id, target_note_id, type, direction, strength, created_at)` (unique relationship policy decided before migration)
