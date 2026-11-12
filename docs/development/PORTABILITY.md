@@ -29,6 +29,21 @@ The existing `knot_lib` Rust library name avoids a library/executable name
 collision on Windows. The Windows release entry point uses the GUI subsystem
 so a console window is not opened alongside the application.
 
+## M0 frontend portability verification
+
+The source review on 2026-11-12 covered all current frontend implementation
+files: `src/main.tsx`, `src/app/index.ts`, `src/app/App.tsx`, `src/app/App.css`
+and `src/vite-env.d.ts`. They contain only React composition, static text,
+browser styling and Vite type declarations. There are no Node imports, native
+commands, OS branches, hardcoded Linux paths or Linux-only business APIs in
+the frontend. CSS font-smoothing prefixes do not introduce business logic.
+
+The `features`, `shared` and `data` directories currently contain architecture
+documentation, with no business logic or persistence implementation to verify.
+The Linux-specific prerequisite checker lives under `scripts/`, outside the
+frontend and its runtime bundle. This satisfies the frontend portability
+criterion for the current scaffold; repeat the review when adding features.
+
 ## Rules for new dependencies
 
 - Confirm desktop OS and CPU support, WebView compatibility, Node/Rust version requirements and available native binaries before adding a dependency. Check license terms and transitive native components before distribution.

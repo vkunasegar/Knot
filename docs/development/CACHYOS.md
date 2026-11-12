@@ -25,6 +25,9 @@ sudo pacman -S --needed base-devel pkgconf webkit2gtk-4.1 curl wget file \
 Arch packages include development files; Debian package names ending in `-dev`
 do not apply here. WebKitGTK 4.0 and WebKitGTK 6.0 do not replace the required
 4.1 API. The package list follows the [Tauri Arch setup](https://v2.tauri.app/start/prerequisites/#linux).
+On the verified host, the current `libappindicator` package provides and
+replaces the older `libappindicator-gtk3` package name; pacman resolves this
+automatically. `webkit2gtk-4.1` supplies both WebKitGTK and JavaScriptCore 4.1.
 
 If Node 24 and rustup are not already managed by your existing tool setup,
 install them using the Arch packages:
@@ -151,8 +154,15 @@ source filename if the build reports a different name:
 ```sh
 install -Dm755 src-tauri/target/release/bundle/appimage/KNOT_0.1.0_amd64.AppImage \
   "$HOME/.local/bin/knot.AppImage"
+ss -ltnp 'sport = :1420'
+cd "$HOME"
 "$HOME/.local/bin/knot.AppImage"
 ```
+
+Before launching, the port check should show only the header, with no listening
+process. The installed copy then starts from outside the repository. Confirm
+that the KNOT heading and tagline render, close the window, and run the installed
+copy again. Record startup separately from compilation and packaging success.
 
 This installs a standalone file in your user directory; a KDE application-menu
 entry is not created by this command. Run it again after closing the terminal
@@ -198,6 +208,15 @@ they are not enabled in the application or shell defaults.
 
 ## Manual Linux verification
 
+### Issue acceptance criteria
+
+- [x] The documented `pnpm dev` equivalent opens a native Linux window without browser chrome; confirmed by the user on CachyOS / KDE Wayland.
+- [x] The installed production AppImage starts without a dev server; the user confirmed visible, correctly rendered content.
+- [x] No Linux-only business APIs in the current frontend; see the [source review](PORTABILITY.md#m0-frontend-portability-verification).
+- [x] Missing Linux packages and the WebKitGTK 4.1 setup are documented above, with a successful host prerequisite check.
+
+### Desktop checks
+
 For the first acceptance criterion, run `pnpm check:linux` and `pnpm dev`
 from the repository root in Konsole. Wait for Rust compilation, then confirm:
 
@@ -215,8 +234,9 @@ Record the CachyOS/Plasma version, GPU/driver, display backend and output from
 
 - [x] `pnpm dev` (verified with `pnpm dev -- --locked`) opens a native KNOT window with visible content and no browser chrome.
 - [ ] Closing, stopping and restarting the dev app work cleanly.
-- [ ] The release executable starts after the dev server is stopped.
-- [ ] The copied AppImage starts from outside the repository and starts again after closing.
+- [ ] The unbundled release executable starts after the dev server is stopped.
+- [x] The installed AppImage starts from outside the repository without a dev server, with visible content confirmed by the user.
+- [ ] The installed AppImage starts again after closing.
 - [ ] Resize, maximize, minimize and close work in KDE.
 - [ ] Title, minimum size, work-area fitting and KNOT icon work in the window/task switcher; check the packaged launcher icon separately.
 - [ ] Wayland and X11/XWayland are checked where available; record unsupported combinations.
@@ -237,7 +257,32 @@ check now uses that shell invocation and preserves subprocess error details.
 and launched `target/debug/knot` in the host's desktop session.
 The user confirmed the separate KNOT window with its heading and tagline
 visible and no browser tabs or address bar. This satisfies the first
-acceptance criterion on this CachyOS/Plasma Wayland setup. Release installation,
-clean shutdown/restart and the remaining desktop checks above are still pending.
+acceptance criterion on this CachyOS/Plasma Wayland setup. Clean shutdown/restart
+and the remaining desktop checks above are tracked separately.
+
+### Production build and installation result
+
+On the same host, `pnpm build --bundles appimage -- --locked` passed its
+TypeScript/frontend build hook, optimized Rust compilation and AppImage
+packaging. The generated `KNOT_0.1.0_amd64.AppImage` was installed with mode
+755 at `/home/vkunasegar/.local/bin/knot.AppImage`. Build output and installed
+copy have identical SHA-256:
+
+```text
+8ceaa5cf07880bafce42f6522a4cd396acf175b1cb308d5659806439c79e3523
+```
+
+The development process and debug app were stopped before the installed copy
+was launched with working directory `/`. Port 1420 had no listener before or
+after startup, and the installed app process remained running without startup
+errors. The user confirmed that the installed production window displays the
+KNOT heading and tagline correctly. The installed production startup criterion
+is satisfied on this host; the shutdown/restart and other desktop checks
+remain separate.
+
+This is a user-local standalone AppImage installation on the verified host;
+it does not establish compatibility with older Linux distributions, create a
+KDE application-menu entry or validate Windows/macOS installers.
+
 Product features and persistence are not implemented yet, so this checklist
 does not claim note-saving or search verification.
