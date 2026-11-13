@@ -18,6 +18,7 @@ license audit or distribution approval.
 | `vite`, `@vitejs/plugin-react` | 8.3.8, 6.3.0 | MIT | Development/build tools; Node 24 satisfies their engine requirements. The lockfile includes Rolldown binaries for the three desktop OSes. |
 | `typescript` | 6.0.3 | Apache-2.0 | Build-time checking; no native runtime requirement. |
 | `@types/node`, `@types/react`, `@types/react-dom` | 24.19.2, 19.3.0, 19.3.0 | MIT | Build-time declarations only; Node types are scoped to Vite's tooling configuration. |
+| `@fontsource-variable/inter`, `@fontsource-variable/playfair-display` | 5.3.0, 5.3.0 | OFL-1.1 | Static WOFF2 font files and `@font-face` stylesheets bundled locally by Vite; no runtime network requests or OS font installation required. |
 | Rust `tauri`, `tauri-build` | 2.12.5, 2.7.4 | Apache-2.0 OR MIT | Shared shell/build integration; platform-specific WebView dependencies are selected by the crates' target configuration. |
 
 No direct dependency currently needs a platform-specific replacement.
@@ -33,24 +34,28 @@ so a console window is not opened alongside the application.
 
 The source review on 2026-11-12 covered all current frontend implementation
 files: `src/main.tsx`, `src/app/index.ts`, `src/app/App.tsx`, `src/app/App.css`,
-`src/shared/styles/tokens.css` and `src/vite-env.d.ts`. They contain only React
+`src/shared/styles/tokens.css` and `src/vite-env.d.ts`. The Issue #2 design
+system review extended this check to `src/shared/styles/fonts.css`,
+`src/shared/styles/base.css`, all shared primitives under `src/shared/ui/` and
+the separate internal preview entry under `src/design-preview/`. They contain only React
 composition, static text,
 browser styling and Vite type declarations. There are no Node imports, native
 commands, OS branches, hardcoded Linux paths or Linux-only business APIs in
 the frontend. CSS font-smoothing prefixes do not introduce business logic.
 
 The `features` and `data` directories currently contain architecture
-documentation; `shared` supplies CSS tokens. There is no business logic or
+documentation; `shared` supplies CSS tokens and platform-neutral UI primitives. There is no business logic or
 persistence implementation to verify.
 The Linux-specific prerequisite checker lives under `scripts/`, outside the
 frontend and its runtime bundle. This satisfies the frontend portability
 criterion for the current scaffold; repeat the review when adding features.
 
-The Foundation review adds development-only test tools: `vitest` 5.1.0
-(MIT), `@playwright/test` 1.65.0 (Apache-2.0) and `@axe-core/playwright` 4.14.0
+The Foundation and design-system reviews add development-only test tools: `vitest` 5.1.0
+(MIT), `@testing-library/react` 16.3.3 (MIT), `@testing-library/user-event` 14.6.10
+(MIT), `@testing-library/jest-dom` 7.0.1 (MIT), `jsdom` 31.0.0 (MIT), `@playwright/test` 1.65.0 (Apache-2.0) and `@axe-core/playwright` 4.14.0
 (MPL-2.0), based on their installed package metadata. Their Node requirements
 fit Node 24; Vitest supports the selected Vite 8 version. They are not imported
-by `src` or included in the production UI bundle. Browser binaries are test
+by `src` production code or included in the production UI bundle. Browser binaries are test
 tools installed separately. The Linux-only prerequisite integration tests are
 skipped on other platforms; the browser test commands are platform-neutral.
 
