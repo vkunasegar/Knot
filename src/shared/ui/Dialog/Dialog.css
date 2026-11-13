@@ -1,0 +1,58 @@
+/* Modal dialog built on <dialog>. */
+
+.knot-dialog {
+  width: min(520px, calc(100vw - var(--knot-space-32)));
+  max-height: calc(100vh - var(--knot-space-64));
+  padding: 0;
+  border: 1px solid var(--knot-color-border-strong);
+  border-radius: var(--knot-radius-lg);
+  color: var(--knot-color-text);
+  background: var(--knot-color-surface);
+  box-shadow: var(--knot-elevation-3);
+}
+
+.knot-dialog::backdrop {
+  background: var(--knot-color-backdrop);
+}
+
+.knot-dialog__frame {
+  display: flex;
+  padding: var(--knot-space-24);
+  flex-direction: column;
+  gap: var(--knot-space-16);
+}
+
+.knot-dialog__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--knot-space-16);
+}
+
+.knot-dialog__title {
+  margin: 0;
+  font-size: var(--knot-font-size-2xl);
+}
+
+.knot-dialog__close {
+  flex-shrink: 0;
+}
+
+.knot-dialog__description {
+  margin: 0;
+  font-size: var(--knot-font-size-sm);
+  color: var(--knot-color-text-secondary);
+}
+
+.knot-dialog__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--knot-space-12);
+}
+
+.knot-dialog__footer {
+  display: flex;
+  padding-top: var(--knot-space-8);
+  justify-content: flex-end;
+  gap: var(--knot-space-8);
+}

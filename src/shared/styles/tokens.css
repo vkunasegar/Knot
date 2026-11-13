@@ -1,9 +1,185 @@
+/*
+ * KNOT design tokens.
+ *
+ * Single source of truth for colors, typography, spacing, radii, elevation,
+ * focus and motion. Components reference these custom properties only; they
+ * never hard-code raw values. Values follow the design contract in
+ * docs/design/knot/README.md.
+ *
+ * Contrast notes (WCAG 2.1, measured on canvas #F7F5F0 / surface #FFFEFB):
+ * - text            #252525  14.1:1 / 15.2:1
+ * - text-secondary  #6B6964   5.0:1 /  5.4:1  (small secondary text)
+ * - text-muted      #777570   4.2:1 /  4.6:1  (large text and decoration only)
+ * - thread          #C66B54   3.4:1 /  3.7:1  (lines, fills, large text only)
+ * - thread-strong   #A4503B   5.1:1 /  5.5:1  (small terracotta text; white on it 5.5:1)
+ * - ink             #405B72   6.5:1 /  7.0:1
+ *
+ * The bottom of this file defines the built-in variants for increased
+ * contrast, forced colors and reduced motion. The `data-knot-*` attributes on
+ * the root element force a variant independently of OS settings (used by the
+ * internal design preview).
+ */
 :root {
+  /* ---- Color: neutral foundation ---------------------------------------- */
   --knot-color-canvas: #f7f5f0;
+  --knot-color-surface: #fffefb;
+  --knot-color-surface-sunken: #f0ede6;
   --knot-color-text: #252525;
-  --knot-font-body: system-ui, sans-serif;
-  --knot-font-heading: Georgia, serif;
-  --knot-font-size-title: 3rem;
+  --knot-color-text-secondary: #6b6964;
+  --knot-color-text-muted: #777570;
+  --knot-color-text-on-accent: #ffffff;
+  --knot-color-border: #e6e2db;
+  --knot-color-border-strong: #b8b2a7;
+
+  /* ---- Color: brand -------------------------------------------------------- */
+  /* Signature thread color. Not contrast-safe for small text. */
+  --knot-color-thread: #c66b54;
+  /* Darker terracotta for small text and filled primary controls. */
+  --knot-color-thread-strong: #a4503b;
+  --knot-color-thread-tint: #f6e6e0;
+  /* Secondary ink blue. */
+  --knot-color-ink: #405b72;
+  --knot-color-ink-strong: #2f465a;
+  --knot-color-ink-tint: #e3e9ee;
+
+  /* ---- Color: interaction and state --------------------------------------- */
+  /* Focus uses ink blue so it is never confused with terracotta hover/accent. */
+  --knot-color-focus: var(--knot-color-ink);
+  --knot-color-error: #b42318;
+  --knot-color-error-tint: #fbe9e7;
+  --knot-color-success: #2e6b47;
+  --knot-color-success-tint: #e6f1ea;
+  --knot-color-warning: #8a5a00;
+  --knot-color-warning-tint: #f8eed9;
+  /* Translucent scrim behind modal dialogs. */
+  --knot-color-backdrop: rgb(37 37 37 / 32%);
+
+  /* ---- Typography ---------------------------------------------------------- */
+  /* Bundled variable fonts (see fonts.css) with system fallbacks. */
+  --knot-font-heading: "Playfair Display Variable", Georgia, "Times New Roman", serif;
+  --knot-font-body: "Inter Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* Type scale in rem so text follows the user's base font size. */
+  --knot-font-size-xs: 0.75rem;
+  --knot-font-size-sm: 0.875rem;
+  --knot-font-size-md: 1rem;
+  --knot-font-size-lg: 1.125rem;
+  --knot-font-size-xl: 1.375rem;
+  --knot-font-size-2xl: 1.75rem;
+  --knot-font-size-3xl: 2.25rem;
+  --knot-font-size-display: 3rem;
+  /* Kept for the launch view; aliases the display size. */
+  --knot-font-size-title: var(--knot-font-size-display);
+
+  --knot-font-weight-regular: 400;
+  --knot-font-weight-medium: 500;
+  --knot-font-weight-semibold: 600;
+
+  --knot-line-height-tight: 1.2;
+  --knot-line-height-snug: 1.4;
+  --knot-line-height-body: 1.6;
+
+  /* ---- Spacing (4/8/12/16/24/32/48/64 scale from the design contract) ---- */
+  --knot-space-4: 4px;
+  --knot-space-8: 8px;
+  --knot-space-12: 12px;
   --knot-space-16: 16px;
+  --knot-space-24: 24px;
   --knot-space-32: 32px;
+  --knot-space-48: 48px;
+  --knot-space-64: 64px;
+
+  /* ---- Radii ---------------------------------------------------------------- */
+  --knot-radius-sm: 4px;
+  --knot-radius-md: 8px;
+  --knot-radius-lg: 12px;
+  --knot-radius-pill: 999px;
+
+  /* ---- Elevation (soft, warm-tinted shadows) ------------------------------- */
+  --knot-elevation-0: none;
+  --knot-elevation-1: 0 1px 2px rgb(60 48 36 / 8%);
+  --knot-elevation-2: 0 2px 8px rgb(60 48 36 / 10%), 0 1px 2px rgb(60 48 36 / 6%);
+  --knot-elevation-3: 0 8px 24px rgb(60 48 36 / 14%), 0 2px 6px rgb(60 48 36 / 8%);
+
+  /* ---- Focus ---------------------------------------------------------------- */
+  --knot-focus-ring-width: 2px;
+  --knot-focus-ring-offset: 2px;
+  /*
+   * Double ring: a surface-colored gap followed by the focus color. It differs
+   * from hover in color, width and shape, so focus is never mistaken for hover.
+   */
+  --knot-focus-ring:
+    0 0 0 var(--knot-focus-ring-offset) var(--knot-color-surface),
+    0 0 0 calc(var(--knot-focus-ring-offset) + var(--knot-focus-ring-width)) var(--knot-color-focus);
+
+  /* ---- Motion ---------------------------------------------------------------- */
+  --knot-motion-duration-fast: 120ms;
+  --knot-motion-duration-base: 200ms;
+  --knot-motion-duration-slow: 600ms;
+  --knot-motion-ease: cubic-bezier(0.2, 0, 0, 1);
+  /* Subtle hover translation from the interaction contract. */
+  --knot-hover-lift: -1px;
+
+  /* ---- Layout (shell dimensions from the design contract) ------------------ */
+  --knot-sidebar-width: 216px;
+  --knot-sidebar-rail-width: 68px;
+  --knot-inspector-width: 320px;
+}
+
+/*
+ * Increased contrast: secondary text becomes primary text, borders darken and
+ * the focus ring thickens. Duplicated for the forced attribute because a media
+ * query cannot be combined with an attribute selector in a single rule.
+ */
+@media (prefers-contrast: more) {
+  :root {
+    --knot-color-text-secondary: var(--knot-color-text);
+    --knot-color-text-muted: #4f4d49;
+    --knot-color-border: #8a847b;
+    --knot-color-border-strong: #4f4d49;
+    --knot-color-focus: var(--knot-color-ink-strong);
+    --knot-focus-ring-width: 3px;
+  }
+}
+
+:root[data-knot-contrast="more"] {
+  --knot-color-text-secondary: var(--knot-color-text);
+  --knot-color-text-muted: #4f4d49;
+  --knot-color-border: #8a847b;
+  --knot-color-border-strong: #4f4d49;
+  --knot-color-focus: var(--knot-color-ink-strong);
+  --knot-focus-ring-width: 3px;
+}
+
+/*
+ * Forced colors (e.g. Windows high contrast): the browser replaces colors and
+ * drops box-shadows, so focus falls back to a system-colored outline that
+ * components declare alongside the shadow ring.
+ */
+@media (forced-colors: active) {
+  :root {
+    --knot-color-focus: Highlight;
+    --knot-color-border: CanvasText;
+    --knot-color-border-strong: CanvasText;
+  }
+}
+
+/*
+ * Reduced motion: motion is decoration only, so durations collapse to zero and
+ * hover no longer translates. No interaction depends on animation.
+ */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --knot-motion-duration-fast: 0ms;
+    --knot-motion-duration-base: 0ms;
+    --knot-motion-duration-slow: 0ms;
+    --knot-hover-lift: 0px;
+  }
+}
+
+:root[data-knot-motion="reduce"] {
+  --knot-motion-duration-fast: 0ms;
+  --knot-motion-duration-base: 0ms;
+  --knot-motion-duration-slow: 0ms;
+  --knot-hover-lift: 0px;
 }

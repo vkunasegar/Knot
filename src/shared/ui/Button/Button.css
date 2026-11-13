@@ -1,0 +1,88 @@
+/*
+ * KNOT button.
+ *
+ * State language (shared by all interactive primitives):
+ * - hover: subtle stroke change and a 1px lift (removed for reduced motion)
+ * - focus-visible: ink-blue double ring from --knot-focus-ring
+ * - disabled: reduced opacity, no hover feedback
+ */
+
+.knot-button {
+  display: inline-flex;
+  min-height: 36px;
+  padding: 0 var(--knot-space-16);
+  align-items: center;
+  justify-content: center;
+  gap: var(--knot-space-8);
+  border: 1px solid transparent;
+  border-radius: var(--knot-radius-md);
+  font-size: var(--knot-font-size-sm);
+  font-weight: var(--knot-font-weight-medium);
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    transform var(--knot-motion-duration-fast) var(--knot-motion-ease),
+    border-color var(--knot-motion-duration-fast) var(--knot-motion-ease),
+    background-color var(--knot-motion-duration-fast) var(--knot-motion-ease);
+}
+
+.knot-button--sm {
+  min-height: 28px;
+  padding: 0 var(--knot-space-12);
+  font-size: var(--knot-font-size-xs);
+}
+
+/* Filled main action. White on thread-strong is 5.5:1. */
+.knot-button--primary {
+  color: var(--knot-color-text-on-accent);
+  background: var(--knot-color-thread-strong);
+}
+
+.knot-button--secondary {
+  color: var(--knot-color-text);
+  background: var(--knot-color-surface);
+  border-color: var(--knot-color-border-strong);
+}
+
+.knot-button--quiet {
+  color: var(--knot-color-text);
+  background: transparent;
+}
+
+/* ---- Hover: stroke + lift, never the focus color ------------------------- */
+.knot-button:hover:not(:disabled) {
+  transform: translateY(var(--knot-hover-lift));
+}
+
+.knot-button--primary:hover:not(:disabled) {
+  box-shadow: var(--knot-elevation-2);
+}
+
+.knot-button--secondary:hover:not(:disabled) {
+  border-color: var(--knot-color-thread);
+}
+
+.knot-button--quiet:hover:not(:disabled) {
+  background: var(--knot-color-surface-sunken);
+}
+
+/* ---- Focus: distinct double ring ------------------------------------------ */
+.knot-button:focus-visible {
+  /* Transparent outline becomes visible in forced-colors mode, where shadows are removed. */
+  outline: var(--knot-focus-ring-width) solid transparent;
+  outline-offset: var(--knot-focus-ring-offset);
+  box-shadow: var(--knot-focus-ring);
+}
+
+/* ---- Disabled ------------------------------------------------------------- */
+.knot-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+@media (forced-colors: active) {
+  .knot-button {
+    border-color: ButtonText;
+  }
+}

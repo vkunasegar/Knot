@@ -23,6 +23,7 @@ test("renders accessible launch content using only local resources", async ({ pa
       - paragraph: Every thought is a thread. Every connection creates meaning.
   `);
   await expect(page.getByRole("heading", { name: "KNOT", level: 1 })).toBeVisible();
+  await expect(page.locator('a[href*="design-preview"]')).toHaveCount(0);
   expect(errors).toEqual([]);
   expect(remoteRequests).toEqual([]);
 });

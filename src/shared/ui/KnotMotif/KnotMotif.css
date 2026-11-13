@@ -1,0 +1,62 @@
+/* KNOT thread motif. Purely decorative unless labelled (see KnotMotif.tsx). */
+
+.knot-motif {
+  display: block;
+  color: var(--knot-color-thread);
+  /* Decoration must never intercept clicks or look interactive. */
+  pointer-events: none;
+}
+
+.knot-motif--mark {
+  width: 48px;
+  height: 48px;
+}
+
+.knot-motif--flourish {
+  width: 240px;
+  height: 48px;
+}
+
+.knot-motif__thread {
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  /* Keep the line weight constant when the SVG is scaled. */
+  vector-effect: non-scaling-stroke;
+}
+
+/* Optional draw-in: the stroke is revealed from one end to the other. */
+.knot-motif--animated .knot-motif__thread {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  animation: knot-motif-draw var(--knot-motion-duration-slow) var(--knot-motion-ease) both;
+}
+
+@keyframes knot-motif-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Reduced motion: show the finished thread immediately. */
+@media (prefers-reduced-motion: reduce) {
+  .knot-motif--animated .knot-motif__thread {
+    animation: none;
+  }
+}
+
+:root[data-knot-motion="reduce"] .knot-motif--animated .knot-motif__thread {
+  animation: none;
+}
+
+/* Forced colors: draw with the system text color so the motif stays visible. */
+@media (forced-colors: active) {
+  .knot-motif {
+    color: CanvasText;
+  }
+}

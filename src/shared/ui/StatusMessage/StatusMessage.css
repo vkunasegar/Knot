@@ -1,0 +1,76 @@
+/* Inline status banner. */
+
+.knot-status-message {
+  display: flex;
+  padding: var(--knot-space-12) var(--knot-space-16);
+  align-items: flex-start;
+  gap: var(--knot-space-12);
+  border: 1px solid var(--knot-color-border-strong);
+  border-radius: var(--knot-radius-md);
+  background: var(--knot-color-surface);
+  font-size: var(--knot-font-size-sm);
+  line-height: var(--knot-line-height-snug);
+}
+
+.knot-status-message--info {
+  border-color: var(--knot-color-ink);
+  background: var(--knot-color-ink-tint);
+}
+
+.knot-status-message--info .knot-status-message__icon {
+  color: var(--knot-color-ink);
+}
+
+.knot-status-message--success {
+  border-color: var(--knot-color-success);
+  background: var(--knot-color-success-tint);
+}
+
+.knot-status-message--success .knot-status-message__icon {
+  color: var(--knot-color-success);
+}
+
+.knot-status-message--warning {
+  border-color: var(--knot-color-warning);
+  background: var(--knot-color-warning-tint);
+}
+
+.knot-status-message--warning .knot-status-message__icon {
+  color: var(--knot-color-warning);
+}
+
+.knot-status-message--error {
+  border-color: var(--knot-color-error);
+  background: var(--knot-color-error-tint);
+}
+
+.knot-status-message--error .knot-status-message__icon {
+  color: var(--knot-color-error);
+}
+
+.knot-status-message__icon {
+  display: inline-flex;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.knot-status-message__content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--knot-space-4);
+}
+
+.knot-status-message__title {
+  margin: 0;
+  font-weight: var(--knot-font-weight-semibold);
+}
+
+.knot-status-message__body {
+  color: var(--knot-color-text);
+}
+
+.knot-status-message__action {
+  flex-shrink: 0;
+  align-self: center;
+}
