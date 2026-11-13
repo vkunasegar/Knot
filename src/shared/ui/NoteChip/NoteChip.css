@@ -1,0 +1,64 @@
+/* Compact note reference pill. */
+
+.knot-note-chip {
+  display: inline-flex;
+  max-width: 100%;
+  min-height: 30px;
+  padding: var(--knot-space-4) var(--knot-space-12);
+  align-items: center;
+  gap: var(--knot-space-8);
+  border: 1px solid var(--knot-color-border);
+  border-radius: var(--knot-radius-pill);
+  background: var(--knot-color-surface);
+  font-size: var(--knot-font-size-sm);
+  line-height: var(--knot-line-height-snug);
+  color: var(--knot-color-text);
+}
+
+.knot-note-chip--interactive {
+  cursor: pointer;
+  transition:
+    transform var(--knot-motion-duration-fast) var(--knot-motion-ease),
+    border-color var(--knot-motion-duration-fast) var(--knot-motion-ease),
+    background-color var(--knot-motion-duration-fast) var(--knot-motion-ease);
+}
+
+.knot-note-chip--interactive:hover:not(:disabled) {
+  border-color: var(--knot-color-thread);
+  transform: translateY(var(--knot-hover-lift));
+}
+
+.knot-note-chip--interactive:focus-visible {
+  outline: var(--knot-focus-ring-width) solid transparent;
+  outline-offset: var(--knot-focus-ring-offset);
+  box-shadow: var(--knot-focus-ring);
+}
+
+.knot-note-chip--interactive:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Selected state from the interaction contract: stronger border weight + tint. */
+.knot-note-chip--selected {
+  border-color: var(--knot-color-thread-strong);
+  background: var(--knot-color-thread-tint);
+  font-weight: var(--knot-font-weight-medium);
+}
+
+.knot-note-chip__icon {
+  flex-shrink: 0;
+  color: var(--knot-color-thread-strong);
+}
+
+.knot-note-chip__title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.knot-note-chip__meta {
+  flex-shrink: 0;
+  font-size: var(--knot-font-size-xs);
+  color: var(--knot-color-text-secondary);
+}
