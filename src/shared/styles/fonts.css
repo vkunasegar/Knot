@@ -1,0 +1,16 @@
+/*
+ * Bundled KNOT typefaces.
+ *
+ * Both fonts are distributed under the SIL Open Font License 1.1 and are
+ * bundled by Vite from node_modules, so the app never requests fonts from the
+ * network. Each package declares per-subset @font-face rules with
+ * unicode-range, so the WebView only downloads the subsets a page uses.
+ * `font-display: swap` keeps text visible with the fallback stack in
+ * tokens.css while a font loads.
+ */
+
+/* Interface text: Inter (variable weight axis 100–900). */
+@import "@fontsource-variable/inter";
+
+/* Editorial headings: Playfair Display (variable weight axis 400–900). */
+@import "@fontsource-variable/playfair-display";

@@ -1,22 +1,10 @@
-@import "../shared/styles/tokens.css";
-
-:root {
-  font-family: var(--knot-font-body);
-  color: var(--knot-color-text);
-  background: var(--knot-color-canvas);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-body {
-  margin: 0;
-  min-width: 320px;
-}
+/*
+ * Launch view styles. Document-level defaults (fonts, colors, focus) come from
+ * the shared base stylesheet so the app and the design preview stay in sync.
+ */
+@import "../shared/styles/base.css";
 
 .app {
-  box-sizing: border-box;
   display: flex;
   min-height: 100vh;
   padding: var(--knot-space-32);
@@ -28,13 +16,11 @@ body {
 
 .app h1 {
   margin: 0 0 var(--knot-space-16);
-  font-family: var(--knot-font-heading);
   font-size: var(--knot-font-size-title);
-  font-weight: 400;
 }
 
 .app p {
   max-width: 40ch;
   margin: 0;
-  line-height: 1.6;
+  line-height: var(--knot-line-height-body);
 }
