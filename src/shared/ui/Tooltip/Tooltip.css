@@ -1,0 +1,29 @@
+/* Tooltip wrapper and bubble. */
+
+.knot-tooltip {
+  position: relative;
+  display: inline-flex;
+}
+
+.knot-tooltip__bubble {
+  position: absolute;
+  bottom: calc(100% + var(--knot-space-4));
+  left: 50%;
+  z-index: 10;
+  max-width: 240px;
+  padding: var(--knot-space-4) var(--knot-space-8);
+  transform: translateX(-50%);
+  border: 1px solid var(--knot-color-border-strong);
+  border-radius: var(--knot-radius-sm);
+  color: var(--knot-color-surface);
+  background: var(--knot-color-ink-strong);
+  box-shadow: var(--knot-elevation-2);
+  font-size: var(--knot-font-size-xs);
+  line-height: var(--knot-line-height-snug);
+  white-space: nowrap;
+}
+
+/* Keep the browser's [hidden] behavior when display is set above. */
+.knot-tooltip__bubble[hidden] {
+  display: none;
+}
