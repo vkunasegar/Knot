@@ -1,0 +1,42 @@
+/* Persistence status pill. */
+
+.knot-save-status {
+  display: inline-flex;
+  min-height: 26px;
+  padding: var(--knot-space-4) var(--knot-space-8);
+  align-items: center;
+  gap: var(--knot-space-4);
+  border: 1px solid var(--knot-color-border);
+  border-radius: var(--knot-radius-pill);
+  background: var(--knot-color-surface);
+  font-size: var(--knot-font-size-xs);
+  line-height: var(--knot-line-height-snug);
+  color: var(--knot-color-text-secondary);
+}
+
+.knot-save-status--saving {
+  color: var(--knot-color-ink);
+  border-color: var(--knot-color-ink);
+  background: var(--knot-color-ink-tint);
+}
+
+.knot-save-status--saved {
+  color: var(--knot-color-success);
+  border-color: var(--knot-color-success);
+  background: var(--knot-color-success-tint);
+}
+
+.knot-save-status--error {
+  color: var(--knot-color-error);
+  border-color: var(--knot-color-error);
+  background: var(--knot-color-error-tint);
+  font-weight: var(--knot-font-weight-medium);
+}
+
+.knot-save-status__icon {
+  flex-shrink: 0;
+}
+
+.knot-save-status__detail {
+  font-weight: var(--knot-font-weight-regular);
+}
