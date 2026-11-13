@@ -1,11 +1,26 @@
+import { resolve } from "node:path";
+import process from "node:process";
+import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import process from "node:process";
+
 const host = process.env.TAURI_DEV_HOST;
+const rootDir = fileURLToPath(new URL(".", import.meta.url));
 
 // https://vite.dev/config/
 export default defineConfig(() => ({
   plugins: [react()],
+
+  build: {
+    rollupOptions: {
+      // Two independent HTML entries: `index.html` is the application loaded
+      // by Tauri; `design-preview.html` is the internal component catalogue.
+      input: {
+        main: resolve(rootDir, "index.html"),
+        designPreview: resolve(rootDir, "design-preview.html"),
+      },
+    },
+  },
 
   // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
   //

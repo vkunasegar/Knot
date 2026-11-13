@@ -1,0 +1,264 @@
+/*
+ * Layout for the internal design system preview.
+ *
+ * Uses a 12-column grid (3 panels in the first row, 4 in the second) so every
+ * token group and shared primitive is visible at once inside the 1440×900 and
+ * 1600×1000 reference viewports without scrolling.
+ */
+@import "../shared/styles/base.css";
+
+.design-preview {
+  max-width: 1560px;
+  padding: var(--knot-space-16) var(--knot-space-24);
+  margin: 0 auto;
+}
+
+.design-preview__header {
+  display: flex;
+  padding-bottom: var(--knot-space-12);
+  margin-bottom: var(--knot-space-16);
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--knot-space-16);
+  border-bottom: 1px solid var(--knot-color-border);
+}
+
+.design-preview__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--knot-space-12);
+}
+
+.design-preview__eyebrow {
+  margin: 0;
+  font-size: var(--knot-font-size-xs);
+  font-weight: var(--knot-font-weight-semibold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--knot-color-thread-strong);
+}
+
+.design-preview__title {
+  margin: 0;
+  font-size: var(--knot-font-size-2xl);
+}
+
+.design-preview__toggles {
+  display: flex;
+  align-items: center;
+  gap: var(--knot-space-8);
+}
+
+.design-preview__grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--knot-space-16);
+}
+
+/* Row 1: three 4-column token panels. Row 2: component panels. */
+.design-preview__grid > .knot-panel {
+  padding: var(--knot-space-16);
+  gap: var(--knot-space-12);
+  grid-column: span 3;
+}
+
+.design-preview__grid > .knot-panel:nth-child(-n + 3) {
+  grid-column: span 4;
+}
+
+.design-preview__grid > .design-preview__status-panel {
+  grid-column: span 3;
+}
+
+.preview-status-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--knot-space-8);
+}
+
+.preview-status-grid .knot-status-message {
+  padding: var(--knot-space-8) var(--knot-space-12);
+}
+
+@media (max-width: 1200px) {
+  .design-preview__grid > .knot-panel,
+  .design-preview__grid > .knot-panel:nth-child(-n + 3) {
+    grid-column: span 6;
+  }
+}
+
+@media (max-width: 760px) {
+  .design-preview__grid > .knot-panel,
+  .design-preview__grid > .knot-panel:nth-child(-n + 3) {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ---- Color swatches ------------------------------------------------------ */
+.preview-swatches {
+  display: grid;
+  padding: 0;
+  margin: 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--knot-space-8);
+  list-style: none;
+}
+
+.preview-swatch {
+  display: grid;
+  padding: var(--knot-space-4) var(--knot-space-8);
+  grid-template-columns: 24px 1fr;
+  column-gap: var(--knot-space-8);
+  align-items: center;
+  border: 1px solid var(--knot-color-border);
+  border-radius: var(--knot-radius-sm);
+  background: var(--knot-color-canvas);
+}
+
+.preview-swatch__color {
+  width: 24px;
+  height: 24px;
+  grid-row: span 2;
+  border: 1px solid var(--knot-color-border-strong);
+  border-radius: var(--knot-radius-sm);
+}
+
+.preview-swatch__name {
+  font-size: var(--knot-font-size-xs);
+  font-weight: var(--knot-font-weight-semibold);
+  line-height: var(--knot-line-height-tight);
+}
+
+.preview-swatch__code {
+  font-size: var(--knot-font-size-xs);
+  line-height: var(--knot-line-height-tight);
+  color: var(--knot-color-text-secondary);
+}
+
+.preview-swatch__usage {
+  display: none;
+}
+
+/* ---- Type samples -------------------------------------------------------- */
+.preview-type-list {
+  display: flex;
+  padding: 0;
+  margin: 0;
+  flex-direction: column;
+  gap: var(--knot-space-4);
+  list-style: none;
+}
+
+.preview-type-item {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--knot-space-8);
+}
+
+.preview-type-meta {
+  flex-shrink: 0;
+  font-size: var(--knot-font-size-xs);
+  color: var(--knot-color-text-secondary);
+}
+
+.preview-type-item p {
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.preview-type--display {
+  font-family: var(--knot-font-heading);
+  font-size: var(--knot-font-size-2xl);
+  line-height: var(--knot-line-height-tight);
+}
+
+.preview-type--3xl {
+  font-family: var(--knot-font-heading);
+  font-size: var(--knot-font-size-xl);
+  line-height: var(--knot-line-height-tight);
+}
+
+.preview-type--2xl {
+  font-family: var(--knot-font-heading);
+  font-size: var(--knot-font-size-lg);
+  line-height: var(--knot-line-height-tight);
+}
+
+.preview-type--xl {
+  font-family: var(--knot-font-heading);
+  font-size: var(--knot-font-size-md);
+  line-height: var(--knot-line-height-snug);
+}
+
+.preview-type--md {
+  font-size: var(--knot-font-size-md);
+}
+
+.preview-type--sm {
+  font-size: var(--knot-font-size-sm);
+}
+
+.preview-type--xs {
+  font-size: var(--knot-font-size-xs);
+  color: var(--knot-color-text-secondary);
+}
+
+/* ---- Spacing & motif ----------------------------------------------------- */
+.preview-spacing {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: var(--knot-space-12);
+  row-gap: var(--knot-space-4);
+}
+
+.preview-spacing__row {
+  display: flex;
+  align-items: center;
+  gap: var(--knot-space-8);
+}
+
+.preview-spacing__label {
+  width: 36px;
+  font-size: var(--knot-font-size-xs);
+  color: var(--knot-color-text-secondary);
+}
+
+.preview-spacing__bar {
+  height: 8px;
+  border-radius: var(--knot-radius-sm);
+  background: var(--knot-color-thread);
+}
+
+.preview-motif-box {
+  display: flex;
+  padding: var(--knot-space-8) var(--knot-space-12);
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--knot-space-4);
+  border: 1px dashed var(--knot-color-border-strong);
+  border-radius: var(--knot-radius-md);
+  background: var(--knot-color-canvas);
+}
+
+.preview-caption {
+  margin: 0;
+  font-size: var(--knot-font-size-xs);
+  color: var(--knot-color-text-secondary);
+}
+
+/* ---- Component rows ------------------------------------------------------ */
+.preview-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--knot-space-8);
+}
+
+.preview-dialog-copy {
+  margin: 0;
+  font-size: var(--knot-font-size-sm);
+}
