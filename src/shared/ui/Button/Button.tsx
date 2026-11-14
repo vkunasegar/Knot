@@ -40,7 +40,12 @@ export function Button({
   return (
     <button
       type={type}
-      className={cx("knot-button", `knot-button--${variant}`, `knot-button--${size}`, className)}
+      className={cx(
+        "knot-button",
+        `knot-button--${variant}`,
+        `knot-button--${size}`,
+        className,
+      )}
       {...buttonProps}
     />
   );

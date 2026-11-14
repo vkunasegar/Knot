@@ -27,7 +27,9 @@ export class NavigationController {
 
   subscribe = (listener: () => void): (() => void) => {
     this.listeners.add(listener);
-    return () => { this.listeners.delete(listener); };
+    return () => {
+      this.listeners.delete(listener);
+    };
   };
 
   /** Idempotent lifecycle supports React Strict Mode without duplicate handlers. */
@@ -53,21 +55,39 @@ export class NavigationController {
     this.publish(destination);
   }
 
-  back = (): void => { if (this.snapshot.canGoBack) this.browser.history.back(); };
-  forward = (): void => { if (this.snapshot.canGoForward) this.browser.history.forward(); };
+  back = (): void => {
+    if (this.snapshot.canGoBack) this.browser.history.back();
+  };
+  forward = (): void => {
+    if (this.snapshot.canGoForward) this.browser.history.forward();
+  };
 
-  private historyState() { return { knotNavigation: this.session, index: this.index }; }
+  private historyState() {
+    return { knotNavigation: this.session, index: this.index };
+  }
 
   private replace(destination: Destination): void {
-    this.browser.history.replaceState(this.historyState(), "", `#/${destination}`);
+    this.browser.history.replaceState(
+      this.historyState(),
+      "",
+      `#/${destination}`,
+    );
   }
 
   private onLocationChange = (): void => {
     const state: unknown = this.browser.history.state;
     const destination = parseDestination(this.browser.location.hash);
-    if (typeof state === "object" && state !== null && "knotNavigation" in state &&
-      state.knotNavigation === this.session && "index" in state &&
-      Number.isInteger(state.index) && typeof state.index === "number" && state.index >= 0 && state.index <= this.lastIndex) {
+    if (
+      typeof state === "object" &&
+      state !== null &&
+      "knotNavigation" in state &&
+      state.knotNavigation === this.session &&
+      "index" in state &&
+      Number.isInteger(state.index) &&
+      typeof state.index === "number" &&
+      state.index >= 0 &&
+      state.index <= this.lastIndex
+    ) {
       this.index = state.index;
     } else {
       // An external hash edit has already inserted a browser entry. Adopt it
@@ -80,12 +100,23 @@ export class NavigationController {
   };
 
   private makeSnapshot(destination: Destination): NavigationSnapshot {
-    return Object.freeze({ destination, canGoBack: this.index > 0, canGoForward: this.index < this.lastIndex });
+    return Object.freeze({
+      destination,
+      canGoBack: this.index > 0,
+      canGoForward: this.index < this.lastIndex,
+    });
   }
 
   private publish(destination: Destination): void {
     const next = this.makeSnapshot(destination);
-    if (Object.keys(next).every((key) => next[key as keyof NavigationSnapshot] === this.snapshot[key as keyof NavigationSnapshot])) return;
+    if (
+      Object.keys(next).every(
+        (key) =>
+          next[key as keyof NavigationSnapshot] ===
+          this.snapshot[key as keyof NavigationSnapshot],
+      )
+    )
+      return;
     this.snapshot = next;
     this.listeners.forEach((listener) => listener());
   }

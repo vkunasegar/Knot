@@ -5,7 +5,10 @@ import { NavigationController } from "./NavigationController";
 import { destinations } from "./routes";
 
 let stop: (() => void) | undefined;
-afterEach(() => { stop?.(); window.history.replaceState(null, "", "/"); });
+afterEach(() => {
+  stop?.();
+  window.history.replaceState(null, "", "/");
+});
 
 function controller(hash = "") {
   window.history.replaceState(null, "", `/${hash}`);
@@ -17,7 +20,11 @@ function controller(hash = "") {
 describe("NavigationController", () => {
   it("supports every destination and ignores duplicate navigation", () => {
     const navigation = controller();
-    expect(navigation.getSnapshot()).toEqual({ destination: "home", canGoBack: false, canGoForward: false });
+    expect(navigation.getSnapshot()).toEqual({
+      destination: "home",
+      canGoBack: false,
+      canGoForward: false,
+    });
     for (const { id } of destinations) {
       navigation.navigate(id);
       expect(navigation.getSnapshot().destination).toBe(id);
@@ -29,7 +36,9 @@ describe("NavigationController", () => {
   });
 
   it("accepts direct links and normalizes unknown routes", () => {
-    expect(controller("#/collections").getSnapshot().destination).toBe("collections");
+    expect(controller("#/collections").getSnapshot().destination).toBe(
+      "collections",
+    );
     stop?.();
     expect(controller("#/missing").getSnapshot().destination).toBe("home");
     expect(location.hash).toBe("#/home");
@@ -42,15 +51,29 @@ describe("NavigationController", () => {
     navigation.navigate("notes");
     navigation.navigate("threads");
     navigation.back();
-    await waitFor(() => expect(navigation.getSnapshot()).toMatchObject({ destination: "notes", canGoForward: true }));
+    await waitFor(() =>
+      expect(navigation.getSnapshot()).toMatchObject({
+        destination: "notes",
+        canGoForward: true,
+      }),
+    );
     navigation.forward();
-    await waitFor(() => expect(navigation.getSnapshot()).toMatchObject({ destination: "threads", canGoForward: false }));
+    await waitFor(() =>
+      expect(navigation.getSnapshot()).toMatchObject({
+        destination: "threads",
+        canGoForward: false,
+      }),
+    );
     navigation.back();
-    await waitFor(() => expect(navigation.getSnapshot().destination).toBe("notes"));
+    await waitFor(() =>
+      expect(navigation.getSnapshot().destination).toBe("notes"),
+    );
     navigation.navigate("archive");
     expect(navigation.getSnapshot().canGoForward).toBe(false);
     navigation.back();
-    await waitFor(() => expect(navigation.getSnapshot().destination).toBe("notes"));
+    await waitFor(() =>
+      expect(navigation.getSnapshot().destination).toBe("notes"),
+    );
     navigation.back();
     await waitFor(() => expect(navigation.getSnapshot().canGoBack).toBe(false));
   });
@@ -58,9 +81,13 @@ describe("NavigationController", () => {
   it("adopts external hash navigation once and unsubscribes cleanly", async () => {
     const navigation = controller();
     let notifications = 0;
-    const unsubscribe = navigation.subscribe(() => { notifications++; });
+    const unsubscribe = navigation.subscribe(() => {
+      notifications++;
+    });
     location.hash = "#/favorites";
-    await waitFor(() => expect(navigation.getSnapshot().destination).toBe("favorites"));
+    await waitFor(() =>
+      expect(navigation.getSnapshot().destination).toBe("favorites"),
+    );
     expect(notifications).toBe(1);
     unsubscribe();
     navigation.navigate("settings");

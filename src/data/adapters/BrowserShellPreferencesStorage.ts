@@ -4,7 +4,9 @@ import type { ShellPreferencesStorage } from "../contracts";
 export class BrowserShellPreferencesStorage implements ShellPreferencesStorage {
   private readonly key = "knot.shell.preferences.v1";
 
-  constructor(private readonly storage: () => Storage = () => window.localStorage) {}
+  constructor(
+    private readonly storage: () => Storage = () => window.localStorage,
+  ) {}
 
   read(): string | null {
     return this.storage().getItem(this.key);
