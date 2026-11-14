@@ -18,6 +18,8 @@ export class NavigationController {
   private lastIndex = 0;
   private snapshot: NavigationSnapshot;
   private listening = false;
+  private traversalPending = false;
+  private queuedDestination: Destination | null = null;
 
   constructor(private readonly browser: Window) {
     this.snapshot = this.makeSnapshot(parseDestination(browser.location.hash));
@@ -48,6 +50,10 @@ export class NavigationController {
   }
 
   navigate(destination: Destination): void {
+    if (this.traversalPending) {
+      this.queuedDestination = destination;
+      return;
+    }
     if (destination === this.snapshot.destination) return;
     this.index += 1;
     this.lastIndex = this.index;
@@ -56,10 +62,16 @@ export class NavigationController {
   }
 
   back = (): void => {
-    if (this.snapshot.canGoBack) this.browser.history.back();
+    if (this.snapshot.canGoBack && !this.traversalPending) {
+      this.traversalPending = true;
+      this.browser.history.back();
+    }
   };
   forward = (): void => {
-    if (this.snapshot.canGoForward) this.browser.history.forward();
+    if (this.snapshot.canGoForward && !this.traversalPending) {
+      this.traversalPending = true;
+      this.browser.history.forward();
+    }
   };
 
   private historyState() {
@@ -75,6 +87,10 @@ export class NavigationController {
   }
 
   private onLocationChange = (): void => {
+    // Browser traversal is asynchronous. Serialize it so a rapid double Back
+    // cannot pass the session boundary; apply the latest requested route after
+    // the browser acknowledges its position, instead of racing pushState.
+    this.traversalPending = false;
     const state: unknown = this.browser.history.state;
     const destination = parseDestination(this.browser.location.hash);
     if (
@@ -97,6 +113,11 @@ export class NavigationController {
     }
     this.replace(destination);
     this.publish(destination);
+    if (this.queuedDestination !== null) {
+      const queued = this.queuedDestination;
+      this.queuedDestination = null;
+      this.navigate(queued);
+    }
   };
 
   private makeSnapshot(destination: Destination): NavigationSnapshot {

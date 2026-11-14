@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { waitFor } from "@testing-library/react";
 import { NavigationController } from "./NavigationController";
 import { destinations } from "./routes";
@@ -7,6 +7,7 @@ import { destinations } from "./routes";
 let stop: (() => void) | undefined;
 afterEach(() => {
   stop?.();
+  vi.restoreAllMocks();
   window.history.replaceState(null, "", "/");
 });
 
@@ -18,6 +19,31 @@ function controller(hash = "") {
 }
 
 describe("NavigationController", () => {
+  it("does not issue a second Back while the browser is still traversing", () => {
+    const navigation = controller();
+    navigation.navigate("notes");
+    const back = vi.spyOn(window.history, "back").mockImplementation(() => {});
+    navigation.back();
+    navigation.back();
+    expect(back).toHaveBeenCalledTimes(1);
+  });
+
+  it("applies a new destination after the pending browser traversal completes", async () => {
+    const navigation = controller();
+    navigation.navigate("notes");
+    navigation.back();
+    navigation.navigate("archive");
+    await waitFor(() =>
+      expect(navigation.getSnapshot().destination).toBe("archive"),
+    );
+    navigation.back();
+    await waitFor(() =>
+      expect(navigation.getSnapshot()).toMatchObject({
+        destination: "home",
+        canGoBack: false,
+      }),
+    );
+  });
   it("supports every destination and ignores duplicate navigation", () => {
     const navigation = controller();
     expect(navigation.getSnapshot()).toEqual({
