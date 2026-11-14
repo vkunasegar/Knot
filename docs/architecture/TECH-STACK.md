@@ -12,7 +12,7 @@
 | Styling | Scoped CSS + CSS custom properties/tokens | Own KNOT visual language; avoid generic component kits. |
 | Editor | **Tiptap/ProseMirror (open-source extensions)** | Structured rich-text document, keyboard support, extensibility. Review OSS licenses before shipping. |
 | Graph interaction | **@xyflow/react** as pan/zoom/selection foundation, custom SVG paths/cards | Build distinctive KNOT threads, not a generic mind map. Performance spike before final selection. |
-| Persistent data | **SQLite** (through Rust repository / Tauri SQL plugin evaluation) | Local-first with schema migrations, searchable metadata and transactions. |
+| Persistent data | **SQLite** through Rust repositories and bundled `rusqlite` | Local-first with atomic migrations and transactions; no frontend SQL API. |
 | UI state | React state + small focused store (e.g. Zustand only where needed) | Keep persisted domain state separate from transient panels, selection and zoom. |
 | Search | SQLite FTS5 (plus indexed title/tag search) | Offline full-text search; debounce, ranking and preview extraction. |
 | Tests | Vitest + React Testing Library; Playwright for UI; Rust tests | Domain + keyboard + end-to-end behavior. |
@@ -27,7 +27,13 @@ The [CachyOS development guide](../development/CACHYOS.md) documents the current
 
 The [portability guide](../development/PORTABILITY.md) records the initial dependency review, rules for adding native dependencies and the Linux/Windows/macOS build matrix. Build smoke checks verify compilation; runtime and installed-app checks remain separate.
 
-## Data model (initial)
+## Data model
+
+Issue #4 implements the [domain/storage contract](DOMAIN-MODEL.md), including
+UUID identities, compare-and-swap revisions, canonical link uniqueness, ordered
+membership replacement, deletion rules and migration ownership. The outline below
+records the original direction; the implemented contract and versioned migration
+define the current wire/schema names. Settings and FTS remain later work.
 - `note(id, title, body_json, created_at, updated_at, archived_at, deleted_at, is_favorite)`
 - `connection(id, source_note_id, target_note_id, type, direction, strength, created_at)` (unique relationship policy decided before migration)
 - `collection(id, name, description, created_at, updated_at)`

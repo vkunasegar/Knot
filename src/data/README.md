@@ -15,6 +15,16 @@ lazily so policy and quota errors reach the service recovery boundary. The
 application's `ShellPreferencesService` validates the version and boolean fields,
 keeps usable session state when writes fail, and exposes a recovery warning.
 This store contains no document data and never determines a document's save
-indicator. Native note storage remains part of Issue #4 and later workflows.
+indicator.
+
+`createDomainRepositories` composes typed note, connection, collection and thread
+repository classes around an injected native invocation client. It performs no IO
+at construction. The native service lazily opens the app-data SQLite file and owns
+its connection and transactions. Data adapters validate responses and expose stable
+`StoreError` codes; they never cache documents, substitute browser storage or retry
+writes automatically. Features receive only the repository contracts they need.
+
+The [domain contract](../../docs/architecture/DOMAIN-MODEL.md) documents membership
+ordering, revisions, archive/trash/purge, migration immutability and recovery.
 
 See the [module responsibilities and dependency rules](../README.md).

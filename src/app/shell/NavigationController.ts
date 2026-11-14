@@ -57,7 +57,11 @@ export class NavigationController {
     if (destination === this.snapshot.destination) return;
     this.index += 1;
     this.lastIndex = this.index;
-    this.browser.history.pushState(this.historyState(), "", `#/${destination}`);
+    this.browser.history.pushState(
+      this.historyState(),
+      "",
+      this.toHash(destination),
+    );
     this.publish(destination);
   }
 
@@ -74,26 +78,18 @@ export class NavigationController {
     }
   };
 
+  private toHash(destination: Destination): string {
+    return `#/${destination}`;
+  }
+
   private historyState() {
     return { knotNavigation: this.session, index: this.index };
   }
 
-  private replace(destination: Destination): void {
-    this.browser.history.replaceState(
-      this.historyState(),
-      "",
-      `#/${destination}`,
-    );
-  }
-
-  private onLocationChange = (): void => {
-    // Browser traversal is asynchronous. Serialize it so a rapid double Back
-    // cannot pass the session boundary; apply the latest requested route after
-    // the browser acknowledges its position, instead of racing pushState.
-    this.traversalPending = false;
-    const state: unknown = this.browser.history.state;
-    const destination = parseDestination(this.browser.location.hash);
-    if (
+  private isOwnHistoryState(
+    state: unknown,
+  ): state is { knotNavigation: string; index: number } {
+    return (
       typeof state === "object" &&
       state !== null &&
       "knotNavigation" in state &&
@@ -103,7 +99,36 @@ export class NavigationController {
       typeof state.index === "number" &&
       state.index >= 0 &&
       state.index <= this.lastIndex
+    );
+  }
+
+  private replace(destination: Destination): void {
+    this.browser.history.replaceState(
+      this.historyState(),
+      "",
+      this.toHash(destination),
+    );
+  }
+
+  private onLocationChange = (event?: Event): void => {
+    const state: unknown = this.browser.history.state;
+    // Chromium queues hashchange in a later task after popstate. If the next
+    // traversal starts in between, ignore the stale hashchange so replaceState
+    // cannot cancel the in-flight history traversal or reset traversalPending.
+    if (
+      event?.type === "hashchange" &&
+      this.isOwnHistoryState(state) &&
+      state.index === this.index &&
+      this.browser.location.hash === this.toHash(this.snapshot.destination)
     ) {
+      return;
+    }
+    // Browser traversal is asynchronous. Serialize it so a rapid double Back
+    // cannot pass the session boundary; apply the latest requested route after
+    // the browser acknowledges its position, instead of racing pushState.
+    this.traversalPending = false;
+    const destination = parseDestination(this.browser.location.hash);
+    if (this.isOwnHistoryState(state)) {
       this.index = state.index;
     } else {
       // An external hash edit has already inserted a browser entry. Adopt it

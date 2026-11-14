@@ -292,6 +292,9 @@ test("keeps enlarged text usable with reduced motion at minimum window size", as
   await page.getByRole("button", { name: "Search workspace" }).click();
   await expect(page.getByRole("combobox")).toBeFocused();
   await page.keyboard.press("Escape");
+  await expect(
+    page.getByRole("dialog", { name: "Search your workspace" }),
+  ).toBeHidden();
   await page
     .getByRole("navigation", { name: "Main navigation" })
     .getByRole("link", { name: "Settings", exact: true })

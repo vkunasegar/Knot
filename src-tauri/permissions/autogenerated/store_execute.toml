@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-store-execute"
+description = "Enables the store_execute command without any pre-configured scope."
+commands.allow = ["store_execute"]
+
+[[permission]]
+identifier = "deny-store-execute"
+description = "Denies the store_execute command without any pre-configured scope."
+commands.deny = ["store_execute"]

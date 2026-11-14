@@ -5,6 +5,6 @@
   "windows": [
     "main"
   ],
-  "permissions": [],
+  "permissions": ["allow-store-execute"],
   "local": true
 }
