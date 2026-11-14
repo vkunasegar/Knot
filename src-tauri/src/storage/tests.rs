@@ -6,14 +6,15 @@ use tempfile::TempDir;
 /// Every workflow enters through the actual JSON request protocol and uses a
 /// temporary on-disk SQLite file, including WAL, foreign keys and real commits.
 struct Harness {
-    directory: TempDir,
+    // Drop SQLite connections before TempDir removes the directory (required on Windows).
     service: StoreService,
+    directory: TempDir,
 }
 impl Harness {
     fn new() -> Self {
         let directory = tempfile::tempdir().unwrap();
         let service = StoreService::at_path(Ok(directory.path().join("knot.sqlite3")));
-        Self { directory, service }
+        Self { service, directory }
     }
     fn path(&self) -> PathBuf {
         self.directory.path().join("knot.sqlite3")
@@ -453,6 +454,7 @@ fn failed_migration_rolls_back_schema_history_and_prior_data_changes() {
         original
     );
     migrations::MigrationRunner::run(&mut db).unwrap();
+    drop(db);
 }
 
 #[test]
@@ -478,6 +480,8 @@ fn refuses_future_foreign_and_modified_schemas_without_resetting_them() {
                 .unwrap(),
             original["title"].as_str().unwrap()
         );
+        drop(service);
+        drop(db);
     }
     let h = Harness::new();
     let db = Connection::open(h.path()).unwrap();
@@ -495,6 +499,7 @@ fn refuses_future_foreign_and_modified_schemas_without_resetting_them() {
             .unwrap(),
         "keep"
     );
+    drop(db);
 }
 
 #[test]
@@ -520,6 +525,8 @@ fn detects_existing_orphans_without_deleting_them() {
             .unwrap(),
         1
     );
+    drop(service);
+    drop(db);
 }
 
 #[test]
@@ -547,6 +554,7 @@ fn corrupt_files_and_invalid_stored_documents_are_never_replaced() {
             .unwrap(),
         "{}"
     );
+    drop(db);
 }
 
 #[test]
@@ -559,6 +567,7 @@ fn busy_writes_recover_and_failed_open_is_retryable() {
         json!({"operation":"updateNote","id":note["id"],"expectedRevision":1,"input":note_input()});
     assert_eq!(h.call(request.clone()), Err(StoreError::Busy));
     lock.execute_batch("ROLLBACK").unwrap();
+    drop(lock);
     assert_eq!(h.call(request).unwrap()["revision"], 2);
 
     let directory = tempfile::tempdir().unwrap();
@@ -655,17 +664,20 @@ fn sqlite_enforces_foreign_keys_and_order_constraints_without_repository_validat
 fn command_uses_real_permissions_and_returns_committed_data_or_stable_errors() {
     use tauri::test::{INVOKE_KEY, get_ipc_response, mock_builder, noop_assets};
     let h = Harness::new();
-    let mut context = tauri::generate_context!();
-    context.set_assets(Box::new(noop_assets()));
+    // Mark as test context so macOS does not embed duplicate _EMBED_INFO_PLIST symbols,
+    // and isolate webview data directories inside the temporary test folder.
+    let context = tauri::generate_context!(assets = noop_assets(), test = true);
     let app = mock_builder()
         .manage(Arc::new(h.service))
         .invoke_handler(tauri::generate_handler![store_execute])
         .build(context)
         .unwrap();
     let main = tauri::WebviewWindowBuilder::new(&app, "main", Default::default())
+        .data_directory(h.directory.path().join("webview-main"))
         .build()
         .unwrap();
     let other = tauri::WebviewWindowBuilder::new(&app, "other", Default::default())
+        .data_directory(h.directory.path().join("webview-other"))
         .build()
         .unwrap();
     let local_url = main.url().unwrap().to_string();

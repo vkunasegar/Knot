@@ -104,6 +104,37 @@ describe("NavigationController", () => {
     await waitFor(() => expect(navigation.getSnapshot().canGoBack).toBe(false));
   });
 
+  it("ignores delayed hashchange after popstate while the next traversal is pending", async () => {
+    const navigation = controller();
+    navigation.navigate("notes");
+    navigation.back();
+    await waitFor(() =>
+      expect(navigation.getSnapshot().destination).toBe("home"),
+    );
+
+    const replaceState = vi.spyOn(window.history, "replaceState");
+    const forwardSpy = vi.spyOn(window.history, "forward");
+    navigation.forward();
+    expect(forwardSpy).toHaveBeenCalledTimes(1);
+
+    // Simulate Chromium delivering the previous traversal's queued hashchange
+    // after popstate already settled at index 0 and forward() started.
+    window.dispatchEvent(new Event("hashchange"));
+    expect(replaceState).not.toHaveBeenCalled();
+
+    // A second forward() must remain blocked until forward() finishes, rather
+    // than being unlocked prematurely by the stale hashchange.
+    navigation.forward();
+    expect(forwardSpy).toHaveBeenCalledTimes(1);
+
+    await waitFor(() =>
+      expect(navigation.getSnapshot()).toMatchObject({
+        destination: "notes",
+        canGoForward: false,
+      }),
+    );
+  });
+
   it("adopts external hash navigation once and unsubscribes cleanly", async () => {
     const navigation = controller();
     let notifications = 0;

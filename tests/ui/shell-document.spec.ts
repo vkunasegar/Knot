@@ -42,6 +42,9 @@ test("keeps a live document and cursor through reflow, native modal use and Focu
   await expect(page.getByRole("combobox")).toBeFocused();
   await page.keyboard.press("Escape");
   await expect(
+    page.getByRole("dialog", { name: "Search your workspace" }),
+  ).toBeHidden();
+  await expect(
     page.getByRole("button", { name: "Exit Focus Mode" }),
   ).toBeVisible();
   await expect(editor).toBeFocused();

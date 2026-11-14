@@ -89,8 +89,22 @@ export function DesktopShell({
     if (paletteOpen) return;
     const action = pendingAction.current;
     pendingAction.current = null;
-    if (action) action.run();
-    else paletteOrigin.current?.focus({ preventScroll: true });
+    if (action) {
+      action.run();
+    } else {
+      const active = document.activeElement;
+      const inDialog =
+        active instanceof Element && Boolean(active.closest("dialog"));
+      // Only restore trigger focus if focus has not already moved elsewhere.
+      if (
+        !active ||
+        active === document.body ||
+        active === document.documentElement ||
+        inDialog
+      ) {
+        paletteOrigin.current?.focus({ preventScroll: true });
+      }
+    }
     paletteOrigin.current = null;
   }, [paletteOpen]);
 
@@ -133,10 +147,12 @@ export function DesktopShell({
         event.preventDefault();
         if (event.key === "ArrowLeft") navigation.back();
         else navigation.forward();
-      } else if (focusMode && !paletteOpen && event.key === "Escape") {
-        // A nested modal or editor can consume Escape before the shell sees it.
-        const activeDialog = document.querySelector("dialog[open]");
-        if (!activeDialog) {
+      } else if (focusMode && event.key === "Escape") {
+        // A nested modal or editor can consume Escape before the shell sees it,
+        // and native dialog closing removes [open] before the queued close event.
+        const dialogOpen =
+          paletteOpen && Boolean(document.querySelector("dialog[open]"));
+        if (!dialogOpen) {
           event.preventDefault();
           setFocusRequested(false);
         }
