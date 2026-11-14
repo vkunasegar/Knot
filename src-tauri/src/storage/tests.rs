@@ -74,6 +74,8 @@ fn migrates_empty_database_and_reopens_without_changing_documents() {
             .unwrap(),
         "wal"
     );
+    drop(db);
+    drop(reopened);
 }
 
 #[test]
@@ -448,13 +450,13 @@ fn failed_migration_rolls_back_schema_history_and_prior_data_changes() {
         .unwrap(),
         0
     );
+    migrations::MigrationRunner::run(&mut db).unwrap();
+    drop(db);
     assert_eq!(
         h.call(json!({"operation":"getNote","id":original["id"]}))
             .unwrap(),
         original
     );
-    migrations::MigrationRunner::run(&mut db).unwrap();
-    drop(db);
 }
 
 #[test]
@@ -584,6 +586,7 @@ fn busy_writes_recover_and_failed_open_is_retryable() {
         service.execute(request::Request::ListNotes {}).unwrap(),
         json!([])
     );
+    drop(service);
 }
 
 #[test]
@@ -658,6 +661,7 @@ fn sqlite_enforces_foreign_keys_and_order_constraints_without_repository_validat
         db.execute("UPDATE note SET body_json='not json'", [])
             .is_err()
     );
+    drop(db);
 }
 
 #[test]
@@ -730,4 +734,7 @@ fn command_uses_real_permissions_and_returns_committed_data_or_stable_errors() {
         )
         .is_err()
     );
+    drop(other);
+    drop(main);
+    drop(app);
 }
