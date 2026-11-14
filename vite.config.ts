@@ -8,16 +8,26 @@ const host = process.env.TAURI_DEV_HOST;
 const rootDir = fileURLToPath(new URL(".", import.meta.url));
 
 // https://vite.dev/config/
-export default defineConfig(() => ({
+export default defineConfig(({ mode }) => ({
   plugins: [react()],
 
   build: {
     rollupOptions: {
-      // Two independent HTML entries: `index.html` is the application loaded
-      // by Tauri; `design-preview.html` is the internal component catalogue.
+      // Independent app and catalogue entries. Browser-test mode additionally
+      // builds an isolated document host to verify the shell's editor contract.
       input: {
         main: resolve(rootDir, "index.html"),
         designPreview: resolve(rootDir, "design-preview.html"),
+        // The editable shell host exists only in browser-test builds. It is
+        // absent from native/release builds and never imported by the app.
+        ...(mode === "test"
+          ? {
+              shellDocumentTest: resolve(
+                rootDir,
+                "tests/ui/fixtures/document.html",
+              ),
+            }
+          : {}),
       },
     },
   },

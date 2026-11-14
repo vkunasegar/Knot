@@ -29,6 +29,8 @@ export interface DialogProps {
  * and automatic focus restoration when the dialog closes. Synchronizing the
  * native `open` state in an effect keeps the component controlled from React;
  * listening for the native `close` event forwards Escape presses to `onClose`.
+ * Tab endpoints wrap explicitly so a WebView does not move focus into browser
+ * chrome at the end of its native modal tab sequence.
  */
 export function Dialog({
   open,
@@ -63,6 +65,35 @@ export function Dialog({
       aria-describedby={descriptionId}
       className={cx("knot-dialog", className)}
       onClose={onClose}
+      onKeyDown={(event) => {
+        if (
+          event.key !== "Tab" ||
+          event.defaultPrevented ||
+          event.ctrlKey ||
+          event.altKey ||
+          event.metaKey
+        )
+          return;
+        const controls = Array.from(
+          event.currentTarget.querySelectorAll<HTMLElement>(
+            "button:not([disabled]), a[href], input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]",
+          ),
+        ).filter(
+          (element) =>
+            element.tabIndex >= 0 &&
+            element.getClientRects().length > 0 &&
+            !element.closest("[inert]"),
+        );
+        const first = controls[0];
+        const last = controls.at(-1);
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last?.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first?.focus();
+        }
+      }}
     >
       <div className="knot-dialog__frame">
         <header className="knot-dialog__header">
