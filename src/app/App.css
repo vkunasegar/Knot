@@ -1,26 +1,2 @@
-/*
- * Launch view styles. Document-level defaults (fonts, colors, focus) come from
- * the shared base stylesheet so the app and the design preview stay in sync.
- */
+/* Global document styles are shared with the independent design preview. */
 @import "../shared/styles/base.css";
-
-.app {
-  display: flex;
-  min-height: 100vh;
-  padding: var(--knot-space-32);
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-}
-
-.app h1 {
-  margin: 0 0 var(--knot-space-16);
-  font-size: var(--knot-font-size-title);
-}
-
-.app p {
-  max-width: 40ch;
-  margin: 0;
-  line-height: var(--knot-line-height-body);
-}

@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes } from "react";
+import type { ButtonHTMLAttributes, Ref } from "react";
 import { cx } from "../cx";
 import "./Button.css";
 
@@ -6,6 +6,8 @@ export type ButtonVariant = "primary" | "secondary" | "quiet";
 export type ButtonSize = "sm" | "md";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  /** React 19 ref prop for explicit focus restoration by composing workflows. */
+  ref?: Ref<HTMLButtonElement>;
   /**
    * Visual weight:
    * - `primary`: the one main action of a view (filled terracotta).

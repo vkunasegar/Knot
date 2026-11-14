@@ -1,0 +1,72 @@
+.desktop-shell { display: flex; height: 100dvh; min-height: 0; isolation: isolate; }
+.shell-sidebar { display: flex; flex: 0 0 var(--knot-sidebar-width); width: var(--knot-sidebar-width); min-height: 0; padding: var(--knot-space-24) var(--knot-space-12) var(--knot-space-16); flex-direction: column; background: var(--knot-color-surface-sunken); border-right: 1px solid var(--knot-color-border); }
+.shell-brand { display: flex; align-items: center; gap: var(--knot-space-12); min-height: 48px; margin: 0 var(--knot-space-8) var(--knot-space-48); color: var(--knot-color-text); font-family: var(--knot-font-heading); font-size: var(--knot-font-size-xl); letter-spacing: .12em; text-decoration: none; }
+.shell-brand .shell-brand__mark { width: 32px; height: 40px; flex-shrink: 0; }
+.shell-nav { display: flex; flex: 1; flex-direction: column; min-height: 0; }
+.shell-nav__primary { overflow-y: auto; padding: var(--knot-space-4); margin: calc(-1 * var(--knot-space-4)); }
+.shell-nav__bottom { margin-top: auto; padding-top: var(--knot-space-24); }
+.shell-nav .knot-tooltip { display: block; margin-bottom: var(--knot-space-4); }
+.shell-nav__link { position: relative; display: flex; align-items: center; gap: var(--knot-space-12); min-height: 44px; padding: var(--knot-space-12); border-radius: var(--knot-radius-md); color: var(--knot-color-text-secondary); font-size: var(--knot-font-size-sm); font-weight: var(--knot-font-weight-medium); text-decoration: none; }
+.shell-nav__link svg { flex-shrink: 0; }
+.shell-nav__link:hover { color: var(--knot-color-text); background: var(--knot-color-surface); }
+.shell-nav__link[aria-current="page"] { color: var(--knot-color-thread-strong); background: var(--knot-color-thread-tint); }
+/* The current destination gets a curved stroke, never a relation between notes. */
+.shell-nav__link[aria-current="page"]::before { position: absolute; top: 12px; bottom: 12px; left: 0; width: 4px; border-left: 2px solid currentColor; border-radius: var(--knot-radius-pill); content: ""; }
+.shell-sidebar__footer { display: flex; align-items: center; gap: var(--knot-space-8); margin-top: var(--knot-space-16); padding-top: var(--knot-space-16); border-top: 1px solid var(--knot-color-border); }
+.shell-local-label { font-size: var(--knot-font-size-xs); color: var(--knot-color-text-secondary); }
+.shell-workspace { display: flex; flex: 1; flex-direction: column; min-width: 0; min-height: 0; }
+.shell-topbar { display: flex; align-items: center; flex-wrap: wrap; gap: var(--knot-space-16); padding: var(--knot-space-16) var(--knot-space-24); border-bottom: 1px solid var(--knot-color-border); background: var(--knot-color-surface); }
+.shell-history { display: flex; gap: var(--knot-space-4); }
+.shell-icon-button { min-width: 36px; min-height: 36px; padding: var(--knot-space-8); }
+.shell-breadcrumbs { display: flex; flex: 1; align-items: center; flex-wrap: wrap; gap: var(--knot-space-12); min-width: 0; font-size: var(--knot-font-size-sm); overflow-wrap: anywhere; }
+.shell-breadcrumbs a { color: var(--knot-color-text-secondary); text-decoration: none; }
+.shell-breadcrumbs a:hover { text-decoration: underline; }
+.shell-topbar__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--knot-space-16); margin-left: auto; }
+.shell-topbar .knot-save-status__detail { display: none; }
+.shell-body { display: flex; flex: 1; min-height: 0; min-width: 0; }
+.shell-main { flex: 1; min-width: 0; overflow: auto; overscroll-behavior: contain; }
+.shell-content { max-width: 1056px; margin: 0 auto; padding: var(--knot-space-48) clamp(24px, 4vw, 64px); overflow-wrap: anywhere; }
+.shell-eyebrow { margin: 0 0 var(--knot-space-16); color: var(--knot-color-text-secondary); font-size: var(--knot-font-size-xs); font-weight: var(--knot-font-weight-medium); letter-spacing: .14em; }
+.shell-main h1 { margin: 0; font-size: var(--knot-font-size-display); }
+.shell-main h1:focus { outline: none; }
+.shell-main h1:focus-visible { outline: var(--knot-focus-ring-width) solid var(--knot-color-focus); outline-offset: var(--knot-space-4); border-radius: var(--knot-radius-sm); }
+.shell-intro { margin: var(--knot-space-16) 0 var(--knot-space-48); color: var(--knot-color-text-secondary); }
+.shell-entry { padding: var(--knot-space-32); border: 1px solid var(--knot-color-border); border-radius: var(--knot-radius-lg); background: var(--knot-color-surface); box-shadow: var(--knot-elevation-1); }
+.shell-entry__icon { display: grid; width: 48px; height: 48px; margin-bottom: var(--knot-space-32); place-items: center; border-radius: var(--knot-radius-lg); color: var(--knot-color-ink); background: var(--knot-color-ink-tint); }
+.shell-entry h2 { margin: 0 0 var(--knot-space-16); font-size: var(--knot-font-size-2xl); }
+.shell-entry p { max-width: 48ch; margin: 0; color: var(--knot-color-text-secondary); font-size: var(--knot-font-size-sm); }
+.shell-entry .knot-button { margin-top: var(--knot-space-32); white-space: normal; }
+.shell-footnote { margin: var(--knot-space-48) 0 0; color: var(--knot-color-text-secondary); font-family: var(--knot-font-heading); font-size: var(--knot-font-size-sm); line-height: 1.8; }
+.shell-context { flex: 0 0 var(--knot-inspector-width); width: var(--knot-inspector-width); overflow: auto; padding: var(--knot-space-24); border-left: 1px solid var(--knot-color-border); background: var(--knot-color-surface); overflow-wrap: anywhere; }
+.shell-context[hidden] { display: none; }
+.shell-context__heading { display: flex; align-items: center; justify-content: space-between; gap: var(--knot-space-8); margin-bottom: var(--knot-space-48); }
+.shell-context__heading h2 { margin: 0; font-family: var(--knot-font-body); font-size: var(--knot-font-size-sm); font-weight: var(--knot-font-weight-medium); }
+.shell-context h3 { margin: 0 0 var(--knot-space-16); font-size: var(--knot-font-size-xl); }
+.shell-context p:not(.shell-eyebrow) { color: var(--knot-color-text-secondary); font-size: var(--knot-font-size-sm); }
+.shell-context__hint { margin-top: var(--knot-space-48); padding-top: var(--knot-space-24); border-top: 1px solid var(--knot-color-border); color: var(--knot-color-ink); }
+.shell-settings { display: grid; gap: var(--knot-space-16); margin-top: var(--knot-space-32); font-size: var(--knot-font-size-sm); }
+.shell-settings label { display: flex; flex-wrap: wrap; align-items: center; gap: var(--knot-space-8); }
+.shell-settings input { accent-color: var(--knot-color-ink); width: 18px; height: 18px; }
+.shell-settings span { color: var(--knot-color-text-secondary); }
+.shell-warning { padding: var(--knot-space-12) var(--knot-space-24); background: var(--knot-color-warning-tint); color: var(--knot-color-warning); font-size: var(--knot-font-size-sm); }
+.shell-skip { position: fixed; top: var(--knot-space-8); left: var(--knot-space-8); z-index: 5; transform: translateY(-200%); padding: var(--knot-space-12); background: var(--knot-color-surface); color: var(--knot-color-ink); border-radius: var(--knot-radius-md); }
+.shell-skip:focus { transform: none; }
+.desktop-shell[data-sidebar-collapsed="true"] .shell-sidebar { flex-basis: var(--knot-sidebar-rail-width); width: var(--knot-sidebar-rail-width); padding-inline: var(--knot-space-12); }
+.desktop-shell[data-sidebar-collapsed="true"] .shell-nav__label { display: none; }
+.desktop-shell[data-sidebar-collapsed="true"] .shell-brand { margin-inline: 0; justify-content: center; }
+.desktop-shell[data-sidebar-collapsed="true"] .shell-nav__link { justify-content: center; }
+.desktop-shell[data-sidebar-collapsed="true"] .shell-sidebar__footer { justify-content: center; }
+.shell-sidebar .knot-tooltip__bubble { left: 100%; top: 50%; bottom: auto; transform: translateY(-50%); }
+@media (max-width: 1199px) {
+  .shell-content { padding: var(--knot-space-32) var(--knot-space-24); }
+  .shell-topbar { gap: var(--knot-space-12); padding: var(--knot-space-12) var(--knot-space-16); }
+  .shell-entry { padding: var(--knot-space-24); }
+}
+/* Browser/text zoom can expose less space than the native window minimum. */
+@media (max-width: 759px) {
+  .shell-body { flex-direction: column; overflow: auto; }
+  .shell-main { flex: 1 0 auto; overflow: visible; }
+  .shell-context { flex: 0 0 auto; width: auto; border-left: 0; border-top: 1px solid var(--knot-color-border); overflow: visible; }
+  .shell-topbar .knot-save-status { max-width: 100%; overflow-wrap: anywhere; }
+  .shell-main h1 { font-size: var(--knot-font-size-3xl); }
+}
