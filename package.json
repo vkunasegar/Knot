@@ -16,7 +16,7 @@
     "check": "tsc --noEmit && tsc --project tsconfig.node.json",
     "check:linux": "node scripts/check-linux.mjs",
     "test": "vitest run",
-    "test:ui": "pnpm build:web && playwright test",
+    "test:ui": "pnpm build:web --mode test && playwright test",
     "preview": "vite preview",
     "tauri": "tauri"
   },
