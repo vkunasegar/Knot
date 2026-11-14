@@ -11,7 +11,9 @@ KNOT is a premium, local-first desktop note-taking application with a distinctiv
 **M0 — desktop shell and design foundation.** Tauri 2 hosts the React/TypeScript
 workspace with seven navigation areas, a collapsible sidebar, a context panel
 and a keyboard-accessible shell action palette. Layout preferences persist
-locally. Note storage, editing and full-text search are not implemented yet.
+locally. Native SQLite repositories now provide notes, connections, collections,
+ordered threads and atomic migrations. Product note workflows, editing and
+full-text search are not implemented yet.
 
 - [25 detailed GitHub issues](https://github.com/vkunasegar/Knot/issues) across M0–M4
 - [Project roadmap and milestone outcomes](docs/PROJECT-ROADMAP.md)
@@ -21,6 +23,8 @@ locally. Note storage, editing and full-text search are not implemented yet.
 - [Foundation design/architecture review, tests and screenshots](docs/development/FOUNDATION-REVIEW.md)
 - [KNOT visual and interaction contract](docs/design/knot/README.md)
 - [Desktop shell behavior, keyboard shortcuts and verification](docs/development/DESKTOP-SHELL-REVIEW.md)
+- [Domain semantics, repository ownership and SQLite lifecycle](docs/architecture/DOMAIN-MODEL.md)
+- [Storage verification and pre-merge checklist](docs/development/STORAGE-REVIEW.md)
 - [Automatic milestone/label bootstrap workflow](.github/workflows/bootstrap-planning.yml)
 
 ## Development
@@ -52,14 +56,17 @@ using the [platform prerequisites](https://v2.tauri.app/start/prerequisites/).
 
 The [native desktop configuration](src-tauri/README.md) documents window
 dimensions, the stable application ID, KNOT icons and the minimal capabilities.
-No database, filesystem, shell, or external-link plugin is enabled.
+SQLite is owned by Rust repositories; no SQL, filesystem, shell, or external-link
+plugin is exposed to JavaScript. One scoped domain command serves the local main window.
 
 The [Desktop build workflow](.github/workflows/desktop-build.yml) checks native
 release compilation on Linux, Windows and macOS. See the [portability guide](docs/development/PORTABILITY.md)
 for dependency decisions, platform coverage and the distinction between build
 checks and native runtime verification.
 
-Run `pnpm test` for the service, component, design-token and Linux prerequisite regression tests. Install the browser
+Run `pnpm test` for the service, adapter, component, design-token and Linux prerequisite regression tests.
+Run `cargo test --manifest-path src-tauri/Cargo.toml --locked` for native storage,
+migration, concurrency and command-permission tests. Install the browser
 once with `pnpm exec playwright install chromium`, then run `pnpm test:ui` for
 the production-frontend accessibility/layout checks in both design sizes.
 The [shell review](docs/development/DESKTOP-SHELL-REVIEW.md) records current

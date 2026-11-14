@@ -87,5 +87,8 @@ jobs:
       - name: Check Rust formatting
         run: cargo fmt --manifest-path src-tauri/Cargo.toml -- --check
 
+      - name: Test native storage and migrations
+        run: cargo test --manifest-path src-tauri/Cargo.toml --locked
+
       - name: Build frontend and native release executable
         run: pnpm build --no-bundle -- --locked

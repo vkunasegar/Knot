@@ -68,9 +68,35 @@ skipped on other platforms; the browser test commands are platform-neutral.
 - Retain optional native binaries for other supported platforms in the lockfile. Install with frozen/locked resolution in CI and review lockfile changes alongside dependency changes.
 - Use the OS-appropriate Ctrl/Cmd modifier for shortcuts. Feature behavior, keyboard navigation and save status must not depend on which WebView or desktop environment runs the app.
 
-Editor, graph and SQLite implementation packages remain future choices.
+Editor and graph implementation packages remain future choices.
 Review them against these rules when their feature is introduced; the planning
 ADR does not mean those dependencies are already installed or validated.
+
+## Issue #4 storage dependency review
+
+The native repository layer selects `rusqlite` 0.42.0 (MIT) with `bundled`, using
+`libsqlite3-sys` 0.40.0 (MIT crate; bundled SQLite is public domain). SQLite compiles
+with the target C toolchain on Linux, Windows and macOS; no OS SQLite package or
+runtime service is needed. This adds native compilation work, not a frontend plugin.
+The existing CI hosts already provide C/C++ build tools. No platform-specific
+domain code or hardcoded OS data path is introduced.
+
+New direct metadata also includes `serde` 1.0.229 and `serde_json` 1.0.154
+(MIT OR Apache-2.0), `uuid` 1.29.2 (Apache-2.0 OR MIT, native v4 IDs), and test-only
+`tempfile` 3.27.0 (MIT OR Apache-2.0). These already-supported desktop targets use
+their normal platform filesystem/randomness implementations. The Tauri `test`
+feature is enabled only as a development dependency for command/ACL tests.
+The new SQLite support crates `hashlink` 0.12.2, `fallible-iterator` 0.3.0,
+`fallible-streaming-iterator` 0.1.9 and build helper `vcpkg` 0.2.15 have
+MIT/Apache-2.0 alternatives in their metadata. Target-specific WASM entries in the
+lockfile are not desktop runtime dependencies.
+
+Versions/licenses above were inspected from the locked Cargo metadata. This is
+not a new comprehensive transitive security/license audit. `cargo-audit` is not
+installed on the verification host; previously recorded upstream advisories are
+not claimed fixed. Native tests now run in all three CI matrix jobs before the
+release build. See [storage verification](STORAGE-REVIEW.md) for actual results
+and pending platform runtime checks.
 
 ## Native build smoke checks
 
@@ -88,7 +114,7 @@ Intel macOS, Windows ARM64 and Linux ARM64 are not covered by this matrix.
 
 Each job selects Node from `.node-version`, pnpm from `package.json` and Rust
 plus rustfmt from `rust-toolchain.toml`. It installs with the frozen pnpm
-lockfile, checks Rust formatting, and runs:
+lockfile, checks Rust formatting, runs the native storage/IPC tests, and builds:
 
 ```sh
 pnpm build --no-bundle -- --locked

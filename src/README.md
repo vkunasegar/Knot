@@ -37,11 +37,13 @@ It can contain `ui/`, `hooks/` and `model/` as its size requires, with an
 `index.ts` exposing its public components. Feature-specific types stay inside
 the feature until another module needs them.
 
-Add service interfaces such as `NoteService` under `data/contracts/` and
-concrete Tauri implementations under `data/adapters/` when persistence is
-implemented. `data/index.ts` will expose the factories needed by `app`;
-`data/contracts/index.ts` will expose types needed by features. Database
-connections, transactions and migrations belong to the Rust persistence layer.
+Native repository contracts live under `data/contracts/`, with concrete Tauri
+adapters under `data/adapters/`. `data/index.ts` exposes `createDomainRepositories`
+for application composition; `data/contracts/index.ts` exposes the interfaces
+needed by features. `shared/domain` supplies platform-neutral branded IDs,
+entity values and storage errors. Database connections, transactions and migrations
+belong to Rust. The shell does not create repositories until a consuming workflow
+is implemented. See the [domain contract](../docs/architecture/DOMAIN-MODEL.md).
 
 The application composes the desktop shell through `app/shell/index.ts`.
 `NavigationController` owns typed hash navigation and session-bounded history;
