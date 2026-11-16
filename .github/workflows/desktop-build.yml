@@ -13,6 +13,38 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  frontend-quality:
+    name: Frontend formatting, lint and types
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js from project version
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version-file: .node-version
+
+      - name: Set up pnpm from packageManager
+        uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6
+        with:
+          run_install: false
+
+      - name: Install locked frontend dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check frontend, configuration and documentation formatting
+        run: pnpm format:check
+
+      - name: Lint JavaScript, TypeScript and React accessibility
+        run: pnpm lint
+
+      - name: Typecheck application, tooling and test fixtures
+        run: pnpm check
+
   foundation-checks:
     name: Foundation tests and accessibility
     runs-on: ubuntu-24.04
@@ -36,7 +68,7 @@ jobs:
       - name: Install locked frontend dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Test Linux prerequisite failure states
+      - name: Run Vitest, React and Linux prerequisite regression tests
         run: pnpm test
 
       - name: Install Chromium and its Linux dependencies
@@ -44,6 +76,17 @@ jobs:
 
       - name: Build and test frontend accessibility and layout
         run: pnpm test:ui
+
+      - name: Upload browser diagnostics on failure
+        if: failure()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: browser-failure-diagnostics
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 7
 
   native-build:
     name: Native build (${{ matrix.os }})
@@ -86,6 +129,10 @@ jobs:
 
       - name: Check Rust formatting
         run: cargo fmt --manifest-path src-tauri/Cargo.toml -- --check
+
+      - name: Lint Rust application and tests on Linux
+        if: runner.os == 'Linux'
+        run: cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets --locked -- -D warnings
 
       - name: Test native storage and migrations
         run: cargo test --manifest-path src-tauri/Cargo.toml --locked

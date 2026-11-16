@@ -97,7 +97,9 @@ describe("native repository contracts", () => {
   it("rejects lossy or cyclic documents before invoking native code", async () => {
     const invoke = vi.fn(); const store = createDomainRepositories(invoke);
     const cyclic: Record<string, unknown> = {}; cyclic.self = cyclic;
-    for (const broken of [NaN, Infinity, undefined, new Date(), cyclic, [1, , 3]]) {
+    // eslint-disable-next-line no-sparse-arrays -- Verify that invalid input cannot silently lose array holes during serialization.
+    const sparse = [1, , 3];
+    for (const broken of [NaN, Infinity, undefined, new Date(), cyclic, sparse]) {
       const bad = { ...input, body: { ...input.body, broken } } as unknown as NoteInput;
       await expect(store.notes.create(bad)).rejects.toMatchObject({ code: "invalidInput" });
     }

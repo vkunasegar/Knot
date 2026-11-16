@@ -113,7 +113,7 @@ Runner labels and architectures follow the [GitHub-hosted runner reference](http
 Intel macOS, Windows ARM64 and Linux ARM64 are not covered by this matrix.
 
 Each job selects Node from `.node-version`, pnpm from `package.json` and Rust
-plus rustfmt from `rust-toolchain.toml`. It installs with the frozen pnpm
+plus rustfmt and Clippy from `rust-toolchain.toml`. It installs with the frozen pnpm
 lockfile, checks Rust formatting, runs the native storage/IPC tests, and builds:
 
 ```sh
@@ -125,6 +125,11 @@ the native release executable. The three jobs run independently so a failure
 on one platform remains visible without cancelling the other platforms.
 An additional Linux Foundation job runs the prerequisite regression tests,
 then builds and checks the UI with Chromium/axe in both design reference sizes.
+The frontend quality job separately checks Prettier formatting, ESLint, and
+TypeScript, including browser-test TSX fixtures. The Linux native job also runs
+Clippy on all targets with warnings treated as errors. Browser failures upload
+an HTML report, screenshots, and traces for seven days. See
+[the contribution guide](../../CONTRIBUTING.md) for local equivalents.
 Action references are pinned to release commits. The workflow uses read-only
 repository permissions and builds without release publication or signing.
 
@@ -143,7 +148,7 @@ needs Xcode command-line tools. Follow the [Tauri platform prerequisites](https:
 From the repository root on either platform:
 
 ```sh
-rustup toolchain install 1.100.0 --profile minimal --component rustfmt
+rustup toolchain install 1.100.0 --profile minimal --component rustfmt --component clippy
 pnpm install --frozen-lockfile
 pnpm dev
 ```

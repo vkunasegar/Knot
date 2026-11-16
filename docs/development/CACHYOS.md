@@ -11,7 +11,7 @@ different system libraries from the host.
 | --- | --- | --- |
 | Node.js | 24.x | [`.node-version`](../../.node-version), [`package.json`](../../package.json) |
 | pnpm | 12.18.0 | `packageManager` in `package.json` |
-| Rust | 1.100.0, with rustfmt | [`rust-toolchain.toml`](../../rust-toolchain.toml) |
+| Rust | 1.100.0, with rustfmt and Clippy | [`rust-toolchain.toml`](../../rust-toolchain.toml) |
 | Linux WebView | WebKitGTK API 4.1 with GTK 3 | [Tauri prerequisites](https://v2.tauri.app/start/prerequisites/#linux) |
 
 Install the native dependencies:
@@ -47,7 +47,7 @@ Install pnpm in your user directory, then prepare the Rust toolchain:
 ```sh
 npm install --global --prefix "$HOME/.local" pnpm@12.18.0
 export PATH="$HOME/.local/bin:$PATH"
-rustup toolchain install 1.100.0 --profile minimal --component rustfmt
+rustup toolchain install 1.100.0 --profile minimal --component rustfmt --component clippy
 ```
 
 If npm reports blocked pnpm install scripts, pnpm can still run through its
@@ -112,14 +112,20 @@ is starting its own server on the same port.
 ## Check and build
 
 ```sh
+pnpm format:check
+pnpm lint
 pnpm check
+pnpm test
 pnpm build:web
 cargo fmt --manifest-path src-tauri/Cargo.toml -- --check
+cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets --locked -- -D warnings
+cargo test --manifest-path src-tauri/Cargo.toml --locked
 cargo check --manifest-path src-tauri/Cargo.toml --locked
 pnpm build --no-bundle -- --locked
 ```
 
-The frontend build is written to `dist/`. The native release executable is
+See [CONTRIBUTING.md](../../CONTRIBUTING.md) for browser checks, workflow diagnostics,
+and the complete contribution process. The frontend build is written to `dist/`. The native release executable is
 `src-tauri/target/release/knot`. Both Cargo commands require native development
 libraries. `pnpm build` builds the release app and all configured package
 formats; on Arch, choose AppImage explicitly when only that artifact is needed:
