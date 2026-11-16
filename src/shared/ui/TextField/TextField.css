@@ -21,7 +21,8 @@
   background: var(--knot-color-surface);
   font-size: var(--knot-font-size-md);
   line-height: var(--knot-line-height-snug);
-  transition: border-color var(--knot-motion-duration-fast) var(--knot-motion-ease);
+  transition: border-color var(--knot-motion-duration-fast)
+    var(--knot-motion-ease);
 }
 
 .knot-field__input::placeholder {

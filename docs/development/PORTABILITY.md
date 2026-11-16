@@ -10,16 +10,16 @@ The versions below come from `pnpm-lock.yaml` and `src-tauri/Cargo.lock`.
 The license column records direct package metadata, not a full transitive
 license audit or distribution approval.
 
-| Dependencies | Locked versions | License metadata | Portability decision |
-| --- | --- | --- | --- |
-| `react`, `react-dom` | 19.3.1 | MIT | Browser UI; no native OS requirement in the frontend. |
-| `@tauri-apps/api` | 2.12.4 | Apache-2.0 OR MIT | Shared typed desktop API; native calls belong behind the module boundaries. |
-| `@tauri-apps/cli` | 2.12.4 | Apache-2.0 OR MIT | Development tool with Linux, Windows and macOS binaries. |
-| `vite`, `@vitejs/plugin-react` | 8.3.8, 6.3.0 | MIT | Development/build tools; Node 24 satisfies their engine requirements. The lockfile includes Rolldown binaries for the three desktop OSes. |
-| `typescript` | 6.0.3 | Apache-2.0 | Build-time checking; no native runtime requirement. |
-| `@types/node`, `@types/react`, `@types/react-dom` | 24.19.2, 19.3.0, 19.3.0 | MIT | Build-time declarations only; Node types are scoped to Vite's tooling configuration. |
-| `@fontsource-variable/inter`, `@fontsource-variable/playfair-display` | 5.3.0, 5.3.0 | OFL-1.1 | Static WOFF2 font files and `@font-face` stylesheets bundled locally by Vite; no runtime network requests or OS font installation required. |
-| Rust `tauri`, `tauri-build` | 2.12.5, 2.7.4 | Apache-2.0 OR MIT | Shared shell/build integration; platform-specific WebView dependencies are selected by the crates' target configuration. |
+| Dependencies                                                          | Locked versions         | License metadata  | Portability decision                                                                                                                        |
+| --------------------------------------------------------------------- | ----------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `react`, `react-dom`                                                  | 19.3.1                  | MIT               | Browser UI; no native OS requirement in the frontend.                                                                                       |
+| `@tauri-apps/api`                                                     | 2.12.4                  | Apache-2.0 OR MIT | Shared typed desktop API; native calls belong behind the module boundaries.                                                                 |
+| `@tauri-apps/cli`                                                     | 2.12.4                  | Apache-2.0 OR MIT | Development tool with Linux, Windows and macOS binaries.                                                                                    |
+| `vite`, `@vitejs/plugin-react`                                        | 8.3.8, 6.3.0            | MIT               | Development/build tools; Node 24 satisfies their engine requirements. The lockfile includes Rolldown binaries for the three desktop OSes.   |
+| `typescript`                                                          | 6.0.3                   | Apache-2.0        | Build-time checking; no native runtime requirement.                                                                                         |
+| `@types/node`, `@types/react`, `@types/react-dom`                     | 24.19.2, 19.3.0, 19.3.0 | MIT               | Build-time declarations only; Node types are scoped to Vite's tooling configuration.                                                        |
+| `@fontsource-variable/inter`, `@fontsource-variable/playfair-display` | 5.3.0, 5.3.0            | OFL-1.1           | Static WOFF2 font files and `@font-face` stylesheets bundled locally by Vite; no runtime network requests or OS font installation required. |
+| Rust `tauri`, `tauri-build`                                           | 2.12.5, 2.7.4           | Apache-2.0 OR MIT | Shared shell/build integration; platform-specific WebView dependencies are selected by the crates' target configuration.                    |
 
 No direct dependency currently needs a platform-specific replacement.
 GTK/WebKitGTK entries in Cargo.lock are expected Linux shell dependencies;
@@ -103,11 +103,11 @@ and pending platform runtime checks.
 The [Desktop build workflow](../../.github/workflows/desktop-build.yml) runs
 on pushes, pull requests and manual dispatch. The initial runner matrix is:
 
-| Runner | Coverage |
-| --- | --- |
-| `ubuntu-24.04` | Linux x64 with GTK/WebKitGTK 4.1 development libraries |
-| `windows-2025` | Windows x64 using the runner's MSVC toolchain |
-| `macos-15` | macOS on the runner's native Apple Silicon architecture |
+| Runner         | Coverage                                                |
+| -------------- | ------------------------------------------------------- |
+| `ubuntu-24.04` | Linux x64 with GTK/WebKitGTK 4.1 development libraries  |
+| `windows-2025` | Windows x64 using the runner's MSVC toolchain           |
+| `macos-15`     | macOS on the runner's native Apple Silicon architecture |
 
 Runner labels and architectures follow the [GitHub-hosted runner reference](https://docs.github.com/en/actions/reference/runners/github-hosted-runners).
 Intel macOS, Windows ARM64 and Linux ARM64 are not covered by this matrix.
@@ -159,10 +159,10 @@ After stopping development, build and run the release:
 pnpm build --no-bundle -- --locked
 ```
 
-| Platform | Native executable from the repository root |
-| --- | --- |
-| Windows PowerShell | `.\src-tauri\target\release\knot.exe` |
-| macOS terminal | `./src-tauri/target/release/knot` |
+| Platform           | Native executable from the repository root |
+| ------------------ | ------------------------------------------ |
+| Windows PowerShell | `.\src-tauri\target\release\knot.exe`      |
+| macOS terminal     | `./src-tauri/target/release/knot`          |
 
 Check native title-bar controls, icon, focus, scaling, text rendering, input
 and Ctrl/Cmd shortcuts as features appear. Capture UI at 1600×1000 and 1440×900.

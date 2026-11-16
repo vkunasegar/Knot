@@ -25,16 +25,16 @@ pnpm build --no-bundle -- --locked
 
 Recorded results on 2026-11-14:
 
-| Check | Result |
-| --- | --- |
-| TypeScript | Passed. |
-| Vitest | 99 tests passed, including 36 new adapter/response/error tests. |
-| Rust | 15 tests passed against temporary on-disk databases and the Tauri IPC test runtime. |
-| Rust formatting | Passed. |
-| Browser regression suite | 38 tests passed at 1600×1000 and 1440×900, including keyboard, axe, responsive layout and reduced motion. |
-| Linux native release build | Passed with locked dependencies; the normal production bundle excludes the editable test-document fixture. |
-| Linux native shell smoke | Production executable started without Vite in an isolated XDG profile; seven navigation entries, All Notes navigation/heading and search dialog verified through AT-SPI. |
-| Windows/macOS | Native tests added to the existing CI matrix; this branch's results must be checked after push. |
+| Check                      | Result                                                                                                                                                                   |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| TypeScript                 | Passed.                                                                                                                                                                  |
+| Vitest                     | 99 tests passed, including 36 new adapter/response/error tests.                                                                                                          |
+| Rust                       | 15 tests passed against temporary on-disk databases and the Tauri IPC test runtime.                                                                                      |
+| Rust formatting            | Passed.                                                                                                                                                                  |
+| Browser regression suite   | 38 tests passed at 1600×1000 and 1440×900, including keyboard, axe, responsive layout and reduced motion.                                                                |
+| Linux native release build | Passed with locked dependencies; the normal production bundle excludes the editable test-document fixture.                                                               |
+| Linux native shell smoke   | Production executable started without Vite in an isolated XDG profile; seven navigation entries, All Notes navigation/heading and search dialog verified through AT-SPI. |
+| Windows/macOS              | Native tests added to the existing CI matrix; this branch's results must be checked after push.                                                                          |
 
 Rust coverage includes empty migration/reopen with exact document retention,
 note CRUD/archive/trash/restore, connection CRUD/canonicalization/duplicates,
@@ -83,21 +83,39 @@ Open the native window's development inspector (Ctrl+Shift+I / Inspect Element).
 In its JavaScript console, load the real adapter through the development server:
 
 ```js
-var store = (await import('/src/data/index.ts')).createDomainRepositories();
+var store = (await import("/src/data/index.ts")).createDomainRepositories();
 var input = {
-  title: 'Issue 4 persistence review',
-  body: { version: 1, document: { type: 'doc', content: [] } },
-  isFavorite: false, isArchived: false, isDeleted: false,
+  title: "Issue 4 persistence review",
+  body: { version: 1, document: { type: "doc", content: [] } },
+  isFavorite: false,
+  isArchived: false,
+  isDeleted: false,
 };
 var a = await store.notes.create(input);
-var b = await store.notes.create({ ...input, title: 'Second note' });
-var collection = await store.collections.create({ name: 'Review collection', description: '' });
-var thread = await store.threads.create({ name: 'Review thread', description: '' });
-var collectionMembers = await store.collections.setMembers(collection.id, collection.revision, [a.id, b.id]);
-var threadMembers = await store.threads.setMembers(thread.id, thread.revision, [b.id, a.id]);
+var b = await store.notes.create({ ...input, title: "Second note" });
+var collection = await store.collections.create({
+  name: "Review collection",
+  description: "",
+});
+var thread = await store.threads.create({
+  name: "Review thread",
+  description: "",
+});
+var collectionMembers = await store.collections.setMembers(
+  collection.id,
+  collection.revision,
+  [a.id, b.id],
+);
+var threadMembers = await store.threads.setMembers(thread.id, thread.revision, [
+  b.id,
+  a.id,
+]);
 var edge = await store.connections.create({
-  sourceNoteId: a.id, targetNoteId: b.id,
-  kind: 'related', direction: 'undirected', strength: 0.5,
+  sourceNoteId: a.id,
+  targetNoteId: b.id,
+  kind: "related",
+  direction: "undirected",
+  strength: 0.5,
 });
 console.log(await store.notes.list(), collectionMembers, threadMembers, edge);
 ```
@@ -134,18 +152,18 @@ a profile containing real documents.
 ## Before approving the PR
 
 - [ ] Accept the domain decisions: undirected link uniqueness, distinct-note thread
-  paths, multi-membership, archive/trash retention and permanent-delete semantics.
+      paths, multi-membership, archive/trash retention and permanent-delete semantics.
 - [ ] Review class/struct responsibilities, dependency injection, transaction
-  ownership and comments in the contracts, service, repositories and migration runner.
+      ownership and comments in the contracts, service, repositories and migration runner.
 - [ ] Confirm the current CI run is green: frontend checks and native tests/builds
-  on Linux, Windows and macOS. Compilation does not establish native runtime parity.
+      on Linux, Windows and macOS. Compilation does not establish native runtime parity.
 - [ ] Perform the isolated native persistence/restart/container-delete/conflict
-  check above. Record WebKitGTK runtime failures rather than retrying writes blindly.
+      check above. Record WebKitGTK runtime failures rather than retrying writes blindly.
 - [ ] Start the production executable without Vite; verify normal shell navigation,
-  Ctrl+K, focus restoration and window behavior still work.
+      Ctrl+K, focus restoration and window behavior still work.
 - [ ] Confirm that future UI workflows will filter trash consistently and display
-  storage/conflict failures without falsely showing “saved”. This PR exposes the
-  error contracts; it does not implement those future screens.
+      storage/conflict failures without falsely showing “saved”. This PR exposes the
+      error contracts; it does not implement those future screens.
 
 Remaining platform/runtime checks, human code review and this checklist must be
 completed before merge. New migration files must be appended after version 1 ships.

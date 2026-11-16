@@ -95,14 +95,14 @@ native builds exclude that fixture.
 
 ## Planned user experience
 
-| Area | What makes it KNOT |
-| --- | --- |
-| Home | Quick capture, real recent notes and active thought threads |
-| Note editor | Calm, editorial writing with honest autosave and a connection inspector |
-| The Weave | Distinctive flowing graph, with semantic connections and accessible list alternative |
-| Collections | Curated notes represented by meaningful miniature knots |
-| Search | Instant Ctrl/Cmd+K palette for notes, collections, threads and actions |
-| Focus Mode | Distraction-free version of the very same editor/document |
+| Area        | What makes it KNOT                                                                   |
+| ----------- | ------------------------------------------------------------------------------------ |
+| Home        | Quick capture, real recent notes and active thought threads                          |
+| Note editor | Calm, editorial writing with honest autosave and a connection inspector              |
+| The Weave   | Distinctive flowing graph, with semantic connections and accessible list alternative |
+| Collections | Curated notes represented by meaningful miniature knots                              |
+| Search      | Instant Ctrl/Cmd+K palette for notes, collections, threads and actions               |
+| Focus Mode  | Distraction-free version of the very same editor/document                            |
 
 ## Visual identity
 

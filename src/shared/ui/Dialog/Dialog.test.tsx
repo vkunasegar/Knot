@@ -20,7 +20,9 @@ describe("Dialog", () => {
 
     const dialog = screen.getByRole("dialog", { name: "Delete collection" });
     expect(dialog).toBeVisible();
-    expect(dialog).toHaveAccessibleDescription("Notes inside the collection are kept.");
+    expect(dialog).toHaveAccessibleDescription(
+      "Notes inside the collection are kept.",
+    );
   });
 
   it("closes via the header button and notifies onClose", async () => {

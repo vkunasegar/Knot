@@ -25,17 +25,17 @@ general-purpose libraries.
 
 Import from [`ui/index.ts`](ui/index.ts) when consuming outside `shared/ui`:
 
-| Component | Purpose |
-| --- | --- |
-| `KnotMotif` | Single continuous asymmetric SVG thread (`mark` and `flourish`). Decorative (`aria-hidden`, `pointer-events: none`) unless `label` is passed. Never place between notes or chips. |
-| `Button` | Native `<button>` (`type="button"` by default) in `primary`, `secondary` and `quiet` variants (`sm` / `md`). Hover lifts subtly; keyboard focus uses the ink-blue double ring. |
-| `TextField` | Labelled `<input>` with automatic `htmlFor`, `aria-invalid` and `aria-describedby` wiring for hints and icon-prefixed errors. |
-| `NoteChip` | Compact note reference pill; renders a `<button aria-pressed>` when `onSelect` is given, or a static `<span>` otherwise. |
-| `Panel` | `<section>` landmark labelled by its own heading (`h2`–`h4`), optional subtitle, header actions and elevation 0–2. |
-| `Dialog` | Modal `<dialog>` using native `showModal()` for focus trapping, Escape dismissal and focus restoration. |
-| `Tooltip` | Accessible `role="tooltip"` bubble opened on focus or hover and dismissible with Escape (WCAG 1.4.13). |
-| `SaveStatus` | Presentational persistence indicator (`idle`, `saving`, `saved`, `error`). Callers pass `saved` only after a durable write is confirmed. |
-| `StatusMessage` | Inline status/recovery banner (`info`, `success`, `warning`, `error`) with icon, title, body and optional action. |
+| Component       | Purpose                                                                                                                                                                           |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `KnotMotif`     | Single continuous asymmetric SVG thread (`mark` and `flourish`). Decorative (`aria-hidden`, `pointer-events: none`) unless `label` is passed. Never place between notes or chips. |
+| `Button`        | Native `<button>` (`type="button"` by default) in `primary`, `secondary` and `quiet` variants (`sm` / `md`). Hover lifts subtly; keyboard focus uses the ink-blue double ring.    |
+| `TextField`     | Labelled `<input>` with automatic `htmlFor`, `aria-invalid` and `aria-describedby` wiring for hints and icon-prefixed errors.                                                     |
+| `NoteChip`      | Compact note reference pill; renders a `<button aria-pressed>` when `onSelect` is given, or a static `<span>` otherwise.                                                          |
+| `Panel`         | `<section>` landmark labelled by its own heading (`h2`–`h4`), optional subtitle, header actions and elevation 0–2.                                                                |
+| `Dialog`        | Modal `<dialog>` using native `showModal()` for focus trapping, Escape dismissal and focus restoration.                                                                           |
+| `Tooltip`       | Accessible `role="tooltip"` bubble opened on focus or hover and dismissible with Escape (WCAG 1.4.13).                                                                            |
+| `SaveStatus`    | Presentational persistence indicator (`idle`, `saving`, `saved`, `error`). Callers pass `saved` only after a durable write is confirmed.                                          |
+| `StatusMessage` | Inline status/recovery banner (`info`, `success`, `warning`, `error`) with icon, title, body and optional action.                                                                 |
 
 See the [design contract](../../docs/design/knot/README.md) and the
 [module responsibilities and dependency rules](../README.md).

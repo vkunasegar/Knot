@@ -40,7 +40,9 @@ describe("KnotMotif", () => {
   });
 
   it("applies variant and animation modifiers", () => {
-    const { container } = render(<KnotMotif variant="flourish" animated className="extra" />);
+    const { container } = render(
+      <KnotMotif variant="flourish" animated className="extra" />,
+    );
 
     expect(container.querySelector("svg")).toHaveClass(
       "knot-motif",

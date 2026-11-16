@@ -1,6 +1,16 @@
 import type {
-  CollectionId, Connection, ConnectionId, ConnectionInput, Group, GroupId, GroupInput,
-  MembershipSnapshot, Note, NoteId, NoteInput, ThreadId,
+  CollectionId,
+  Connection,
+  ConnectionId,
+  ConnectionInput,
+  Group,
+  GroupId,
+  GroupInput,
+  MembershipSnapshot,
+  Note,
+  NoteId,
+  NoteInput,
+  ThreadId,
 } from "../../shared/domain";
 
 /** Promises resolve only after native commit and response validation. Rejections
@@ -21,7 +31,11 @@ export interface ConnectionRepository {
   get(id: ConnectionId): Promise<Connection>;
   list(): Promise<readonly Connection[]>;
   create(input: ConnectionInput): Promise<Connection>;
-  update(id: ConnectionId, expectedRevision: number, input: ConnectionInput): Promise<Connection>;
+  update(
+    id: ConnectionId,
+    expectedRevision: number,
+    input: ConnectionInput,
+  ): Promise<Connection>;
   delete(id: ConnectionId, expectedRevision: number): Promise<void>;
 }
 /** Metadata and membership changes share the parent's revision. A caller must
@@ -38,7 +52,11 @@ export interface GroupRepository<I extends GroupId> {
   /** Atomic membership CRUD: add, reorder, remove; [] clears the group. Each
    * note appears at most once per group, but may belong to any number of groups.
    */
-  setMembers(id: I, expectedRevision: number, noteIds: readonly NoteId[]): Promise<MembershipSnapshot<I>>;
+  setMembers(
+    id: I,
+    expectedRevision: number,
+    noteIds: readonly NoteId[],
+  ): Promise<MembershipSnapshot<I>>;
 }
 export interface DomainRepositories {
   readonly notes: NoteRepository;

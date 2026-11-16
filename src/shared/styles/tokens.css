@@ -56,8 +56,10 @@
 
   /* ---- Typography ---------------------------------------------------------- */
   /* Bundled variable fonts (see fonts.css) with system fallbacks. */
-  --knot-font-heading: "Playfair Display Variable", Georgia, "Times New Roman", serif;
-  --knot-font-body: "Inter Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --knot-font-heading:
+    "Playfair Display Variable", Georgia, "Times New Roman", serif;
+  --knot-font-body:
+    "Inter Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
 
   /* Type scale in rem so text follows the user's base font size. */
   --knot-font-size-xs: 0.75rem;
@@ -98,8 +100,10 @@
   /* ---- Elevation (soft, warm-tinted shadows) ------------------------------- */
   --knot-elevation-0: none;
   --knot-elevation-1: 0 1px 2px rgb(60 48 36 / 8%);
-  --knot-elevation-2: 0 2px 8px rgb(60 48 36 / 10%), 0 1px 2px rgb(60 48 36 / 6%);
-  --knot-elevation-3: 0 8px 24px rgb(60 48 36 / 14%), 0 2px 6px rgb(60 48 36 / 8%);
+  --knot-elevation-2:
+    0 2px 8px rgb(60 48 36 / 10%), 0 1px 2px rgb(60 48 36 / 6%);
+  --knot-elevation-3:
+    0 8px 24px rgb(60 48 36 / 14%), 0 2px 6px rgb(60 48 36 / 8%);
 
   /* ---- Focus ---------------------------------------------------------------- */
   --knot-focus-ring-width: 2px;
@@ -110,7 +114,8 @@
    */
   --knot-focus-ring:
     0 0 0 var(--knot-focus-ring-offset) var(--knot-color-surface),
-    0 0 0 calc(var(--knot-focus-ring-offset) + var(--knot-focus-ring-width)) var(--knot-color-focus);
+    0 0 0 calc(var(--knot-focus-ring-offset) + var(--knot-focus-ring-width))
+      var(--knot-color-focus);
 
   /* ---- Motion ---------------------------------------------------------------- */
   --knot-motion-duration-fast: 120ms;

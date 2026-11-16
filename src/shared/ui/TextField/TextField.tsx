@@ -3,7 +3,10 @@ import { cx } from "../cx";
 import { AlertIcon } from "../icons";
 import "./TextField.css";
 
-export interface TextFieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "size"> {
+export interface TextFieldProps extends Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  "size"
+> {
   /** Visible label associated with the input. Required so every field has a name. */
   label: string;
   /** Optional supporting text shown below the input. */
@@ -37,7 +40,9 @@ export function TextField({
   const inputId = providedId ?? generatedId;
   const hintId = hint ? `${inputId}-hint` : undefined;
   const errorId = error ? `${inputId}-error` : undefined;
-  const describedBy = [errorId, hintId, providedDescribedBy].filter(Boolean).join(" ") || undefined;
+  const describedBy =
+    [errorId, hintId, providedDescribedBy].filter(Boolean).join(" ") ||
+    undefined;
 
   return (
     <div className={cx("knot-field", error && "knot-field--error", className)}>

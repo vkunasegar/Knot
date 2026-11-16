@@ -7,12 +7,12 @@ different system libraries from the host.
 
 ## Install the prerequisites
 
-| Tool | Project requirement | Source of truth |
-| --- | --- | --- |
-| Node.js | 24.x | [`.node-version`](../../.node-version), [`package.json`](../../package.json) |
-| pnpm | 12.18.0 | `packageManager` in `package.json` |
-| Rust | 1.100.0, with rustfmt and Clippy | [`rust-toolchain.toml`](../../rust-toolchain.toml) |
-| Linux WebView | WebKitGTK API 4.1 with GTK 3 | [Tauri prerequisites](https://v2.tauri.app/start/prerequisites/#linux) |
+| Tool          | Project requirement              | Source of truth                                                              |
+| ------------- | -------------------------------- | ---------------------------------------------------------------------------- |
+| Node.js       | 24.x                             | [`.node-version`](../../.node-version), [`package.json`](../../package.json) |
+| pnpm          | 12.18.0                          | `packageManager` in `package.json`                                           |
+| Rust          | 1.100.0, with rustfmt and Clippy | [`rust-toolchain.toml`](../../rust-toolchain.toml)                           |
+| Linux WebView | WebKitGTK API 4.1 with GTK 3     | [Tauri prerequisites](https://v2.tauri.app/start/prerequisites/#linux)       |
 
 Install the native dependencies:
 
@@ -182,16 +182,16 @@ build baseline and separate validation; see the [Tauri AppImage limitations](htt
 
 ## Troubleshooting
 
-| Symptom | Check or action |
-| --- | --- |
-| `node`, `pnpm` or `cargo` not found, or wrong version | Check `command -v node pnpm cargo rustc`, the version commands above and your host terminal's PATH. |
-| `pkg-config` cannot find `webkit2gtk-4.1`, `javascriptcoregtk-4.1`, `gtk+-3.0` or `libsoup-3.0` | Install the native dependency list above; rerun the library check on the host. Installing packages on the host does not make them visible inside an unrelated Flatpak runtime. |
-| C compiler, linker or `pkg-config` missing | Install `base-devel` and `pkgconf`. |
-| Port 1420 already in use | Stop the previous KNOT/Vite process in its terminal. The fixed port must match `build.devUrl` in `src-tauri/tauri.conf.json`; Vite intentionally does not select another port. |
-| `cannot open display` | Launch from your logged-in KDE desktop session, rather than a headless shell or plain SSH session. |
-| Blank window, EGL/GBM failure or Wayland protocol error | Capture `pnpm tauri info` and terminal output; compare the display backends below and consult [Tauri Linux graphics troubleshooting](https://v2.tauri.app/develop/debug/linux-graphics/). |
-| AppImage reports missing `libfuse.so.2` | Install [`fuse2`](https://archlinux.org/packages/extra/x86_64/fuse2/) with `sudo pacman -S --needed fuse2`, then launch the AppImage again. |
-| Release reports missing shared libraries | Run `ldd src-tauri/target/release/knot` to identify missing libraries, and install the matching host runtime packages. |
+| Symptom                                                                                         | Check or action                                                                                                                                                                           |
+| ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `node`, `pnpm` or `cargo` not found, or wrong version                                           | Check `command -v node pnpm cargo rustc`, the version commands above and your host terminal's PATH.                                                                                       |
+| `pkg-config` cannot find `webkit2gtk-4.1`, `javascriptcoregtk-4.1`, `gtk+-3.0` or `libsoup-3.0` | Install the native dependency list above; rerun the library check on the host. Installing packages on the host does not make them visible inside an unrelated Flatpak runtime.            |
+| C compiler, linker or `pkg-config` missing                                                      | Install `base-devel` and `pkgconf`.                                                                                                                                                       |
+| Port 1420 already in use                                                                        | Stop the previous KNOT/Vite process in its terminal. The fixed port must match `build.devUrl` in `src-tauri/tauri.conf.json`; Vite intentionally does not select another port.            |
+| `cannot open display`                                                                           | Launch from your logged-in KDE desktop session, rather than a headless shell or plain SSH session.                                                                                        |
+| Blank window, EGL/GBM failure or Wayland protocol error                                         | Capture `pnpm tauri info` and terminal output; compare the display backends below and consult [Tauri Linux graphics troubleshooting](https://v2.tauri.app/develop/debug/linux-graphics/). |
+| AppImage reports missing `libfuse.so.2`                                                         | Install [`fuse2`](https://archlinux.org/packages/extra/x86_64/fuse2/) with `sudo pacman -S --needed fuse2`, then launch the AppImage again.                                               |
+| Release reports missing shared libraries                                                        | Run `ldd src-tauri/target/release/knot` to identify missing libraries, and install the matching host runtime packages.                                                                    |
 
 For a display-backend comparison in KDE, run these separately, stopping the
 first process before starting the second. X11 needs an X11 session or working

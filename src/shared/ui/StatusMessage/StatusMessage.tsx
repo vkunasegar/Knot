@@ -34,7 +34,11 @@ export function StatusMessage({
   return (
     <div
       role={tone === "error" ? "alert" : "status"}
-      className={cx("knot-status-message", `knot-status-message--${tone}`, className)}
+      className={cx(
+        "knot-status-message",
+        `knot-status-message--${tone}`,
+        className,
+      )}
     >
       <span className="knot-status-message__icon">
         {tone === "info" && <InfoIcon />}
@@ -43,7 +47,9 @@ export function StatusMessage({
       </span>
       <div className="knot-status-message__content">
         <p className="knot-status-message__title">{title}</p>
-        {children && <div className="knot-status-message__body">{children}</div>}
+        {children && (
+          <div className="knot-status-message__body">{children}</div>
+        )}
       </div>
       {action && <div className="knot-status-message__action">{action}</div>}
     </div>

@@ -26,8 +26,10 @@ const MOTIF_PATHS = {
 
 export type KnotMotifVariant = keyof typeof MOTIF_PATHS;
 
-export interface KnotMotifProps
-  extends Omit<SVGProps<SVGSVGElement>, "children" | "viewBox" | "role"> {
+export interface KnotMotifProps extends Omit<
+  SVGProps<SVGSVGElement>,
+  "children" | "viewBox" | "role"
+> {
   /** Shape of the motif. Defaults to the compact `mark`. */
   variant?: KnotMotifVariant;
   /**
@@ -74,7 +76,9 @@ export function KnotMotif({
         animated && "knot-motif--animated",
         className,
       )}
-      {...(isDecorative ? { "aria-hidden": true } : { role: "img", "aria-label": label })}
+      {...(isDecorative
+        ? { "aria-hidden": true }
+        : { role: "img", "aria-label": label })}
       {...svgProps}
     >
       {/* pathLength normalizes the stroke length to 1 for the draw-in animation. */}

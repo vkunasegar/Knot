@@ -30,7 +30,8 @@
 .knot-motif--animated .knot-motif__thread {
   stroke-dasharray: 1;
   stroke-dashoffset: 0;
-  animation: knot-motif-draw var(--knot-motion-duration-slow) var(--knot-motion-ease) both;
+  animation: knot-motif-draw var(--knot-motion-duration-slow)
+    var(--knot-motion-ease) both;
 }
 
 @keyframes knot-motif-draw {

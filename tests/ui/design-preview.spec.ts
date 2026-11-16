@@ -25,7 +25,9 @@ test("renders every design system section using only local resources", async ({
 
   await page.goto(PREVIEW_PATH);
   await expect(page).toHaveTitle("KNOT — Design system preview");
-  await expect(page.getByRole("heading", { name: "KNOT Visual Foundation", level: 1 })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "KNOT Visual Foundation", level: 1 }),
+  ).toBeVisible();
 
   for (const section of [
     "Color tokens",
@@ -39,7 +41,11 @@ test("renders every design system section using only local resources", async ({
     await expect(page.getByRole("region", { name: section })).toBeVisible();
   }
 
-  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true);
   expect(errors).toEqual([]);
   expect(remoteRequests).toEqual([]);
 });
@@ -48,7 +54,9 @@ test("has no automated WCAG A/AA violations in default, more-contrast and dialog
   page,
 }) => {
   await page.goto(PREVIEW_PATH);
-  await expect(page.getByRole("heading", { name: "KNOT Visual Foundation" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "KNOT Visual Foundation" }),
+  ).toBeVisible();
 
   const defaultResult = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
@@ -56,7 +64,10 @@ test("has no automated WCAG A/AA violations in default, more-contrast and dialog
   expect(defaultResult.violations).toEqual([]);
 
   await page.getByRole("button", { name: "More contrast" }).click();
-  await expect(page.locator("html")).toHaveAttribute("data-knot-contrast", "more");
+  await expect(page.locator("html")).toHaveAttribute(
+    "data-knot-contrast",
+    "more",
+  );
   const contrastResult = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
     .analyze();
@@ -80,13 +91,17 @@ test("makes keyboard focus clearly distinct from hover", async ({ page }) => {
 
   await button.hover();
   await expect(button).toHaveCSS("border-color", "rgb(198, 107, 84)");
-  const hoverShadow = await button.evaluate((el) => getComputedStyle(el).boxShadow);
+  const hoverShadow = await button.evaluate(
+    (el) => getComputedStyle(el).boxShadow,
+  );
 
   await page.mouse.move(0, 0);
   await button.focus();
   // Dispatch a keyboard event so the browser activates :focus-visible.
   await page.keyboard.press("Shift");
-  const focusShadow = await button.evaluate((el) => getComputedStyle(el).boxShadow);
+  const focusShadow = await button.evaluate(
+    (el) => getComputedStyle(el).boxShadow,
+  );
 
   expect(focusShadow).not.toBe("none");
   expect(focusShadow).not.toBe(hoverShadow);
@@ -103,12 +118,16 @@ test("keeps decorative thread motifs non-interactive and separate from note chip
   expect(await motifs.count()).toBeGreaterThanOrEqual(2);
   for (const motif of await motifs.all()) {
     await expect(motif).toHaveAttribute("aria-hidden", "true");
-    expect(await motif.evaluate((el) => getComputedStyle(el).pointerEvents)).toBe("none");
+    expect(
+      await motif.evaluate((el) => getComputedStyle(el).pointerEvents),
+    ).toBe("none");
   }
 
   // No decorative motif may sit inside the note-chip panel, where a thread
   // line could be misread as a stored semantic link between notes.
-  const chipPanel = page.getByRole("region", { name: "Note chips & modal dialog" });
+  const chipPanel = page.getByRole("region", {
+    name: "Note chips & modal dialog",
+  });
   await expect(chipPanel.locator(".knot-motif")).toHaveCount(0);
 });
 
@@ -120,22 +139,35 @@ test("disables animations and hover translation when reduced motion is active", 
 
   const button = page.getByRole("button", { name: "Primary action" });
   await button.hover();
-  const transform = await button.evaluate((el) => getComputedStyle(el).transform);
-  expect(transform === "none" || transform === "matrix(1, 0, 0, 1, 0, 0)").toBe(true);
+  const transform = await button.evaluate(
+    (el) => getComputedStyle(el).transform,
+  );
+  expect(transform === "none" || transform === "matrix(1, 0, 0, 1, 0, 0)").toBe(
+    true,
+  );
 
   const runningAnimations = await page.evaluate(
-    () => document.getAnimations().filter((animation) => animation.playState === "running").length,
+    () =>
+      document
+        .getAnimations()
+        .filter((animation) => animation.playState === "running").length,
   );
   expect(runningAnimations).toBe(0);
 });
 
-test("captures the design preview at the reference viewport size", async ({ page }, testInfo) => {
+test("captures the design preview at the reference viewport size", async ({
+  page,
+}, testInfo) => {
   await page.goto(PREVIEW_PATH);
-  await expect(page.getByRole("heading", { name: "KNOT Visual Foundation" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "KNOT Visual Foundation" }),
+  ).toBeVisible();
   await page.evaluate(() => document.fonts.ready);
-  expect(await page.evaluate(() => document.documentElement.scrollHeight <= innerHeight)).toBe(
-    true,
-  );
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollHeight <= innerHeight,
+    ),
+  ).toBe(true);
   await page.screenshot({
     path: testInfo.outputPath("design-preview.png"),
     animations: "disabled",

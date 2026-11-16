@@ -6,7 +6,11 @@ import { StatusMessage } from "./StatusMessage";
 describe("StatusMessage", () => {
   it("uses a polite status role for non-error tones", () => {
     render(
-      <StatusMessage tone="success" title="Note archived" action={<button type="button">Undo</button>}>
+      <StatusMessage
+        tone="success"
+        title="Note archived"
+        action={<button type="button">Undo</button>}
+      >
         Moved to the archive.
       </StatusMessage>,
     );
@@ -20,6 +24,8 @@ describe("StatusMessage", () => {
   it("uses an alert role for error messages", () => {
     render(<StatusMessage tone="error" title="Could not write to database" />);
 
-    expect(screen.getByRole("alert")).toHaveTextContent("Could not write to database");
+    expect(screen.getByRole("alert")).toHaveTextContent(
+      "Could not write to database",
+    );
   });
 });
