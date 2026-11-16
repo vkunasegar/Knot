@@ -8,12 +8,14 @@ KNOT is a premium, local-first desktop note-taking application with a distinctiv
 
 ## Current status
 
-**M0 — desktop shell and design foundation.** Tauri 2 hosts the React/TypeScript
+**M1 — reliable notes core in progress.** Tauri 2 hosts the React/TypeScript
 workspace with seven navigation areas, a collapsible sidebar, a context panel
 and a keyboard-accessible shell action palette. Layout preferences persist
 locally. Native SQLite repositories now provide notes, connections, collections,
-ordered threads and atomic migrations. Product note workflows, editing and
-full-text search are not implemented yet.
+ordered threads and atomic migrations. The note library supports creation,
+explicit title saving, duplication, favorites, archive and recoverable trash.
+Note content currently opens in reading view; rich-text editing, autosave,
+connections UI and full-text search follow in separate issues.
 
 - [25 detailed GitHub issues](https://github.com/vkunasegar/Knot/issues) across M0–M4
 - [Project roadmap and milestone outcomes](docs/PROJECT-ROADMAP.md)
@@ -26,6 +28,7 @@ full-text search are not implemented yet.
 - [Domain semantics, repository ownership and SQLite lifecycle](docs/architecture/DOMAIN-MODEL.md)
 - [Storage verification and pre-merge checklist](docs/development/STORAGE-REVIEW.md)
 - [Development quality checks and verification](docs/development/DEV-QUALITY-REVIEW.md)
+- [Note workflows, recovery rules and verification](docs/development/NOTES-REVIEW.md)
 - [Automatic milestone/label bootstrap workflow](.github/workflows/bootstrap-planning.yml)
 
 ## Development

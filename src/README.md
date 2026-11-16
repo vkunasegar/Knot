@@ -42,8 +42,8 @@ adapters under `data/adapters/`. `data/index.ts` exposes `createDomainRepositori
 for application composition; `data/contracts/index.ts` exposes the interfaces
 needed by features. `shared/domain` supplies platform-neutral branded IDs,
 entity values and storage errors. Database connections, transactions and migrations
-belong to Rust. The shell does not create repositories until a consuming workflow
-is implemented. See the [domain contract](../docs/architecture/DOMAIN-MODEL.md).
+belong to Rust. The application creates the native repository factory and injects
+its note contract into the notes workflow. See the [domain contract](../docs/architecture/DOMAIN-MODEL.md).
 
 The application composes the desktop shell through `app/shell/index.ts`.
 `NavigationController` owns typed hash navigation and session-bounded history;
@@ -54,8 +54,14 @@ repositories remain native and separate from these preferences. The optional
 focus callback without transferring document ownership to the shell. The editor
 and context slots remain mounted when panels or Focus Mode change.
 
-`features` does not yet provide note workflows. Automated import-boundary
-linting is not configured yet.
+`features/notes` owns library filtering, sorting, document reading, title drafts
+and note actions through an app-owned `NotesController`. Its constructor performs
+no IO; the app loads the inventory on first entry into a notes area. The controller
+keeps snapshots for React subscriptions and performs single-flight,
+revision-checked writes. App composition bridges note routes and confirmed save
+status into the shell without giving the shell document ownership. Note details
+and trash are typed child routes; favorites/archive retain their navigation context.
+Automated import-boundary linting is not configured yet.
 
 See the [technical architecture](../docs/architecture/TECH-STACK.md) and the
 [design contract](../docs/design/knot/README.md).
