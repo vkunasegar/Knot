@@ -25,6 +25,7 @@ full-text search are not implemented yet.
 - [Desktop shell behavior, keyboard shortcuts and verification](docs/development/DESKTOP-SHELL-REVIEW.md)
 - [Domain semantics, repository ownership and SQLite lifecycle](docs/architecture/DOMAIN-MODEL.md)
 - [Storage verification and pre-merge checklist](docs/development/STORAGE-REVIEW.md)
+- [Development quality checks and verification](docs/development/DEV-QUALITY-REVIEW.md)
 - [Automatic milestone/label bootstrap workflow](.github/workflows/bootstrap-planning.yml)
 
 ## Development
