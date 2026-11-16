@@ -4,6 +4,10 @@ Starte im Projektordner mit `pnpm dev`. Verwende für diese Prüfung eigene
 Testnotizen, z. B. `Test A – Gedanken 🧶`, `Test B` und `Test C`.
 Die Anwendung speichert Änderungen an diesen Notizen tatsächlich lokal.
 
+Meldet das Agent-Terminal bereits `pnpm: Kommando nicht gefunden`, dort einmal
+`export PATH="$HOME/.local/bin:$PATH"` eingeben oder ein neues Terminal öffnen.
+Der dauerhafte [Agent-Terminal-Suchpfad](AGENT-HOST.md) gilt für neue Sitzungen.
+
 ## Start und Desktop-Shell
 
 - [ ] `pnpm dev` startet auch im Agent-Terminal ohne `node: not found` oder

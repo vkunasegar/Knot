@@ -34,6 +34,30 @@ pnpm check:linux
 pnpm dev
 ```
 
+Falls bereits `pnpm` selbst nicht gefunden wird, fehlt `~/.local/bin` im
+Terminal-Suchpfad. Eine interaktive `sh` ohne Login liest `~/.profile` nicht.
+Für das bereits offene Terminal einmal ausführen:
+
+```sh
+export PATH="$HOME/.local/bin:$PATH"
+pnpm dev
+```
+
+Für neue VS-Code-Terminals muss der Linux-Terminal-Suchpfad den Launcher ebenfalls
+enthalten. Auf diesem Rechner ist deshalb im Benutzerprofil
+`~/.var/app/com.visualstudio.code/config/Code/User/settings.json` gesetzt:
+
+```json
+"terminal.integrated.env.linux": {
+  "PATH": "${env:HOME}/.local/bin:${env:PATH}"
+}
+```
+
+Die Einstellung gilt für neu gestartete Terminals. Ein bereits geöffnetes Terminal
+behält seinen bisherigen Suchpfad; dort den obigen `export` verwenden oder das
+Terminal schließen und neu öffnen. Bestehende Einstellungen wurden erhalten und
+vorher unter `settings.json.knot-pnpm-path-backup` gesichert.
+
 KNOT erscheint als native Desktop-App auf dem Rechner. `Ctrl+C` beendet den
 laufenden Dev-Befehl; `--watch-bus` bindet den Host-Prozess zusätzlich an die
 Flatpak-Verbindung. Die Host-Toolchain und die gleichen Dateien werden verwendet.
@@ -42,8 +66,8 @@ Die Anwendung nutzt ihr normales lokales Datenprofil.
 Der Installer ersetzt ausschließlich `~/.local/bin/pnpm` durch einen kleinen
 Shell-Launcher und erhält den ursprünglichen Eintrag unverändert unter
 `~/.local/bin/pnpm.knot-original`, einschließlich eines vorhandenen Symlinks.
-Auf diesem Rechner liegt `~/.local/bin` bereits im Agent-Suchpfad; Shell-Startdateien
-müssen nicht geändert werden. Die Einrichtung ist wiederholbar. Bei Umzug des
+Shell-Startdateien müssen nicht geändert werden; der Terminal-Suchpfad ist separat
+wie oben beschrieben eingerichtet. Die Launcher-Einrichtung ist wiederholbar. Bei Umzug des
 Checkouts erneut ausführen. Vor einer pnpm-Neuinstallation die Weiterleitung
 entfernen und anschließend neu einrichten.
 
@@ -72,6 +96,8 @@ Am 2026-11-16 wurde die Weiterleitung installiert und direkt aus der
 Agent-/Flatpak-Umgebung geprüft:
 
 - `pnpm exec tauri --version`: erfolgreich; vorher `exec: node: not found`.
+- Interaktive `sh` ohne Login mit dem konfigurierten Linux-Terminal-Suchpfad:
+  `command -v pnpm` findet den Launcher und `pnpm exec tauri --version` funktioniert.
 - `pnpm check:linux`: Node, pnpm, Rust/Cargo und native Bibliotheken gefunden.
 - `pnpm dev`: Vite gestartet, Rust-Debug-App gestartet und das native Fenster
   über AT-SPI mit Home und New note bestätigt. Anschließend mit `Ctrl+C` beendet;
