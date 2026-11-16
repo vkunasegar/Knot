@@ -6,16 +6,16 @@ documents or display a saved state on behalf of a repository.
 
 ## Ownership and object boundaries
 
-| Object / module | Contract and lifetime |
-| --- | --- |
-| `shared/domain` | Platform-neutral values, branded entity IDs and stable error codes. |
-| `data/contracts` | Async repository interfaces injected into features by `app`. |
-| `createDomainRepositories` | Composes separate note, connection, collection and thread adapters with one injected IPC client. Construction performs no IO. |
-| `NativeStoreClient` | Snapshots valid JSON input, calls the closed native protocol once, validates acknowledgements and maps errors. It never caches documents or retries writes. |
-| Rust `StoreService` | Application-owned `Arc`; owns the native app-data path and a mutex-protected optional database. Failed initialization is retried on a subsequent explicit call. |
-| Rust `Database` | Owns one connection until app shutdown; starts/commits each transaction. |
-| Rust repositories | Small structs with methods, borrowing the transaction connection. They cannot commit independently or outlive the database. |
-| `MigrationRunner` | Owns atomic, ordered schema upgrades and immutable migration-history checks. |
+| Object / module            | Contract and lifetime                                                                                                                                           |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `shared/domain`            | Platform-neutral values, branded entity IDs and stable error codes.                                                                                             |
+| `data/contracts`           | Async repository interfaces injected into features by `app`.                                                                                                    |
+| `createDomainRepositories` | Composes separate note, connection, collection and thread adapters with one injected IPC client. Construction performs no IO.                                   |
+| `NativeStoreClient`        | Snapshots valid JSON input, calls the closed native protocol once, validates acknowledgements and maps errors. It never caches documents or retries writes.     |
+| Rust `StoreService`        | Application-owned `Arc`; owns the native app-data path and a mutex-protected optional database. Failed initialization is retried on a subsequent explicit call. |
+| Rust `Database`            | Owns one connection until app shutdown; starts/commits each transaction.                                                                                        |
+| Rust repositories          | Small structs with methods, borrowing the transaction connection. They cannot commit independently or outlive the database.                                     |
+| `MigrationRunner`          | Owns atomic, ordered schema upgrades and immutable migration-history checks.                                                                                    |
 
 Composition and explicit ownership provide the object-oriented boundary in Rust
 without an inheritance hierarchy or a generic SQL API. The native `GroupRepository`
@@ -50,14 +50,14 @@ work runs on Tauri's blocking pool, outside the UI thread.
 
 ## Entity semantics
 
-| Entity | Meaning and uniqueness |
-| --- | --- |
-| Note | Independent document with body, title, favorite flag and separate archive/trash timestamps. |
-| Connection | Pairwise semantic link with kind, direction and strength in `[0, 1]`. No self-links. |
-| Collection | Curated group of notes; membership order is its presentation order. |
-| Thread | Ordered path through distinct notes; it creates no implicit connections. |
-| Membership | Composite identity `(group ID, note ID)`; a note occurs once in a given group and can belong to many groups. |
-| Knot / Loop | Derived graph concepts, with no persisted entity/table in this version. |
+| Entity      | Meaning and uniqueness                                                                                       |
+| ----------- | ------------------------------------------------------------------------------------------------------------ |
+| Note        | Independent document with body, title, favorite flag and separate archive/trash timestamps.                  |
+| Connection  | Pairwise semantic link with kind, direction and strength in `[0, 1]`. No self-links.                         |
+| Collection  | Curated group of notes; membership order is its presentation order.                                          |
+| Thread      | Ordered path through distinct notes; it creates no implicit connections.                                     |
+| Membership  | Composite identity `(group ID, note ID)`; a note occurs once in a given group and can belong to many groups. |
+| Knot / Loop | Derived graph concepts, with no persisted entity/table in this version.                                      |
 
 Connection kinds are `related`, `supports`, `contradicts`, `references`; direction
 is `directed` or `undirected`. Uniqueness is `(source, target, kind, direction)`.

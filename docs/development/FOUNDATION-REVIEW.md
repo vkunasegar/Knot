@@ -7,14 +7,14 @@ the entire M0 milestone or the future product screens and persistence features.
 
 ## Design and architecture review
 
-| Requirement | Current implementation and evidence |
-| --- | --- |
-| Written visual contract | Warm ivory `#F7F5F0`, charcoal `#252525`, a restrained serif title, sans-serif interface and 16/32 px spacing. Used values live in [`tokens.css`](../../src/shared/styles/tokens.css). App selectors are scoped to `.app`; the title uses `rem` to follow base text-size preferences. |
-| Fonts and assets | System font stacks with fallbacks; no external font downloads or redistributed font files. The KNOT icon is original SVG artwork. The original six product mockups are still missing, as recorded in the design contract. |
-| Modular shared code | `app` composes the view, `shared` supplies CSS tokens, and feature/data ownership follows the [module rules](../../src/README.md). No Linux business APIs in the frontend; see the [portability review](PORTABILITY.md#m0-frontend-portability-verification). |
-| Native shell and security | Tauri 2, pinned toolchains/lockfiles, explicit local capability with no granted native permissions, no custom IPC commands or plugins. Production startup and installation were [verified on CachyOS](CACHYOS.md#production-build-and-installation-result). |
-| Real data and persistence | The view contains only the product name and tagline. There are no fabricated notes, relationships, counters or saved-state claims. No product persistence exists yet; write/search/reopen, migrations and failure recovery must be tested with their actual features. |
-| Scope and portability | Foundation work only. Native Linux startup is verified. Windows/macOS build jobs exist; their runtime behavior and installed-data workflows are not claimed as verified. |
+| Requirement               | Current implementation and evidence                                                                                                                                                                                                                                                   |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Written visual contract   | Warm ivory `#F7F5F0`, charcoal `#252525`, a restrained serif title, sans-serif interface and 16/32 px spacing. Used values live in [`tokens.css`](../../src/shared/styles/tokens.css). App selectors are scoped to `.app`; the title uses `rem` to follow base text-size preferences. |
+| Fonts and assets          | System font stacks with fallbacks; no external font downloads or redistributed font files. The KNOT icon is original SVG artwork. The original six product mockups are still missing, as recorded in the design contract.                                                             |
+| Modular shared code       | `app` composes the view, `shared` supplies CSS tokens, and feature/data ownership follows the [module rules](../../src/README.md). No Linux business APIs in the frontend; see the [portability review](PORTABILITY.md#m0-frontend-portability-verification).                         |
+| Native shell and security | Tauri 2, pinned toolchains/lockfiles, explicit local capability with no granted native permissions, no custom IPC commands or plugins. Production startup and installation were [verified on CachyOS](CACHYOS.md#production-build-and-installation-result).                           |
+| Real data and persistence | The view contains only the product name and tagline. There are no fabricated notes, relationships, counters or saved-state claims. No product persistence exists yet; write/search/reopen, migrations and failure recovery must be tested with their actual features.                 |
+| Scope and portability     | Foundation work only. Native Linux startup is verified. Windows/macOS build jobs exist; their runtime behavior and installed-data workflows are not claimed as verified.                                                                                                              |
 
 ## Reproduce the automated checks
 
@@ -66,8 +66,8 @@ and device scale 1, reviewed on CachyOS. They show frontend content, without a
 native frame. They are review evidence, not automated image-diff baselines and
 not substitutes for the missing original product mockups.
 
-| 1600×1000 | 1440×900 |
-| --- | --- |
+| 1600×1000                                                                   | 1440×900                                                                  |
+| --------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
 | ![KNOT launch view at 1600 by 1000](../review/issue-1/launch-1600x1000.png) | ![KNOT launch view at 1440 by 900](../review/issue-1/launch-1440x900.png) |
 
 Screenshots from a new `pnpm test:ui` run are written to ignored
@@ -109,8 +109,8 @@ The original 200% scale and the original KNOT window state were restored.
 These native screenshots include the window frame and scale in physical
 pixels; they supplement the exact-size browser captures above.
 
-| Native at 125% | Native at 150% |
-| --- | --- |
+| Native at 125%                                                                     | Native at 150%                                                                     |
+| ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
 | ![Native KNOT window at 125 percent scale](../review/issue-1/native-hidpi-125.png) | ![Native KNOT window at 150 percent scale](../review/issue-1/native-hidpi-150.png) |
 
 This tests the installed AppImage in a Wayland session; it does not establish
@@ -131,10 +131,10 @@ database commit `af7b3ec33460b8e2de8d422e16d628518891a519`. Its vulnerability
 count was zero, but it reported these two informational findings, which remain
 open for dependency follow-up:
 
-| Locked package | Finding and dependency path |
-| --- | --- |
-| `glib` 0.18.5 | [RUSTSEC-2024-0429](https://rustsec.org/advisories/RUSTSEC-2024-0429.html): unsound `VariantStrIter` methods can cause undefined behavior/crashes. The advisory lists a fix in glib >=0.20. Tauri's GTK 3 stack uses `gtk` 0.18, whose manifest requires `glib` 0.18, so forcing a newer direct dependency would not replace the affected transitive one. Track a compatible upstream update or reviewed backport; reachability in the native dependency stack has not been established. |
-| `proc-macro-error` 1.0.4 | [RUSTSEC-2024-0370](https://rustsec.org/advisories/RUSTSEC-2024-0370.html): unmaintained build-time dependency, pulled in by `glib-macros` and `gtk3-macros`. The advisory lists no patched version. |
+| Locked package           | Finding and dependency path                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `glib` 0.18.5            | [RUSTSEC-2024-0429](https://rustsec.org/advisories/RUSTSEC-2024-0429.html): unsound `VariantStrIter` methods can cause undefined behavior/crashes. The advisory lists a fix in glib >=0.20. Tauri's GTK 3 stack uses `gtk` 0.18, whose manifest requires `glib` 0.18, so forcing a newer direct dependency would not replace the affected transitive one. Track a compatible upstream update or reviewed backport; reachability in the native dependency stack has not been established. |
+| `proc-macro-error` 1.0.4 | [RUSTSEC-2024-0370](https://rustsec.org/advisories/RUSTSEC-2024-0370.html): unmaintained build-time dependency, pulled in by `glib-macros` and `gtk3-macros`. The advisory lists no patched version.                                                                                                                                                                                                                                                                                     |
 
 No advisory ignore rules or native dependency overrides were added. A zero
 exit status from cargo-audit does not resolve these findings. To reproduce:

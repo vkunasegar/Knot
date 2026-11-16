@@ -5,6 +5,7 @@
 This design contract is binding across Linux, Windows and macOS. Intended reference desktop window **1600×1000** (also **1440×900**).
 
 ## Visual tokens
+
 - Canvas warm ivory `#F7F5F0`, surface `#FFFEFB`, primary text `#252525`, secondary `#777570`, border `#E6E2DB`, signature thread `#C66B54`, secondary ink `#405B72`.
 - Small terracotta text must use a darker contrast-safe token, not the brand accent without verification.
 - Headings: restrained editorial serif (e.g. Playfair Display); interface: clean sans (e.g. Inter), with license checks and fallbacks.
@@ -14,6 +15,7 @@ This design contract is binding across Linux, Windows and macOS. Intended refere
 - **Search:** Ctrl/Cmd+K; **Focus** is an editor mode, not a separate nav entry.
 
 ## Screens / issue acceptance source
+
 1. **Home:** greeting, immediate quick capture, pinned/recent notes, active threads, recently explored connections; no metrics dashboard.
 2. **Editor:** title, breadcrumbs, rich text, autosave with honest status, optional connections inspector and one small thread marker. The writing body stays calm.
 3. **The Weave:** purposeful curves, deterministic layout, select/pan/zoom, filters, meaningful clusters, inspector, keyboard-friendly list fallback.
@@ -22,6 +24,7 @@ This design contract is binding across Linux, Windows and macOS. Intended refere
 6. **Focus:** same live editor/document, unobstructed narrow column, exit restores panels and cursor; reduced motion.
 
 ## Interaction and accessibility contract
+
 Hover = subtle stroke/translation; selected = semantic line-weight and clear outline; drag-to-connect = elastic preview with explicit target confirmation; archive = retract with undo. Respect OS reduced-motion; no interaction requires animation. Screen reader and keyboard must have ordinary list alternatives to spatial graph.
 
 **Asset status:** The six high-fidelity PNG mockups and complete expanded screen documents were produced in a separate design package. This repository currently contains the core contract and actionable issue descriptions; the original full-resolution PNG assets still need a binary upload to `docs/design/knot/assets/` before they can be linked in GitHub issues. Do not substitute fabricated or unrelated mockup links.

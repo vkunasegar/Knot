@@ -35,16 +35,16 @@ editor and full-text search remain future features.
 
 ## Keyboard and accessibility
 
-| Action | Interaction |
-| --- | --- |
-| Skip navigation | First Tab reveals **Skip to content**; Enter focuses the view heading. |
-| Change area | Tab to the navigation link, then Enter; focus moves to the destination heading. |
-| Back / Forward | Toolbar buttons or Alt+Left / Alt+Right; unavailable actions are disabled. |
-| Search shell actions | Ctrl+K / Cmd+K or **Search workspace**. These are app-local shortcuts. |
-| Palette selection | Type to filter, Up/Down to move, Home/End to select endpoints, Enter to run. |
-| Close palette | Escape or Close; restores prior focus. Navigation actions focus their destination. |
-| Toggle panels | Named buttons; the inspector close button returns focus to its toolbar toggle. |
-| Exit Focus Mode | Visible **Exit Focus Mode** button or unconsumed Escape; restores editor focus. |
+| Action               | Interaction                                                                        |
+| -------------------- | ---------------------------------------------------------------------------------- |
+| Skip navigation      | First Tab reveals **Skip to content**; Enter focuses the view heading.             |
+| Change area          | Tab to the navigation link, then Enter; focus moves to the destination heading.    |
+| Back / Forward       | Toolbar buttons or Alt+Left / Alt+Right; unavailable actions are disabled.         |
+| Search shell actions | Ctrl+K / Cmd+K or **Search workspace**. These are app-local shortcuts.             |
+| Palette selection    | Type to filter, Up/Down to move, Home/End to select endpoints, Enter to run.       |
+| Close palette        | Escape or Close; restores prior focus. Navigation actions focus their destination. |
+| Toggle panels        | Named buttons; the inspector close button returns focus to its toolbar toggle.     |
+| Exit Focus Mode      | Visible **Exit Focus Mode** button or unconsumed Escape; restores editor focus.    |
 
 The palette exposes a labelled combobox and listbox, an explicit empty-result
 state, native modal background inertness and bounded Tab/Shift+Tab navigation.
@@ -91,9 +91,9 @@ test HTML nor its dedicated JavaScript bundle.
 Captured by the browser suite at 100% text size, device scale 1. These show the
 actual M0 implementation, including its honest feature availability messages.
 
-| 1600×1000 | 1440×900 |
-| --- | --- |
-| ![Desktop shell at 1600×1000](../review/issue-3/desktop-shell-1600x1000.png) | ![Desktop shell at 1440×900](../review/issue-3/desktop-shell-1440x900.png) |
+| 1600×1000                                                                     | 1440×900                                                                    |
+| ----------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| ![Desktop shell at 1600×1000](../review/issue-3/desktop-shell-1600x1000.png)  | ![Desktop shell at 1440×900](../review/issue-3/desktop-shell-1440x900.png)  |
 | ![Shell palette at 1600×1000](../review/issue-3/search-palette-1600x1000.png) | ![Shell palette at 1440×900](../review/issue-3/search-palette-1440x900.png) |
 
 ## Native and human review

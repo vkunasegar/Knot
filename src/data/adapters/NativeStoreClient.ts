@@ -3,15 +3,29 @@ import type { StoreErrorCode } from "../../shared/domain";
 import { assertJson } from "./storageDecoders";
 
 /** Injected IPC seam keeps repositories testable without a WebView. */
-export type NativeInvoke = (command: string, args: Record<string, unknown>) => Promise<unknown>;
-const nativeCodes: readonly StoreErrorCode[] = ["invalidInput", "notFound", "conflict", "busy", "unavailable",
-  "incompatibleSchema", "corruptDatabase", "internal"];
+export type NativeInvoke = (
+  command: string,
+  args: Record<string, unknown>,
+) => Promise<unknown>;
+const nativeCodes: readonly StoreErrorCode[] = [
+  "invalidInput",
+  "notFound",
+  "conflict",
+  "busy",
+  "unavailable",
+  "incompatibleSchema",
+  "corruptDatabase",
+  "internal",
+];
 
 /** Stateless transport; Rust owns database lifecycle and write serialization. */
 export class NativeStoreClient {
   constructor(private readonly invoke: NativeInvoke) {}
 
-  async execute<T>(request: Record<string, unknown>, decode: (response: unknown) => T): Promise<T> {
+  async execute<T>(
+    request: Record<string, unknown>,
+    decode: (response: unknown) => T,
+  ): Promise<T> {
     assertJson(request);
     // Snapshot inputs before yielding: later edits must not mutate a queued save.
     const snapshot: unknown = JSON.parse(JSON.stringify(request));
@@ -19,8 +33,11 @@ export class NativeStoreClient {
     try {
       response = await this.invoke("store_execute", { request: snapshot });
     } catch (error) {
-      const code = typeof error === "string" && nativeCodes.includes(error as StoreErrorCode)
-        ? error as StoreErrorCode : "unavailable";
+      const code =
+        typeof error === "string" &&
+        nativeCodes.includes(error as StoreErrorCode)
+          ? (error as StoreErrorCode)
+          : "unavailable";
       throw new StoreError(code);
     }
     try {

@@ -6,16 +6,16 @@ see the [architecture](../docs/architecture/TECH-STACK.md).
 
 ## Application identity and window
 
-| Setting | Value |
-| --- | --- |
-| Product name / window title | `KNOT` |
-| Application identifier | `io.github.vkunasegar.knot` |
-| Main window label | `main` |
-| Initial content size | 1440×900 logical pixels |
-| Minimum content size | 960×640 logical pixels |
-| Placement | Centered, constrained to the available monitor work area |
-| Window controls | Native decorations, resizing and standard OS controls |
-| Window/WebView background | Warm ivory `#F7F5F0` |
+| Setting                     | Value                                                    |
+| --------------------------- | -------------------------------------------------------- |
+| Product name / window title | `KNOT`                                                   |
+| Application identifier      | `io.github.vkunasegar.knot`                              |
+| Main window label           | `main`                                                   |
+| Initial content size        | 1440×900 logical pixels                                  |
+| Minimum content size        | 960×640 logical pixels                                   |
+| Placement                   | Centered, constrained to the available monitor work area |
+| Window controls             | Native decorations, resizing and standard OS controls    |
+| Window/WebView background   | Warm ivory `#F7F5F0`                                     |
 
 The starting size matches one of the design reference sizes; also review at
 1600×1000. Dimensions are logical pixels, so physical screenshots vary with

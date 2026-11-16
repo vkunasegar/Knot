@@ -27,7 +27,9 @@ describe("TextField", () => {
 
     const input = screen.getByLabelText("Collection name");
     expect(input).toHaveAttribute("aria-invalid", "true");
-    expect(input).toHaveAccessibleDescription("Enter at least one character. Shown in the sidebar.");
+    expect(input).toHaveAccessibleDescription(
+      "Enter at least one character. Shown in the sidebar.",
+    );
   });
 
   it("supports a disabled state", () => {

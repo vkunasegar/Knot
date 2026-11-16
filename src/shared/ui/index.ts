@@ -24,7 +24,10 @@ export { SaveStatus } from "./SaveStatus/SaveStatus";
 export type { SaveState, SaveStatusProps } from "./SaveStatus/SaveStatus";
 
 export { StatusMessage } from "./StatusMessage/StatusMessage";
-export type { StatusMessageProps, StatusTone } from "./StatusMessage/StatusMessage";
+export type {
+  StatusMessageProps,
+  StatusTone,
+} from "./StatusMessage/StatusMessage";
 
 export { TextField } from "./TextField/TextField";
 export type { TextFieldProps } from "./TextField/TextField";

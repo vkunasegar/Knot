@@ -23,11 +23,19 @@ afterEach(() => {
  * trapping or the backdrop; those are covered by the Playwright tests in a
  * real browser engine.
  */
-if (typeof HTMLDialogElement !== "undefined" && !HTMLDialogElement.prototype.showModal) {
-  HTMLDialogElement.prototype.showModal = function showModal(this: HTMLDialogElement) {
+if (
+  typeof HTMLDialogElement !== "undefined" &&
+  !HTMLDialogElement.prototype.showModal
+) {
+  HTMLDialogElement.prototype.showModal = function showModal(
+    this: HTMLDialogElement,
+  ) {
     this.setAttribute("open", "");
   };
-  HTMLDialogElement.prototype.close = function close(this: HTMLDialogElement, returnValue?: string) {
+  HTMLDialogElement.prototype.close = function close(
+    this: HTMLDialogElement,
+    returnValue?: string,
+  ) {
     if (!this.hasAttribute("open")) {
       return;
     }

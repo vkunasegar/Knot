@@ -16,7 +16,9 @@ describe("NoteChip", () => {
   it("renders an accessible toggle button when interactive", async () => {
     const user = userEvent.setup();
     const onSelect = vi.fn();
-    render(<NoteChip title="Graph layout notes" selected onSelect={onSelect} />);
+    render(
+      <NoteChip title="Graph layout notes" selected onSelect={onSelect} />,
+    );
 
     const button = screen.getByRole("button", { name: "Graph layout notes" });
     expect(button).toHaveAttribute("aria-pressed", "true");

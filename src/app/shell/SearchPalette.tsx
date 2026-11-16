@@ -108,6 +108,7 @@ export function SearchPalette({
         className="shell-palette__results"
       >
         {results.map((action, index) => (
+          // eslint-disable-next-line jsx-a11y/click-events-have-key-events -- The combobox owns keyboard focus and activates its selected option with Enter.
           <li
             key={action.id}
             id={`${listId}-${index}`}

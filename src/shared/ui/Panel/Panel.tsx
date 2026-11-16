@@ -38,7 +38,11 @@ export function Panel({
   return (
     <section
       aria-labelledby={headingId}
-      className={cx("knot-panel", `knot-panel--elevation-${elevation}`, className)}
+      className={cx(
+        "knot-panel",
+        `knot-panel--elevation-${elevation}`,
+        className,
+      )}
       {...sectionProps}
     >
       <header className="knot-panel__header">

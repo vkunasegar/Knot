@@ -8,11 +8,14 @@ describe("SaveStatus", () => {
     ["idle", "No unsaved changes"],
     ["saving", "Saving…"],
     ["saved", "Saved locally"],
-  ] as const)("announces the %s state via a status live region", (state, expectedText) => {
-    render(<SaveStatus state={state} />);
+  ] as const)(
+    "announces the %s state via a status live region",
+    (state, expectedText) => {
+      render(<SaveStatus state={state} />);
 
-    expect(screen.getByRole("status")).toHaveTextContent(expectedText);
-  });
+      expect(screen.getByRole("status")).toHaveTextContent(expectedText);
+    },
+  );
 
   it("escalates write failures to an alert with the error detail", () => {
     render(<SaveStatus state="error" detail="Disk is full" />);

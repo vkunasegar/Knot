@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - '.github/workflows/bootstrap-planning.yml'
+      - ".github/workflows/bootstrap-planning.yml"
 
 permissions:
   contents: read

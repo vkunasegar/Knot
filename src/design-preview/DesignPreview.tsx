@@ -22,23 +22,59 @@ const COLOR_SWATCHES: Swatch[] = [
   { name: "Canvas", token: "--knot-color-canvas", hex: "#F7F5F0" },
   { name: "Surface", token: "--knot-color-surface", hex: "#FFFEFB" },
   { name: "Primary text", token: "--knot-color-text", hex: "#252525" },
-  { name: "Secondary text", token: "--knot-color-text-secondary", hex: "#6B6964" },
+  {
+    name: "Secondary text",
+    token: "--knot-color-text-secondary",
+    hex: "#6B6964",
+  },
   { name: "Muted accent", token: "--knot-color-text-muted", hex: "#777570" },
   { name: "Border", token: "--knot-color-border", hex: "#E6E2DB" },
   { name: "Signature thread", token: "--knot-color-thread", hex: "#C66B54" },
-  { name: "Thread strong", token: "--knot-color-thread-strong", hex: "#A4503B" },
+  {
+    name: "Thread strong",
+    token: "--knot-color-thread-strong",
+    hex: "#A4503B",
+  },
   { name: "Ink blue", token: "--knot-color-ink", hex: "#405B72" },
   { name: "Error", token: "--knot-color-error", hex: "#B42318" },
 ];
 
 const TYPE_SAMPLES = [
-  { label: "Display · 3rem", className: "preview-type--display", text: "Every thought is a thread." },
-  { label: "3XL · 2.25rem", className: "preview-type--3xl", text: "Quiet tools for connected notes" },
-  { label: "2XL · 1.75rem", className: "preview-type--2xl", text: "Section & dialog headings" },
-  { label: "XL · 1.375rem", className: "preview-type--xl", text: "Panel titles & group headers" },
-  { label: "Body · 1rem", className: "preview-type--md", text: "The writing body stays calm." },
-  { label: "Small · 0.875rem", className: "preview-type--sm", text: "Controls and secondary metadata." },
-  { label: "XS · 0.75rem", className: "preview-type--xs", text: "Timestamps, status pills, hints" },
+  {
+    label: "Display · 3rem",
+    className: "preview-type--display",
+    text: "Every thought is a thread.",
+  },
+  {
+    label: "3XL · 2.25rem",
+    className: "preview-type--3xl",
+    text: "Quiet tools for connected notes",
+  },
+  {
+    label: "2XL · 1.75rem",
+    className: "preview-type--2xl",
+    text: "Section & dialog headings",
+  },
+  {
+    label: "XL · 1.375rem",
+    className: "preview-type--xl",
+    text: "Panel titles & group headers",
+  },
+  {
+    label: "Body · 1rem",
+    className: "preview-type--md",
+    text: "The writing body stays calm.",
+  },
+  {
+    label: "Small · 0.875rem",
+    className: "preview-type--sm",
+    text: "Controls and secondary metadata.",
+  },
+  {
+    label: "XS · 0.75rem",
+    className: "preview-type--xs",
+    text: "Timestamps, status pills, hints",
+  },
 ];
 
 const SPACING_STEPS = [4, 8, 12, 16, 24, 32, 48, 64] as const;
@@ -84,11 +120,17 @@ export function DesignPreview() {
         <div className="design-preview__brand">
           <KnotMotif variant="mark" />
           <div>
-            <p className="design-preview__eyebrow">Internal design system preview</p>
+            <p className="design-preview__eyebrow">
+              Internal design system preview
+            </p>
             <h1 className="design-preview__title">KNOT Visual Foundation</h1>
           </div>
         </div>
-        <div className="design-preview__toggles" role="group" aria-label="Preview environment modes">
+        <div
+          className="design-preview__toggles"
+          role="group"
+          aria-label="Preview environment modes"
+        >
           <Button
             variant={moreContrast ? "primary" : "secondary"}
             size="sm"
@@ -130,7 +172,10 @@ export function DesignPreview() {
         </Panel>
 
         {/* ---- 2. Typography ---------------------------------------------- */}
-        <Panel title="Typography scale" subtitle="Playfair Display headings · Inter interface">
+        <Panel
+          title="Typography scale"
+          subtitle="Playfair Display headings · Inter interface"
+        >
           <ul className="preview-type-list">
             {TYPE_SAMPLES.map((sample) => (
               <li key={sample.label} className="preview-type-item">
@@ -161,7 +206,8 @@ export function DesignPreview() {
           <div className="preview-motif-box">
             <KnotMotif variant="flourish" />
             <p className="preview-caption">
-              Single continuous asymmetric thread (`aria-hidden`, never placed between notes).
+              Single continuous asymmetric thread (`aria-hidden`, never placed
+              between notes).
             </p>
           </div>
         </Panel>
@@ -200,7 +246,11 @@ export function DesignPreview() {
           title="Note chips & modal dialog"
           subtitle="No decorative thread tails; selection uses border + tint"
         >
-          <div className="preview-row" role="group" aria-label="Interactive note chips">
+          <div
+            className="preview-row"
+            role="group"
+            aria-label="Interactive note chips"
+          >
             <NoteChip
               title="On tactile software"
               meta="Thread · 1"
@@ -216,14 +266,21 @@ export function DesignPreview() {
             <NoteChip title="Read-only reference" meta="Collection" />
           </div>
           <div className="preview-row">
-            <Button variant="secondary" size="sm" onClick={() => setDialogOpen(true)}>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => setDialogOpen(true)}
+            >
               Open confirmation dialog
             </Button>
           </div>
         </Panel>
 
         {/* ---- 5. Text fields --------------------------------------------- */}
-        <Panel title="Text fields" subtitle="Explicit labels, helper hints and icon-backed errors">
+        <Panel
+          title="Text fields"
+          subtitle="Explicit labels, helper hints and icon-backed errors"
+        >
           <TextField
             label="Note title"
             value={titleValue}
@@ -236,7 +293,11 @@ export function DesignPreview() {
             placeholder="e.g. Field observations"
             error="Enter a collection name before saving."
           />
-          <TextField label="Storage location" defaultValue="~/.local/share/com.knot.desktop" disabled />
+          <TextField
+            label="Storage location"
+            defaultValue="~/.local/share/com.knot.desktop"
+            disabled
+          />
         </Panel>
 
         {/* ---- 6. Status components --------------------------------------- */}
@@ -295,7 +356,8 @@ export function DesignPreview() {
         }
       >
         <p className="preview-dialog-copy">
-          The 3 notes in “Field observations” will remain available in All Notes and in their threads.
+          The 3 notes in “Field observations” will remain available in All Notes
+          and in their threads.
         </p>
       </Dialog>
     </div>

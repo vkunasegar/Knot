@@ -10,13 +10,20 @@ describe("Button", () => {
 
     const button = screen.getByRole("button", { name: "Save" });
     expect(button).toHaveAttribute("type", "button");
-    expect(button).toHaveClass("knot-button", "knot-button--secondary", "knot-button--md");
+    expect(button).toHaveClass(
+      "knot-button",
+      "knot-button--secondary",
+      "knot-button--md",
+    );
   });
 
   it("allows an explicit submit type", () => {
     render(<Button type="submit">Send</Button>);
 
-    expect(screen.getByRole("button", { name: "Send" })).toHaveAttribute("type", "submit");
+    expect(screen.getByRole("button", { name: "Send" })).toHaveAttribute(
+      "type",
+      "submit",
+    );
   });
 
   it("applies variant and size modifiers", () => {
@@ -26,7 +33,10 @@ describe("Button", () => {
       </Button>,
     );
 
-    expect(screen.getByRole("button")).toHaveClass("knot-button--primary", "knot-button--sm");
+    expect(screen.getByRole("button")).toHaveClass(
+      "knot-button--primary",
+      "knot-button--sm",
+    );
   });
 
   it("activates with mouse and keyboard", async () => {

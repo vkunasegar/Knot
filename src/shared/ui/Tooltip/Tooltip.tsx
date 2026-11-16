@@ -55,7 +55,9 @@ export function Tooltip({ content, children, className }: TooltipProps) {
   }, [open]);
 
   const existingDescribedBy = children.props["aria-describedby"];
-  const describedBy = [existingDescribedBy, tooltipId].filter(Boolean).join(" ");
+  const describedBy = [existingDescribedBy, tooltipId]
+    .filter(Boolean)
+    .join(" ");
 
   return (
     <span
@@ -72,7 +74,12 @@ export function Tooltip({ content, children, className }: TooltipProps) {
       onBlur={() => setFocused(false)}
     >
       {cloneElement(children, { "aria-describedby": describedBy })}
-      <span id={tooltipId} role="tooltip" hidden={!open} className="knot-tooltip__bubble">
+      <span
+        id={tooltipId}
+        role="tooltip"
+        hidden={!open}
+        className="knot-tooltip__bubble"
+      >
         {content}
       </span>
     </span>

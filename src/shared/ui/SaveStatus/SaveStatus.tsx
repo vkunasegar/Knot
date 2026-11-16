@@ -40,7 +40,11 @@ export function SaveStatus({ state, detail, className }: SaveStatusProps) {
   return (
     <span
       role={state === "error" ? "alert" : "status"}
-      className={cx("knot-save-status", `knot-save-status--${state}`, className)}
+      className={cx(
+        "knot-save-status",
+        `knot-save-status--${state}`,
+        className,
+      )}
     >
       {state === "idle" && <InfoIcon className="knot-save-status__icon" />}
       {state === "saving" && <PendingIcon className="knot-save-status__icon" />}

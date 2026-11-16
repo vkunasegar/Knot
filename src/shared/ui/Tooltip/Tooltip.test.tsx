@@ -18,7 +18,9 @@ describe("Tooltip", () => {
 
     await user.tab();
     expect(trigger).toHaveFocus();
-    expect(screen.getByRole("tooltip", { name: "Search (Ctrl+K)" })).toBeVisible();
+    expect(
+      screen.getByRole("tooltip", { name: "Search (Ctrl+K)" }),
+    ).toBeVisible();
     expect(trigger).toHaveAccessibleDescription("Search (Ctrl+K)");
 
     await user.keyboard("{Escape}");
@@ -36,7 +38,9 @@ describe("Tooltip", () => {
 
     const trigger = screen.getByRole("button", { name: "Focus" });
     await user.hover(trigger);
-    expect(screen.getByRole("tooltip", { name: "Toggle focus mode" })).toBeVisible();
+    expect(
+      screen.getByRole("tooltip", { name: "Toggle focus mode" }),
+    ).toBeVisible();
 
     await user.unhover(trigger);
     expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();

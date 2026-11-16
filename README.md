@@ -25,26 +25,46 @@ full-text search are not implemented yet.
 - [Desktop shell behavior, keyboard shortcuts and verification](docs/development/DESKTOP-SHELL-REVIEW.md)
 - [Domain semantics, repository ownership and SQLite lifecycle](docs/architecture/DOMAIN-MODEL.md)
 - [Storage verification and pre-merge checklist](docs/development/STORAGE-REVIEW.md)
+- [Development quality checks and verification](docs/development/DEV-QUALITY-REVIEW.md)
 - [Automatic milestone/label bootstrap workflow](.github/workflows/bootstrap-planning.yml)
 
 ## Development
+
+Clone the repository and enter the checkout:
+
+```sh
+git clone https://github.com/vkunasegar/Knot.git
+cd Knot
+```
 
 Follow the [CachyOS / Arch / KDE development guide](docs/development/CACHYOS.md)
 for tool installation, native WebKitGTK dependencies, release builds,
 AppImage installation and troubleshooting.
 
-With Node.js 24, pnpm 12.18.0, Rust 1.100.0 and the native libraries prepared,
+With Node.js 24, pnpm 12.18.0, Rust 1.100.0 (rustfmt and Clippy) and the native libraries prepared,
 run from the repository root:
 
 ```sh
 pnpm install --frozen-lockfile
 pnpm check:linux
-pnpm dev
+pnpm dev -- --locked
 ```
 
 `pnpm dev` launches the native Tauri app. `pnpm build` creates release artifacts;
 `pnpm build --bundles appimage -- --locked` selects AppImage for CachyOS.
 `pnpm check` checks TypeScript and `pnpm build:web` builds only the frontend.
+Run `pnpm format:check`, `pnpm lint`, and `pnpm check` for the frontend quality
+checks. `pnpm format` and `pnpm lint:fix` apply available fixes. See
+[CONTRIBUTING.md](CONTRIBUTING.md) for all local/CI commands, issue branches,
+commit conventions, and PR requirements.
+
+To reproduce the Linux CI release build after stopping development:
+
+```sh
+pnpm build --no-bundle -- --locked
+./src-tauri/target/release/knot
+```
+
 The native development window and installed production AppImage have been
 verified on CachyOS / KDE Wayland with visible content. The production app
 starts without a dev server. The [guide](docs/development/CACHYOS.md) records
@@ -76,14 +96,14 @@ native builds exclude that fixture.
 
 ## Planned user experience
 
-| Area | What makes it KNOT |
-| --- | --- |
-| Home | Quick capture, real recent notes and active thought threads |
-| Note editor | Calm, editorial writing with honest autosave and a connection inspector |
-| The Weave | Distinctive flowing graph, with semantic connections and accessible list alternative |
-| Collections | Curated notes represented by meaningful miniature knots |
-| Search | Instant Ctrl/Cmd+K palette for notes, collections, threads and actions |
-| Focus Mode | Distraction-free version of the very same editor/document |
+| Area        | What makes it KNOT                                                                   |
+| ----------- | ------------------------------------------------------------------------------------ |
+| Home        | Quick capture, real recent notes and active thought threads                          |
+| Note editor | Calm, editorial writing with honest autosave and a connection inspector              |
+| The Weave   | Distinctive flowing graph, with semantic connections and accessible list alternative |
+| Collections | Curated notes represented by meaningful miniature knots                              |
+| Search      | Instant Ctrl/Cmd+K palette for notes, collections, threads and actions               |
+| Focus Mode  | Distraction-free version of the very same editor/document                            |
 
 ## Visual identity
 
@@ -111,4 +131,7 @@ The original high-fidelity mockups were produced in the planning/design package.
 
 ## Contribution workflow
 
-Work on feature branches, create small focused PRs, reference the corresponding issue, verify on Linux, and keep shared features free from platform-specific assumptions.
+Work on the corresponding issue branch from current `main`, create small focused
+PRs, reference the issue in commits, and verify on Linux. Follow the
+[contribution workflow](CONTRIBUTING.md); the PR template records actual verification
+and remaining manual checks. Keep shared features free from platform-specific assumptions.

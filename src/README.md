@@ -3,25 +3,25 @@
 `main.tsx` mounts React and imports the public application entry point from `app`.
 The native process lives in `../src-tauri`.
 
-| Directory | Responsibility |
-| --- | --- |
-| `app/` | Application composition: shell, global styles, navigation, providers and service wiring. |
-| `features/` | User workflows such as notes, collections, threads and search; each feature owns its UI, hooks and workflow logic. |
-| `shared/` | Reusable UI primitives, design tokens, utilities and platform-neutral types used by multiple modules. |
-| `data/` | Typed service/repository contracts, persistence adapters and translation between domain values and native command payloads. |
-| `design-preview/` | Internal visual catalogue mounted only by `/design-preview.html`; never imported by the application. |
+| Directory         | Responsibility                                                                                                              |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `app/`            | Application composition: shell, global styles, navigation, providers and service wiring.                                    |
+| `features/`       | User workflows such as notes, collections, threads and search; each feature owns its UI, hooks and workflow logic.          |
+| `shared/`         | Reusable UI primitives, design tokens, utilities and platform-neutral types used by multiple modules.                       |
+| `data/`           | Typed service/repository contracts, persistence adapters and translation between domain values and native command payloads. |
+| `design-preview/` | Internal visual catalogue mounted only by `/design-preview.html`; never imported by the application.                        |
 
 ## Dependency rules
 
-| Module | Allowed dependencies within `src` |
-| --- | --- |
-| `main.tsx` | Public `app` entry point |
-| `app` | Feature entry points, data contracts and factories, shared modules |
-| A feature | Its own internals, shared modules, type-only imports from data contracts |
-| Data contracts | Shared platform-neutral types and other data contracts |
-| Data adapters | Data contracts, shared modules and native integration libraries |
-| `shared` | Other shared modules |
-| `design-preview` | `shared` modules only |
+| Module           | Allowed dependencies within `src`                                        |
+| ---------------- | ------------------------------------------------------------------------ |
+| `main.tsx`       | Public `app` entry point                                                 |
+| `app`            | Feature entry points, data contracts and factories, shared modules       |
+| A feature        | Its own internals, shared modules, type-only imports from data contracts |
+| Data contracts   | Shared platform-neutral types and other data contracts                   |
+| Data adapters    | Data contracts, shared modules and native integration libraries          |
+| `shared`         | Other shared modules                                                     |
+| `design-preview` | `shared` modules only                                                    |
 
 - `app` creates concrete data services and supplies them to features through props or providers. UI code calls the typed service interface; it does not import an adapter or invoke Tauri directly.
 - A feature does not import another feature. Compose workflows in `app`, or extract a genuinely shared primitive or type into `shared`.

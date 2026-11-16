@@ -7,11 +7,20 @@ export type CollectionId = EntityId<"collection">;
 export type ThreadId = EntityId<"thread">;
 export type GroupId = CollectionId | ThreadId;
 
-export type JsonValue = null | boolean | number | string | readonly JsonValue[] | { readonly [key: string]: JsonValue };
+export type JsonValue =
+  | null
+  | boolean
+  | number
+  | string
+  | readonly JsonValue[]
+  | { readonly [key: string]: JsonValue };
 /** Storage owns the envelope version; the editor owns the document schema. */
 export interface NoteBody {
   readonly version: 1;
-  readonly document: { readonly type: "doc"; readonly [key: string]: JsonValue };
+  readonly document: {
+    readonly type: "doc";
+    readonly [key: string]: JsonValue;
+  };
   readonly [key: string]: JsonValue;
 }
 
@@ -36,17 +45,25 @@ export interface NoteInput {
   readonly isArchived: boolean;
   readonly isDeleted: boolean;
 }
-export interface GroupInput { readonly name: string; readonly description: string }
-export interface Group<I extends GroupId> extends RecordMetadata<I>, GroupInput {}
+export interface GroupInput {
+  readonly name: string;
+  readonly description: string;
+}
+export interface Group<I extends GroupId>
+  extends RecordMetadata<I>, GroupInput {}
 export type Collection = Group<CollectionId>;
 export type Thread = Group<ThreadId>;
 /** Identity is (parent ID, noteId). Position is ordered, unique, and may have gaps. */
-export interface Membership { readonly noteId: NoteId; readonly position: number }
+export interface Membership {
+  readonly noteId: NoteId;
+  readonly position: number;
+}
 export interface MembershipSnapshot<I extends GroupId> {
   readonly group: Group<I>;
   readonly members: readonly Membership[];
 }
-export type ConnectionKind = "related" | "supports" | "contradicts" | "references";
+export type ConnectionKind =
+  "related" | "supports" | "contradicts" | "references";
 export type ConnectionDirection = "directed" | "undirected";
 export interface ConnectionInput {
   readonly sourceNoteId: NoteId;
@@ -56,10 +73,19 @@ export interface ConnectionInput {
   /** Finite normalized weight in [0, 1]. */
   readonly strength: number;
 }
-export interface Connection extends RecordMetadata<ConnectionId>, ConnectionInput {}
+export interface Connection
+  extends RecordMetadata<ConnectionId>, ConnectionInput {}
 
-export type StoreErrorCode = "invalidInput" | "notFound" | "conflict" | "busy" | "unavailable"
-  | "incompatibleSchema" | "corruptDatabase" | "internal" | "invalidResponse";
+export type StoreErrorCode =
+  | "invalidInput"
+  | "notFound"
+  | "conflict"
+  | "busy"
+  | "unavailable"
+  | "incompatibleSchema"
+  | "corruptDatabase"
+  | "internal"
+  | "invalidResponse";
 
 /** Features may branch on code; native details and document data stay private. */
 export class StoreError extends Error {
