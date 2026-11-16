@@ -8,12 +8,14 @@ KNOT is a premium, local-first desktop note-taking application with a distinctiv
 
 ## Current status
 
-**M0 — desktop shell and design foundation.** Tauri 2 hosts the React/TypeScript
+**M1 — reliable notes core in progress.** Tauri 2 hosts the React/TypeScript
 workspace with seven navigation areas, a collapsible sidebar, a context panel
 and a keyboard-accessible shell action palette. Layout preferences persist
 locally. Native SQLite repositories now provide notes, connections, collections,
-ordered threads and atomic migrations. Product note workflows, editing and
-full-text search are not implemented yet.
+ordered threads and atomic migrations. The note library supports creation,
+explicit title saving, duplication, favorites, archive and recoverable trash.
+Note content currently opens in reading view; rich-text editing, autosave,
+connections UI and full-text search follow in separate issues.
 
 - [25 detailed GitHub issues](https://github.com/vkunasegar/Knot/issues) across M0–M4
 - [Project roadmap and milestone outcomes](docs/PROJECT-ROADMAP.md)
@@ -26,6 +28,7 @@ full-text search are not implemented yet.
 - [Domain semantics, repository ownership and SQLite lifecycle](docs/architecture/DOMAIN-MODEL.md)
 - [Storage verification and pre-merge checklist](docs/development/STORAGE-REVIEW.md)
 - [Development quality checks and verification](docs/development/DEV-QUALITY-REVIEW.md)
+- [Note workflows, recovery rules and verification](docs/development/NOTES-REVIEW.md)
 - [Automatic milestone/label bootstrap workflow](.github/workflows/bootstrap-planning.yml)
 
 ## Development
@@ -57,6 +60,10 @@ Run `pnpm format:check`, `pnpm lint`, and `pnpm check` for the frontend quality
 checks. `pnpm format` and `pnpm lint:fix` apply available fixes. See
 [CONTRIBUTING.md](CONTRIBUTING.md) for all local/CI commands, issue branches,
 commit conventions, and PR requirements.
+
+Using the Agent/Flatpak terminal? The optional [agent-host bridge](docs/development/AGENT-HOST.md)
+lets the same `pnpm dev` command use the prepared host toolchain. For desktop
+acceptance, follow the [manual checklist through Issue #6](docs/development/MANUAL-TEST-ISSUE-6.md).
 
 To reproduce the Linux CI release build after stopping development:
 

@@ -19,6 +19,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "check:linux": "node scripts/check-linux.mjs",
+    "setup:agent-host": "node scripts/install-agent-host-bridge.mjs",
     "test": "vitest run",
     "test:ui": "pnpm build:web --mode test && playwright test",
     "preview": "vite preview",

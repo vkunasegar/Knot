@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { waitFor } from "@testing-library/react";
 import { NavigationController } from "./NavigationController";
 import { destinations } from "./routes";
+import type { NoteId } from "../../shared/domain";
 
 let stop: (() => void) | undefined;
 afterEach(() => {
@@ -19,6 +20,42 @@ function controller(hash = "") {
 }
 
 describe("NavigationController", () => {
+  it("tracks note details, trash and same-area history without losing document IDs", async () => {
+    const id = "f29fb971-3271-43cf-83a1-e66d324e6871" as NoteId;
+    const navigation = controller(`#/archive/${id}`);
+    expect(navigation.getSnapshot()).toMatchObject({
+      destination: "archive",
+      noteId: id,
+      trash: false,
+    });
+    navigation.navigate("notes", { trash: true });
+    expect(location.hash).toBe("#/notes/trash");
+    navigation.navigate("notes", { noteId: id });
+    expect(navigation.getSnapshot().noteId).toBe(id);
+    navigation.back();
+    await waitFor(() =>
+      expect(navigation.getSnapshot()).toMatchObject({
+        destination: "notes",
+        trash: true,
+        noteId: null,
+      }),
+    );
+    navigation.forward();
+    await waitFor(() => expect(navigation.getSnapshot().noteId).toBe(id));
+  });
+
+  it("rejects malformed document IDs and details on unrelated sections", () => {
+    for (const hash of [
+      "#/notes/not-an-id",
+      "#/notes/00000000-0000-0000-0000-000000000000",
+      "#/home/trash",
+      "#/notes/trash/extra",
+    ]) {
+      const navigation = controller(hash);
+      expect(navigation.getSnapshot().destination).toBe("home");
+      stop?.();
+    }
+  });
   it("does not issue a second Back while the browser is still traversing", () => {
     const navigation = controller();
     navigation.navigate("notes");
@@ -48,6 +85,8 @@ describe("NavigationController", () => {
     const navigation = controller();
     expect(navigation.getSnapshot()).toEqual({
       destination: "home",
+      noteId: null,
+      trash: false,
       canGoBack: false,
       canGoForward: false,
     });

@@ -6,6 +6,7 @@ import { SaveStatus } from "./SaveStatus";
 describe("SaveStatus", () => {
   it.each([
     ["idle", "No unsaved changes"],
+    ["unsaved", "Unsaved changes"],
     ["saving", "Saving…"],
     ["saved", "Saved locally"],
   ] as const)(

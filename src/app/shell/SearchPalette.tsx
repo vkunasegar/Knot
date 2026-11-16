@@ -55,7 +55,7 @@ export function SearchPalette({
       open={open}
       onClose={onClose}
       title="Search your workspace"
-      description="Open a section or run a workspace action. Note search will become available when notes and search storage are ready."
+      description="Open a section or run a workspace action. Full-text note search is not available yet."
       className="shell-palette"
     >
       <label className="knot-visually-hidden" htmlFor={`${listId}-input`}>

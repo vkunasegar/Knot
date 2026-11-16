@@ -1,7 +1,7 @@
-import { parseDestination, type Destination } from "./routes";
+import { parseRoute, type Destination, type WorkspaceRoute } from "./routes";
+import type { NoteId } from "../../shared/domain";
 
-export interface NavigationSnapshot {
-  readonly destination: Destination;
+export interface NavigationSnapshot extends WorkspaceRoute {
   readonly canGoBack: boolean;
   readonly canGoForward: boolean;
 }
@@ -19,10 +19,10 @@ export class NavigationController {
   private snapshot: NavigationSnapshot;
   private listening = false;
   private traversalPending = false;
-  private queuedDestination: Destination | null = null;
+  private queuedDestination: WorkspaceRoute | null = null;
 
   constructor(private readonly browser: Window) {
-    this.snapshot = this.makeSnapshot(parseDestination(browser.location.hash));
+    this.snapshot = this.makeSnapshot(parseRoute(browser.location.hash));
   }
 
   getSnapshot = (): NavigationSnapshot => this.snapshot;
@@ -38,7 +38,7 @@ export class NavigationController {
   start(): () => void {
     if (!this.listening) {
       this.listening = true;
-      this.replace(this.snapshot.destination);
+      this.replace(this.snapshot);
       this.browser.addEventListener("popstate", this.onLocationChange);
       this.browser.addEventListener("hashchange", this.onLocationChange);
     }
@@ -49,20 +49,26 @@ export class NavigationController {
     };
   }
 
-  navigate(destination: Destination): void {
+  navigate(
+    destination: Destination,
+    options: { noteId?: NoteId; trash?: boolean } = {},
+  ): void {
+    const route = parseRoute(
+      `#/${destination}/${options.trash ? "trash" : (options.noteId ?? "")}`,
+    );
+    this.navigateRoute(route);
+  }
+
+  private navigateRoute(route: WorkspaceRoute): void {
     if (this.traversalPending) {
-      this.queuedDestination = destination;
+      this.queuedDestination = route;
       return;
     }
-    if (destination === this.snapshot.destination) return;
+    if (this.toHash(route) === this.toHash(this.snapshot)) return;
     this.index += 1;
     this.lastIndex = this.index;
-    this.browser.history.pushState(
-      this.historyState(),
-      "",
-      this.toHash(destination),
-    );
-    this.publish(destination);
+    this.browser.history.pushState(this.historyState(), "", this.toHash(route));
+    this.publish(route);
   }
 
   back = (): void => {
@@ -78,8 +84,8 @@ export class NavigationController {
     }
   };
 
-  private toHash(destination: Destination): string {
-    return `#/${destination}`;
+  private toHash(route: WorkspaceRoute): string {
+    return `#/${route.destination}${route.trash ? "/trash" : route.noteId ? `/${route.noteId}` : ""}`;
   }
 
   private historyState() {
@@ -102,11 +108,11 @@ export class NavigationController {
     );
   }
 
-  private replace(destination: Destination): void {
+  private replace(route: WorkspaceRoute): void {
     this.browser.history.replaceState(
       this.historyState(),
       "",
-      this.toHash(destination),
+      this.toHash(route),
     );
   }
 
@@ -119,7 +125,7 @@ export class NavigationController {
       event?.type === "hashchange" &&
       this.isOwnHistoryState(state) &&
       state.index === this.index &&
-      this.browser.location.hash === this.toHash(this.snapshot.destination)
+      this.browser.location.hash === this.toHash(this.snapshot)
     ) {
       return;
     }
@@ -127,7 +133,7 @@ export class NavigationController {
     // cannot pass the session boundary; apply the latest requested route after
     // the browser acknowledges its position, instead of racing pushState.
     this.traversalPending = false;
-    const destination = parseDestination(this.browser.location.hash);
+    const route = parseRoute(this.browser.location.hash);
     if (this.isOwnHistoryState(state)) {
       this.index = state.index;
     } else {
@@ -136,25 +142,25 @@ export class NavigationController {
       this.index += 1;
       this.lastIndex = this.index;
     }
-    this.replace(destination);
-    this.publish(destination);
+    this.replace(route);
+    this.publish(route);
     if (this.queuedDestination !== null) {
       const queued = this.queuedDestination;
       this.queuedDestination = null;
-      this.navigate(queued);
+      this.navigateRoute(queued);
     }
   };
 
-  private makeSnapshot(destination: Destination): NavigationSnapshot {
+  private makeSnapshot(route: WorkspaceRoute): NavigationSnapshot {
     return Object.freeze({
-      destination,
+      ...route,
       canGoBack: this.index > 0,
       canGoForward: this.index < this.lastIndex,
     });
   }
 
-  private publish(destination: Destination): void {
-    const next = this.makeSnapshot(destination);
+  private publish(route: WorkspaceRoute): void {
+    const next = this.makeSnapshot(route);
     if (
       Object.keys(next).every(
         (key) =>

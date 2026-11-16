@@ -26,6 +26,7 @@ export default defineConfig(({ mode }) => ({
                 rootDir,
                 "tests/ui/fixtures/document.html",
               ),
+              notesTest: resolve(rootDir, "tests/ui/fixtures/notes.html"),
             }
           : {}),
       },

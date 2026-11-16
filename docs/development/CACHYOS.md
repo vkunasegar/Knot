@@ -5,6 +5,10 @@ Run commands in a host terminal such as Konsole, from the repository root
 unless stated otherwise. A Flatpak terminal can have a different PATH and
 different system libraries from the host.
 
+For the Agent/Flatpak terminal, the optional [agent-host bridge](AGENT-HOST.md)
+allows the same `pnpm dev` command to use the prepared host environment. To review
+the running desktop app, use the [manual Issue #6 checklist](MANUAL-TEST-ISSUE-6.md).
+
 ## Install the prerequisites
 
 | Tool          | Project requirement              | Source of truth                                                              |

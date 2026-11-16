@@ -18,8 +18,9 @@ pnpm check:linux
 pnpm dev -- --locked
 ```
 
-In a Flatpak terminal, use a prepared host terminal such as Konsole. A successful
-host prerequisite check does not install libraries inside a sandbox.
+In a Flatpak terminal, use a prepared host terminal such as Konsole or install the
+optional [KNOT agent-host bridge](docs/development/AGENT-HOST.md). It forwards
+project pnpm commands to the host; it does not install libraries inside a sandbox.
 
 ## Branches and commits
 
