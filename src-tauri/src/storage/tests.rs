@@ -79,6 +79,40 @@ fn migrates_empty_database_and_reopens_without_changing_documents() {
 }
 
 #[test]
+fn archived_trash_survives_restart_and_restores_its_original_archive_state() {
+    let h = Harness::new();
+    let note = h.note();
+    let mut input = note_input();
+    input["isFavorite"] = json!(true);
+    input["isArchived"] = json!(true);
+    let archived = h
+        .call(
+            json!({"operation":"updateNote", "id":note["id"], "expectedRevision":1, "input":input}),
+        )
+        .unwrap();
+    input["isDeleted"] = json!(true);
+    let trashed = h
+        .call(
+            json!({"operation":"updateNote", "id":note["id"], "expectedRevision":2, "input":input}),
+        )
+        .unwrap();
+    assert_eq!(trashed["archivedAt"], archived["archivedAt"]);
+    let path = h.path();
+    drop(h.service);
+    let reopened = StoreService::at_path(Ok(path));
+    let inventory = reopened
+        .execute(serde_json::from_value(json!({"operation":"listNotes"})).unwrap())
+        .unwrap();
+    assert_eq!(inventory, json!([trashed]));
+    input["isDeleted"] = json!(false);
+    let restored = reopened.execute(serde_json::from_value(json!({"operation":"updateNote", "id":note["id"], "expectedRevision":3, "input":input})).unwrap()).unwrap();
+    assert_eq!(restored["archivedAt"], archived["archivedAt"]);
+    assert!(restored["deletedAt"].is_null());
+    assert_eq!(restored["isFavorite"], true);
+    assert_eq!(restored["body"], note["body"]);
+}
+
+#[test]
 fn note_crud_preserves_editor_data_and_rejects_stale_updates() {
     let h = Harness::new();
     let note = h.note();

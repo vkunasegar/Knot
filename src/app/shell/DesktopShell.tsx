@@ -24,6 +24,9 @@ export interface DesktopShellProps {
   children?: ReactNode;
   context?: ReactNode;
   document?: ShellDocument;
+  heading?: string;
+  onCreateNote?: () => void;
+  creatingNote?: boolean;
 }
 
 function useCompactSidebar() {
@@ -47,6 +50,9 @@ export function DesktopShell({
   children,
   context,
   document: workspaceDocument,
+  heading: workspaceHeading,
+  onCreateNote,
+  creatingNote = false,
 }: DesktopShellProps) {
   const route = useSyncExternalStore(
     navigation.subscribe,
@@ -61,7 +67,8 @@ export function DesktopShell({
   const destination = destinations.find(({ id }) => id === route.destination)!;
   const heading = useRef<HTMLHeadingElement>(null);
   const panelToggle = useRef<HTMLButtonElement>(null);
-  const previousRoute = useRef(route.destination);
+  const routeKey = `${route.destination}/${route.trash ? "trash" : (route.noteId ?? "")}`;
+  const previousRoute = useRef(routeKey);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [focusRequested, setFocusRequested] = useState(false);
   const focusMode = Boolean(workspaceDocument) && focusRequested;
@@ -126,7 +133,25 @@ export function DesktopShell({
 
   useEffect(() => {
     const handleKey = (event: KeyboardEvent) => {
-      if (event.defaultPrevented || event.isComposing || event.repeat) return;
+      if (event.defaultPrevented || event.isComposing) return;
+      if (
+        onCreateNote &&
+        (event.ctrlKey || event.metaKey) &&
+        !event.altKey &&
+        !event.shiftKey &&
+        event.key.toLowerCase() === "n"
+      ) {
+        event.preventDefault();
+        if (
+          !event.repeat &&
+          !creatingNote &&
+          !paletteOpen &&
+          !document.querySelector("dialog[open]")
+        )
+          onCreateNote();
+        return;
+      }
+      if (event.repeat) return;
       if (
         (event.ctrlKey || event.metaKey) &&
         !event.altKey &&
@@ -160,16 +185,16 @@ export function DesktopShell({
     };
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
-  }, [navigation, paletteOpen, focusMode]);
+  }, [navigation, paletteOpen, focusMode, onCreateNote, creatingNote]);
 
   useEffect(() => navigation.start(), [navigation]);
   useEffect(() => {
-    if (previousRoute.current !== route.destination) {
-      previousRoute.current = route.destination;
+    if (previousRoute.current !== routeKey) {
+      previousRoute.current = routeKey;
       setFocusRequested(false);
       heading.current?.focus();
     }
-  }, [route.destination]);
+  }, [routeKey]);
 
   const navigate = (id: Destination) => navigation.navigate(id);
   const closePanel = () => {
@@ -188,6 +213,16 @@ export function DesktopShell({
         heading.current?.focus();
       },
     })),
+    ...(onCreateNote && !creatingNote
+      ? [
+          {
+            id: "new-note",
+            label: "New note",
+            icon: "notes" as const,
+            run: onCreateNote,
+          },
+        ]
+      : []),
     {
       id: "toggle-sidebar",
       label: layout.sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar",
@@ -277,6 +312,8 @@ export function DesktopShell({
           }
           onOpenPalette={openPalette}
           onEnterFocus={() => setFocusRequested(true)}
+          onCreateNote={onCreateNote}
+          creatingNote={creatingNote}
         />
         {layout.warning && (
           <div className="shell-warning" role="status">
@@ -288,7 +325,9 @@ export function DesktopShell({
             <div className="shell-content">
               <p className="shell-eyebrow">YOUR WORKSPACE</p>
               <h1 ref={heading} tabIndex={-1}>
-                {workspaceDocument?.title ?? destination.label}
+                {workspaceDocument?.title ??
+                  workspaceHeading ??
+                  destination.label}
               </h1>
               {children ?? (
                 <WorkspaceOverview

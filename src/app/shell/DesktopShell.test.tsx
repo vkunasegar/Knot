@@ -29,6 +29,36 @@ function setup() {
   return { preferences, navigation, user: userEvent.setup() };
 }
 
+it("consumes new-note shortcuts while busy or modal and ignores key repeats", async () => {
+  const create = vi.fn();
+  const preferences = new ShellPreferencesService({
+    read: () => null,
+    write() {},
+  });
+  const navigation = new NavigationController(window);
+  const props = { preferences, navigation, onCreateNote: create };
+  const { rerender } = render(<DesktopShell {...props} creatingNote />);
+  const shortcut = () =>
+    new KeyboardEvent("keydown", {
+      key: "n",
+      ctrlKey: true,
+      bubbles: true,
+      cancelable: true,
+    });
+  const blocked = shortcut();
+  window.dispatchEvent(blocked);
+  expect(blocked.defaultPrevented).toBe(true);
+  expect(create).not.toHaveBeenCalled();
+  rerender(<DesktopShell {...props} />);
+  fireEvent.keyDown(window, { key: "n", ctrlKey: true, repeat: true });
+  expect(create).not.toHaveBeenCalled();
+  await userEvent
+    .setup()
+    .click(screen.getByRole("button", { name: "Search workspace" }));
+  window.dispatchEvent(shortcut());
+  expect(create).not.toHaveBeenCalled();
+});
+
 it("navigates by keyboard and moves focus into the destination", async () => {
   const { user } = setup();
   const link = screen.getByRole("link", { name: "All Notes" });

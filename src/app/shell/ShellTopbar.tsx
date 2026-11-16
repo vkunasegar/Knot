@@ -19,6 +19,8 @@ interface ShellTopbarProps {
   onToggleContext: () => void;
   onOpenPalette: () => void;
   onEnterFocus: () => void;
+  onCreateNote?: () => void;
+  creatingNote?: boolean;
 }
 
 /** Presentation-only toolbar. Persistence state is supplied by the active document. */
@@ -33,6 +35,8 @@ export function ShellTopbar({
   onToggleContext,
   onOpenPalette,
   onEnterFocus,
+  onCreateNote,
+  creatingNote,
 }: ShellTopbarProps) {
   return (
     <header className="shell-topbar" hidden={hidden}>
@@ -82,6 +86,15 @@ export function ShellTopbar({
         )}
       </nav>
       <div className="shell-topbar__actions">
+        {onCreateNote && (
+          <Button
+            disabled={creatingNote}
+            onClick={onCreateNote}
+            aria-keyshortcuts="Control+N Meta+N"
+          >
+            New note
+          </Button>
+        )}
         <SaveStatus
           {...(document?.saveStatus ?? {
             state: "idle",

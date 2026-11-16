@@ -2,12 +2,13 @@ import { cx } from "../cx";
 import { AlertIcon, CheckIcon, InfoIcon, PendingIcon } from "../icons";
 import "./SaveStatus.css";
 
-export type SaveState = "idle" | "saving" | "saved" | "error";
+export type SaveState = "idle" | "unsaved" | "saving" | "saved" | "error";
 
 export interface SaveStatusProps {
   /**
    * Current persistence state reported by the storage layer:
    * - `idle`: no write has run in this session yet.
+   * - `unsaved`: explicit document changes await a save.
    * - `saving`: a write is in flight.
    * - `saved`: the storage layer has confirmed a durable write.
    * - `error`: the last write failed and needs recovery or retry.
@@ -20,6 +21,7 @@ export interface SaveStatusProps {
 
 const STATE_LABELS: Record<SaveState, string> = {
   idle: "No unsaved changes",
+  unsaved: "Unsaved changes",
   saving: "Saving…",
   saved: "Saved locally",
   error: "Save failed",
@@ -46,7 +48,9 @@ export function SaveStatus({ state, detail, className }: SaveStatusProps) {
         className,
       )}
     >
-      {state === "idle" && <InfoIcon className="knot-save-status__icon" />}
+      {(state === "idle" || state === "unsaved") && (
+        <InfoIcon className="knot-save-status__icon" />
+      )}
       {state === "saving" && <PendingIcon className="knot-save-status__icon" />}
       {state === "saved" && <CheckIcon className="knot-save-status__icon" />}
       {state === "error" && <AlertIcon className="knot-save-status__icon" />}
