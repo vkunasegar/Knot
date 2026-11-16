@@ -2,6 +2,7 @@
   "extends": "./tsconfig.node.json",
   "compilerOptions": {
     "jsx": "react-jsx",
+    "allowJs": true,
     "allowImportingTsExtensions": true,
     "types": ["node", "vite/client", "@testing-library/jest-dom/vitest"]
   },
