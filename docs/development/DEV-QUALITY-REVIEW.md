@@ -72,9 +72,13 @@ review screenshots.
 
 ## CI and remaining review
 
-The first Issue #5 push and its Linux/Windows/macOS workflow results are pending.
-Record the run URL and actual outcomes here after publication. Local compilation
-and browser checks do not establish native Windows/macOS runtime behavior.
+The [first Issue #5 Desktop build run](https://github.com/vkunasegar/Knot/actions/runs/43909796101)
+checks commit `08f4a67c526a038e5b52df0b63c2f587c37b8a89`. All five jobs passed:
+frontend formatting/lint/types, Foundation tests/accessibility, and native
+tests/release builds on Linux, Windows, and macOS. Linux Clippy also passed.
+These results verify the implementation before this report-only update.
+Compilation and browser checks do not establish native Windows/macOS runtime
+behavior.
 
 Remaining manual checks: human code review, a fresh contributor following the
 Linux quickstart, and native Windows/macOS interaction checks when available.
