@@ -1,5 +1,10 @@
 # Notes library and recovery — Issue #6
 
+For hands-on desktop acceptance, use the
+[manual checklist through Issue #6](MANUAL-TEST-ISSUE-6.md). The optional
+[agent-host bridge](AGENT-HOST.md) lets the Agent/Flatpak terminal run the same
+`pnpm dev` command against the prepared host toolchain.
+
 ## User-visible behavior
 
 The native note library now supports create, open, explicit title save, duplicate,

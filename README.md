@@ -61,6 +61,10 @@ checks. `pnpm format` and `pnpm lint:fix` apply available fixes. See
 [CONTRIBUTING.md](CONTRIBUTING.md) for all local/CI commands, issue branches,
 commit conventions, and PR requirements.
 
+Using the Agent/Flatpak terminal? The optional [agent-host bridge](docs/development/AGENT-HOST.md)
+lets the same `pnpm dev` command use the prepared host toolchain. For desktop
+acceptance, follow the [manual checklist through Issue #6](docs/development/MANUAL-TEST-ISSUE-6.md).
+
 To reproduce the Linux CI release build after stopping development:
 
 ```sh
