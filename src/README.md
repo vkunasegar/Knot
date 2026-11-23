@@ -54,7 +54,7 @@ repositories remain native and separate from these preferences. The optional
 focus callback without transferring document ownership to the shell. The editor
 and context slots remain mounted when panels or Focus Mode change.
 
-`features/notes` owns library filtering, sorting, document reading, title drafts
+`features/notes` owns library filtering, sorting, rich-text editing, title/body drafts
 and note actions through an app-owned `NotesController`. Its constructor performs
 no IO; the app loads the inventory on first entry into a notes area. The controller
 keeps snapshots for React subscriptions and performs single-flight,
@@ -62,6 +62,17 @@ revision-checked writes. App composition bridges note routes and confirmed save
 status into the shell without giving the shell document ownership. Note details
 and trash are typed child routes; favorites/archive retain their navigation context.
 Automated import-boundary linting is not configured yet.
+
+The notes feature owns the Tiptap schema and one mounted editor per open note.
+`editorSchema` validates structured content before editing; unknown nodes, marks
+or attributes receive a protected text preview instead of a lossy conversion.
+`NotesController` retains body drafts and their confirmed base independently of
+the editor mount. Body saves use compare-and-swap and preserve opaque envelope
+metadata; conflicts retain both versions. Shell focus uses a callback into the
+editor API so panel/Focus Mode changes preserve ProseMirror selection/history.
+Only an explicit discard or a different authoritative document resets history.
+Thread chips use injected, persisted membership; context read failures do not
+block editing. See the [editor contract and verification](../docs/development/EDITOR-REVIEW.md).
 
 See the [technical architecture](../docs/architecture/TECH-STACK.md) and the
 [design contract](../docs/design/knot/README.md).

@@ -14,8 +14,10 @@ and a keyboard-accessible shell action palette. Layout preferences persist
 locally. Native SQLite repositories now provide notes, connections, collections,
 ordered threads and atomic migrations. The note library supports creation,
 explicit title saving, duplication, favorites, archive and recoverable trash.
-Note content currently opens in reading view; rich-text editing, autosave,
-connections UI and full-text search follow in separate issues.
+The note editor supports rich text, formatting shortcuts, checklists, safe links,
+code blocks and selection-aware undo/redo. Title and body use explicit saving;
+unsaved drafts survive navigation during the session. Autosave, connections UI
+and full-text search follow in separate issues.
 
 - [25 detailed GitHub issues](https://github.com/vkunasegar/Knot/issues) across M0–M4
 - [Project roadmap and milestone outcomes](docs/PROJECT-ROADMAP.md)
@@ -29,6 +31,7 @@ connections UI and full-text search follow in separate issues.
 - [Storage verification and pre-merge checklist](docs/development/STORAGE-REVIEW.md)
 - [Development quality checks and verification](docs/development/DEV-QUALITY-REVIEW.md)
 - [Note workflows, recovery rules and verification](docs/development/NOTES-REVIEW.md)
+- [Rich-text editor, OSS extension review and verification](docs/development/EDITOR-REVIEW.md)
 - [Automatic milestone/label bootstrap workflow](.github/workflows/bootstrap-planning.yml)
 
 ## Development
