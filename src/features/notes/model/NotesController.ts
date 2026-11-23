@@ -1,11 +1,29 @@
-import type { NoteRepository } from "../../../data/contracts";
+import type { GroupRepository, NoteRepository } from "../../../data/contracts";
+import type { JSONContent } from "@tiptap/core";
 import {
   StoreError,
   type Note,
   type NoteId,
   type NoteInput,
+  type NoteBody,
+  type ThreadId,
 } from "../../../shared/domain";
 import { copyTitle, emptyBody } from "./noteValues";
+import { editorBody } from "./editorSchema";
+
+interface BodyDraft {
+  readonly body: NoteBody;
+  /** Comparing the base prevents an explicit retry from overwriting an external edit. */
+  readonly base: NoteBody;
+}
+export interface NoteThread {
+  readonly id: ThreadId;
+  readonly name: string;
+  readonly position: number;
+  readonly total: number;
+}
+const sameBody = (a: NoteBody, b: NoteBody) =>
+  JSON.stringify(a) === JSON.stringify(b);
 
 type WriteState = "saving" | "saved" | "error";
 interface UndoAction {
@@ -23,6 +41,9 @@ export interface NotesSnapshot {
   /** A lost acknowledgement requires explicit readback before another write. */
   readonly uncertain: boolean;
   readonly drafts: Readonly<Record<string, string>>;
+  readonly bodyDrafts: Readonly<Record<string, BodyDraft>>;
+  readonly threads: Readonly<Record<string, readonly NoteThread[]>>;
+  readonly contextErrors: Readonly<Record<string, string | null>>;
   readonly writes: Readonly<Record<string, WriteState>>;
   readonly undo: UndoAction | null;
 }
@@ -31,11 +52,11 @@ function message(error: unknown): string {
   const code = error instanceof StoreError ? error.code : "unavailable";
   switch (code) {
     case "conflict":
-      return "This note changed elsewhere. Reload the library, review your title and try again.";
+      return "This note changed elsewhere. Your drafts are still here. Review the stored version before trying again.";
     case "busy":
       return "Storage is busy. Your changes are still here; try again.";
     case "invalidInput":
-      return "The title must not contain NUL and must fit within 4096 UTF-8 bytes.";
+      return "The title must not contain NUL and must fit within 4096 UTF-8 bytes; the document must fit within 10 MiB.";
     case "notFound":
       return "This note is no longer available. Reload the library.";
     case "corruptDatabase":
@@ -49,7 +70,7 @@ function message(error: unknown): string {
 
 /**
  * App-owned, session-lived workflow. Constructors perform no IO or subscriptions.
- * Confirmed records and unsaved title drafts are separate so navigation/errors
+ * Confirmed records and unsaved document drafts are separate so navigation/errors
  * cannot discard input. Writes are single-flight and never automatically retried.
  */
 export class NotesController {
@@ -64,11 +85,53 @@ export class NotesController {
     pending: false,
     uncertain: false,
     drafts: {},
+    bodyDrafts: {},
+    threads: {},
+    contextErrors: {},
     writes: {},
     undo: null,
   };
 
-  constructor(private readonly repository: NoteRepository) {}
+  constructor(
+    private readonly repository: NoteRepository,
+    private readonly threadRepository?: Pick<
+      GroupRepository<ThreadId>,
+      "list" | "getMembers"
+    >,
+  ) {}
+
+  /** Context is optional and independent of document loading/saving. No synthetic relationships. */
+  async loadThreads(id: NoteId): Promise<void> {
+    if (!this.threadRepository) return;
+    try {
+      const groups = await this.threadRepository.list();
+      const memberships = await Promise.all(
+        groups.map((group) => this.threadRepository!.getMembers(group.id)),
+      );
+      const threads: NoteThread[] = [];
+      for (const { group, members } of memberships) {
+        const index = members.findIndex((member) => member.noteId === id);
+        if (index >= 0)
+          threads.push({
+            id: group.id,
+            name: group.name,
+            position: index + 1,
+            total: members.length,
+          });
+      }
+      this.publish({
+        threads: { ...this.snapshot.threads, [id]: threads },
+        contextErrors: { ...this.snapshot.contextErrors, [id]: null },
+      });
+    } catch {
+      this.publish({
+        contextErrors: {
+          ...this.snapshot.contextErrors,
+          [id]: "Thread context is unavailable. Your note is still editable.",
+        },
+      });
+    }
+  }
 
   getSnapshot = (): NotesSnapshot => this.snapshot;
   subscribe = (listener: () => void): (() => void) => {
@@ -111,6 +174,73 @@ export class NotesController {
     const drafts = { ...this.snapshot.drafts };
     delete drafts[id];
     this.publish({ drafts });
+  }
+
+  /** Drafts live with the application, not the mounted editor. Navigation cannot discard text. */
+  draftBody(id: NoteId, document: JSONContent): void {
+    const note = this.find(id);
+    if (!note || note.deletedAt !== null) return;
+    const previous = this.snapshot.bodyDrafts[id];
+    const body = editorBody(document, previous?.body ?? note.body);
+    this.publish({
+      bodyDrafts: {
+        ...this.snapshot.bodyDrafts,
+        [id]: { body, base: previous?.base ?? note.body },
+      },
+    });
+  }
+
+  cancelBodyDraft(id: NoteId): void {
+    const bodyDrafts = { ...this.snapshot.bodyDrafts };
+    delete bodyDrafts[id];
+    this.publish({ bodyDrafts });
+  }
+
+  hasBodyConflict(id: NoteId): boolean {
+    const note = this.find(id);
+    const draft = this.snapshot.bodyDrafts[id];
+    return (
+      !!note &&
+      !!draft &&
+      !sameBody(note.body, draft.base) &&
+      !sameBody(note.body, draft.body)
+    );
+  }
+
+  saveBody(id: NoteId): Promise<Note | null> {
+    const note = this.find(id);
+    const draft = this.snapshot.bodyDrafts[id];
+    if (!note || !draft || note.deletedAt !== null)
+      return Promise.resolve(null);
+    if (this.hasBodyConflict(id)) {
+      this.publish({
+        error:
+          "The stored body changed elsewhere. Your local text is preserved. Copy it for comparison, or discard body changes to use the stored version.",
+      });
+      return Promise.resolve(null);
+    }
+    const body = { ...note.body, document: draft.body.document };
+    if (
+      new TextEncoder().encode(JSON.stringify(body)).length >
+      10 * 1024 * 1024
+    ) {
+      this.publish({ error: message(new StoreError("invalidInput")) });
+      return Promise.resolve(null);
+    }
+    return this.update(note, { body }).then((saved) => {
+      if (saved) {
+        const current = this.snapshot.bodyDrafts[id];
+        if (current === draft) this.cancelBodyDraft(id);
+        else if (current)
+          this.publish({
+            bodyDrafts: {
+              ...this.snapshot.bodyDrafts,
+              [id]: { ...current, base: saved.body },
+            },
+          });
+      }
+      return saved;
+    });
   }
   dismissError = (): void => {
     this.publish({ error: null });

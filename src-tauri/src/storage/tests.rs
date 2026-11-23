@@ -79,6 +79,37 @@ fn migrates_empty_database_and_reopens_without_changing_documents() {
 }
 
 #[test]
+fn rich_text_update_survives_a_native_store_restart_without_losing_formatting() {
+    let h = Harness::new();
+    let original = h.note();
+    let mut input = note_input();
+    input["body"]["document"] = json!({"type":"doc","content":[
+        {"type":"heading","attrs":{"level":2},"content":[{"type":"text","text":"A thought path"}]},
+        {"type":"paragraph","content":[
+            {"type":"text","text":"Bold 🧶","marks":[{"type":"bold"}]},
+            {"type":"text","text":"Source","marks":[{"type":"link","attrs":{"href":"https://example.com","target":"_blank","rel":"noopener noreferrer nofollow","class":null}}]}
+        ]},
+        {"type":"bulletList","content":[{"type":"listItem","content":[{"type":"paragraph","content":[{"type":"text","text":"Keep this"}]}]}]},
+        {"type":"orderedList","attrs":{"start":3},"content":[{"type":"listItem","content":[{"type":"paragraph","content":[{"type":"text","text":"Third step"}]}]}]},
+        {"type":"taskList","content":[{"type":"taskItem","attrs":{"checked":true},"content":[{"type":"paragraph","content":[{"type":"text","text":"Done"}]}]}]},
+        {"type":"codeBlock","attrs":{"language":"typescript"},"content":[{"type":"text","text":"const thread = 1;"}]}
+    ]});
+    let saved = h.call(json!({"operation":"updateNote","id":original["id"],"expectedRevision":1,"input":input})).unwrap();
+    assert_eq!(saved["body"], input["body"]);
+    let path = h.path();
+    drop(h.service);
+    let reopened = StoreService::at_path(Ok(path));
+    let actual = reopened
+        .execute(
+            serde_json::from_value(json!({"operation":"getNote","id":original["id"]})).unwrap(),
+        )
+        .unwrap();
+    assert_eq!(actual, saved);
+    assert_eq!(actual["revision"], 2);
+    drop(reopened);
+}
+
+#[test]
 fn archived_trash_survives_restart_and_restores_its_original_archive_state() {
     let h = Harness::new();
     let note = h.note();
