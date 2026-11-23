@@ -1,6 +1,12 @@
-import { useEffect, useRef, useSyncExternalStore, type RefObject } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+  type RefObject,
+} from "react";
 import type { Note, NoteId } from "../../../shared/domain";
-import { Button } from "../../../shared/ui";
+import { Button, NoteChip } from "../../../shared/ui";
 import { NotesController, type NotesSnapshot } from "../model/NotesController";
 import {
   documentText,
@@ -10,6 +16,7 @@ import {
   type NoteView,
 } from "../model/noteValues";
 import "./NotesWorkspace.css";
+import { NoteEditor } from "./NoteEditor";
 
 interface NotesWorkspaceProps {
   controller: NotesController;
@@ -22,7 +29,7 @@ interface NotesWorkspaceProps {
   onCreate: () => void;
   onDuplicate: (id: NoteId) => void;
   /** App owns the shell focus bridge; the workflow owns the actual focus target. */
-  contentRef: RefObject<HTMLElement | null>;
+  focusEditorRef: RefObject<(() => void) | null>;
 }
 
 const date = (value: number) =>
@@ -47,7 +54,7 @@ function NoteDetails({
   note,
   state,
   controller,
-  contentRef,
+  focusEditorRef,
   disabled,
   onDuplicate,
   onList,
@@ -56,7 +63,7 @@ function NoteDetails({
   note: Note;
   state: NotesSnapshot;
   controller: NotesController;
-  contentRef: RefObject<HTMLElement | null>;
+  focusEditorRef: RefObject<(() => void) | null>;
   disabled: boolean;
   onDuplicate: (id: NoteId) => void;
   onList: (view: NoteView) => void;
@@ -66,18 +73,25 @@ function NoteDetails({
   const trashed = note.deletedAt !== null;
   const draft = state.drafts[note.id] ?? note.title;
   const dirty = draft !== note.title;
+  const bodyDraft = state.bodyDrafts[note.id];
+  const body = bodyDraft?.body ?? note.body;
+  const conflict = controller.hasBodyConflict(note.id);
+  const [bodyGeneration, resetBody] = useState(0);
+  useEffect(() => {
+    void controller.loadThreads(note.id);
+  }, [controller, note.id]);
   useEffect(() => {
     // Route focus runs in the shell first; focus the actual document afterwards.
     const frame = requestAnimationFrame(() => {
-      if (trashed) contentRef.current?.focus();
+      if (trashed) focusEditorRef.current?.();
       else input.current?.focus();
     });
     return () => cancelAnimationFrame(frame);
-  }, [note.id, trashed, contentRef]);
+  }, [note.id, trashed, focusEditorRef]);
 
   return (
     <>
-      <div className="notes-toolbar">
+      <div className="notes-toolbar notes-toolbar--actions">
         <Button
           variant="quiet"
           onClick={() => onList(trashed ? "trash" : view)}
@@ -132,86 +146,143 @@ function NoteDetails({
           This note is archived and hidden from active lists.
         </p>
       )}
-      <form
-        className="notes-title-form"
-        onSubmit={(event) => {
-          event.preventDefault();
-          void controller.rename(note.id).then(() => {
-            // Disabling a submitting control can send focus to the document.
-            // Restore the field only if the user has not chosen another target.
-            if (document.activeElement === document.body)
-              input.current?.focus();
-          });
-        }}
-      >
-        <label htmlFor="note-title">Title</label>
-        <input
-          ref={input}
-          id="note-title"
-          value={draft}
-          readOnly={trashed}
-          disabled={state.pending}
-          aria-describedby="note-title-help"
-          onChange={(event) => controller.draft(note.id, event.target.value)}
-          onKeyDown={(event) => {
-            if (event.key === "Escape" && dirty) {
-              event.preventDefault();
-              event.stopPropagation();
-              controller.cancelDraft(note.id);
-            }
+      <div className="notes-writing-column">
+        <div className="notes-thread-context" aria-label="Thread membership">
+          {state.contextErrors[note.id] ? (
+            <p role="status">{state.contextErrors[note.id]}</p>
+          ) : state.threads[note.id]?.length ? (
+            state.threads[note.id].map((thread) => (
+              <NoteChip
+                key={thread.id}
+                title={thread.name}
+                meta={`Thread · ${thread.position} of ${thread.total}`}
+              />
+            ))
+          ) : (
+            <span>No thread yet</span>
+          )}
+        </div>
+        <form
+          className="notes-title-form"
+          onSubmit={(event) => {
+            event.preventDefault();
+            void controller.rename(note.id).then(() => {
+              // Disabling a submitting control can send focus to the document.
+              // Restore the field only if the user has not chosen another target.
+              if (document.activeElement === document.body)
+                input.current?.focus();
+            });
           }}
-        />
-        <p id="note-title-help">
-          An empty title appears as Untitled. Up to 4096 UTF-8 bytes.
-        </p>
-        {!trashed && (
-          <div className="notes-toolbar">
-            <Button
-              type="submit"
-              variant="primary"
-              disabled={disabled || !dirty}
-            >
-              Save title
-            </Button>
-            <Button
-              disabled={state.pending || state.drafts[note.id] === undefined}
-              onClick={() => controller.cancelDraft(note.id)}
-            >
-              Cancel title changes
-            </Button>
+        >
+          <label htmlFor="note-title">Title</label>
+          <input
+            ref={input}
+            id="note-title"
+            value={draft}
+            readOnly={trashed}
+            disabled={state.pending}
+            aria-describedby="note-title-help"
+            onChange={(event) => controller.draft(note.id, event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === "Escape" && dirty) {
+                event.preventDefault();
+                event.stopPropagation();
+                controller.cancelDraft(note.id);
+              }
+            }}
+          />
+          <p id="note-title-help">
+            An empty title appears as Untitled. Up to 4096 UTF-8 bytes.
+          </p>
+          {!trashed && dirty && (
+            <div className="notes-toolbar">
+              <Button
+                type="submit"
+                variant="primary"
+                disabled={disabled || !dirty}
+              >
+                Save title
+              </Button>
+              <Button
+                disabled={state.pending || state.drafts[note.id] === undefined}
+                onClick={() => controller.cancelDraft(note.id)}
+              >
+                Cancel title changes
+              </Button>
+            </div>
+          )}
+        </form>
+        <details className="notes-metadata">
+          <summary>Note details</summary>
+          <dl className="notes-dates">
+            <div>
+              <dt>Created</dt>
+              <dd>
+                <time dateTime={new Date(note.createdAt).toISOString()}>
+                  {date(note.createdAt)}
+                </time>
+              </dd>
+            </div>
+            <div>
+              <dt>Updated</dt>
+              <dd>
+                <time dateTime={new Date(note.updatedAt).toISOString()}>
+                  {date(note.updatedAt)}
+                </time>
+              </dd>
+            </div>
+          </dl>
+        </details>
+        {conflict && (
+          <div className="notes-notice" role="alert">
+            <p>
+              The stored body changed elsewhere. Your local text remains below;
+              copy it before discarding to compare both versions.
+            </p>
+            <details>
+              <summary>Stored body preview</summary>
+              <p className="notes-document__body">
+                {documentText(note.body) || "Empty body"}
+              </p>
+            </details>
           </div>
         )}
-      </form>
-      <dl className="notes-dates">
-        <div>
-          <dt>Created</dt>
-          <dd>
-            <time dateTime={new Date(note.createdAt).toISOString()}>
-              {date(note.createdAt)}
-            </time>
-          </dd>
-        </div>
-        <div>
-          <dt>Updated</dt>
-          <dd>
-            <time dateTime={new Date(note.updatedAt).toISOString()}>
-              {date(note.updatedAt)}
-            </time>
-          </dd>
-        </div>
-      </dl>
-      <section
-        ref={contentRef}
-        tabIndex={-1}
-        className="notes-document"
-        aria-label="Note content"
-      >
-        <h2>Note content</h2>
-        <p className="notes-document__body">
-          {documentText(note.body) || "No text content yet."}
-        </p>
-        <p className="notes-document__hint">Reading view</p>
-      </section>
+        <NoteEditor
+          key={`${note.id}:${bodyGeneration}`}
+          body={body}
+          readOnly={trashed}
+          focusEditorRef={focusEditorRef}
+          onChange={(document) => controller.draftBody(note.id, document)}
+          onSave={() => {
+            void controller.saveBody(note.id);
+          }}
+        />
+        {!trashed && (
+          <div className="notes-toolbar notes-body-actions">
+            <Button
+              variant="primary"
+              disabled={disabled || !bodyDraft || conflict}
+              onClick={() => void controller.saveBody(note.id)}
+            >
+              Save body
+            </Button>
+            <Button
+              disabled={state.pending || !bodyDraft}
+              onClick={() => {
+                controller.cancelBodyDraft(note.id);
+                resetBody((value) => value + 1);
+              }}
+            >
+              Discard body changes
+            </Button>
+            <span>
+              {bodyDraft
+                ? "Body changes are not saved yet."
+                : "Body uses explicit saving."}
+            </span>
+          </div>
+        )}
+      </div>
     </>
   );
 }
@@ -226,7 +297,7 @@ export function NotesWorkspace({
   onList,
   onCreate,
   onDuplicate,
-  contentRef,
+  focusEditorRef,
 }: NotesWorkspaceProps) {
   const state = useSyncExternalStore(
     controller.subscribe,
@@ -284,7 +355,7 @@ export function NotesWorkspace({
             note={note}
             state={state}
             controller={controller}
-            contentRef={contentRef}
+            focusEditorRef={focusEditorRef}
             disabled={disabled}
             onDuplicate={onDuplicate}
             onList={onList}

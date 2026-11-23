@@ -11,6 +11,10 @@
 
 /* Interface text: Inter (variable weight axis 100–900). */
 @import "@fontsource-variable/inter";
+/* Rich-text emphasis needs actual italic faces because base.css disables
+   synthetic fonts. Bundle them locally for offline body and heading editing. */
+@import "@fontsource-variable/inter/wght-italic.css";
 
 /* Editorial headings: Playfair Display (variable weight axis 400–900). */
 @import "@fontsource-variable/playfair-display";
+@import "@fontsource-variable/playfair-display/wght-italic.css";

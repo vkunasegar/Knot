@@ -143,3 +143,52 @@
 .notes-workspace .knot-button {
   white-space: normal;
 }
+.notes-writing-column {
+  max-width: 72ch;
+  margin-inline: auto;
+}
+.notes-toolbar--actions {
+  padding-bottom: var(--knot-space-16);
+  border-bottom: 1px solid var(--knot-color-border);
+  gap: var(--knot-space-8);
+}
+.notes-toolbar--actions .knot-button {
+  font-size: var(--knot-font-size-xs);
+  padding: var(--knot-space-8);
+}
+.notes-thread-context {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--knot-space-8);
+  margin-block: var(--knot-space-24);
+  color: var(--knot-color-text-secondary);
+  font-size: var(--knot-font-size-xs);
+}
+.notes-title-form input {
+  font-family: var(--knot-font-heading);
+  font-size: clamp(28px, 3vw, 40px);
+  background: transparent;
+  border-color: transparent;
+  border-bottom-color: var(--knot-color-border);
+  border-radius: 0;
+  padding-inline: 0;
+}
+.notes-title-form label {
+  color: var(--knot-color-text-secondary);
+  font-size: var(--knot-font-size-xs);
+}
+.notes-body-actions {
+  margin-top: 0;
+}
+.notes-body-actions span {
+  color: var(--knot-color-text-secondary);
+  font-size: var(--knot-font-size-xs);
+}
+.notes-metadata {
+  color: var(--knot-color-text-secondary);
+  font-size: var(--knot-font-size-xs);
+  margin-block: var(--knot-space-16) var(--knot-space-24);
+}
+.notes-metadata summary {
+  cursor: pointer;
+}

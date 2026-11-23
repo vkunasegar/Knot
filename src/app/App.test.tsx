@@ -85,7 +85,7 @@ it("keeps title drafts through navigation, failed saves, cancellation and Focus 
   expect(screen.queryByText("Saved locally")).not.toBeInTheDocument();
   const content = screen.getByRole("region", { name: "Note content" });
   await user.click(screen.getByRole("button", { name: "Enter Focus Mode" }));
-  expect(content).toHaveFocus();
+  expect(screen.getByRole("textbox", { name: "Note body" })).toHaveFocus();
   await user.click(screen.getByRole("button", { name: "Exit Focus Mode" }));
   expect(screen.getByRole("region", { name: "Note content" })).toBe(content);
   await user.click(

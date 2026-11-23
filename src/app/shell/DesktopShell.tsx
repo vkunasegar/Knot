@@ -132,6 +132,20 @@ export function DesktopShell({
   }, [layout.contextVisible]);
 
   useEffect(() => {
+    const exitFocus = (event: KeyboardEvent) => {
+      if (
+        !focusMode ||
+        event.key !== "Escape" ||
+        event.isComposing ||
+        document.querySelector("dialog[open]")
+      )
+        return;
+      // ProseMirror also binds Escape to parent selection. The active shell mode
+      // owns this key before editor keymaps; an open native modal keeps priority.
+      event.preventDefault();
+      event.stopPropagation();
+      setFocusRequested(false);
+    };
     const handleKey = (event: KeyboardEvent) => {
       if (event.defaultPrevented || event.isComposing) return;
       if (
@@ -172,19 +186,14 @@ export function DesktopShell({
         event.preventDefault();
         if (event.key === "ArrowLeft") navigation.back();
         else navigation.forward();
-      } else if (focusMode && event.key === "Escape") {
-        // A nested modal or editor can consume Escape before the shell sees it,
-        // and native dialog closing removes [open] before the queued close event.
-        const dialogOpen =
-          paletteOpen && Boolean(document.querySelector("dialog[open]"));
-        if (!dialogOpen) {
-          event.preventDefault();
-          setFocusRequested(false);
-        }
       }
     };
+    window.addEventListener("keydown", exitFocus, true);
     window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
+    return () => {
+      window.removeEventListener("keydown", exitFocus, true);
+      window.removeEventListener("keydown", handleKey);
+    };
   }, [navigation, paletteOpen, focusMode, onCreateNote, creatingNote]);
 
   useEffect(() => navigation.start(), [navigation]);
@@ -323,8 +332,21 @@ export function DesktopShell({
         <div className="shell-body">
           <main id="shell-main" className="shell-main">
             <div className="shell-content">
-              <p className="shell-eyebrow">YOUR WORKSPACE</p>
-              <h1 ref={heading} tabIndex={-1}>
+              <p
+                className="shell-eyebrow"
+                hidden={workspaceDocument?.editorOwnsTitle}
+              >
+                YOUR WORKSPACE
+              </p>
+              <h1
+                ref={heading}
+                tabIndex={-1}
+                className={
+                  workspaceDocument?.editorOwnsTitle
+                    ? "shell-document-heading"
+                    : undefined
+                }
+              >
                 {workspaceDocument?.title ??
                   workspaceHeading ??
                   destination.label}

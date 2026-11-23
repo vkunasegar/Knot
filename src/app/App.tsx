@@ -30,16 +30,17 @@ export function App({ notesController }: AppProps = {}) {
   const [preferences] = useState(
     () => new ShellPreferencesService(new BrowserShellPreferencesStorage()),
   );
-  const [notes] = useState(
-    () =>
-      notesController ?? new NotesController(createDomainRepositories().notes),
-  );
+  const [notes] = useState(() => {
+    if (notesController) return notesController;
+    const repositories = createDomainRepositories();
+    return new NotesController(repositories.notes, repositories.threads);
+  });
   const state = useSyncExternalStore(notes.subscribe, notes.getSnapshot);
   const route = useSyncExternalStore(
     navigation.subscribe,
     navigation.getSnapshot,
   );
-  const content = useRef<HTMLElement>(null);
+  const focusEditor = useRef<(() => void) | null>(null);
   const creating = useRef(false);
   const [sort, setSort] = useState<NoteSort>("updated");
   const isNotesArea = ["notes", "favorites", "archive"].includes(
@@ -82,8 +83,21 @@ export function App({ notesController }: AppProps = {}) {
   };
   const dirty =
     selected &&
-    state.drafts[selected.id] !== undefined &&
-    state.drafts[selected.id] !== selected.title;
+    ((state.drafts[selected.id] !== undefined &&
+      state.drafts[selected.id] !== selected.title) ||
+      !!state.bodyDrafts[selected.id]);
+  useEffect(() => {
+    const beforeUnload = (event: BeforeUnloadEvent) => {
+      if (
+        Object.keys(state.drafts).length ||
+        Object.keys(state.bodyDrafts).length ||
+        state.pending
+      )
+        event.preventDefault();
+    };
+    window.addEventListener("beforeunload", beforeUnload);
+    return () => window.removeEventListener("beforeunload", beforeUnload);
+  }, [state.drafts, state.bodyDrafts, state.pending]);
   return (
     <DesktopShell
       navigation={navigation}
@@ -97,6 +111,7 @@ export function App({ notesController }: AppProps = {}) {
         selected
           ? {
               title: noteTitle(selected),
+              editorOwnsTitle: true,
               saveStatus: {
                 state:
                   state.writes[selected.id] === "saving"
@@ -107,8 +122,7 @@ export function App({ notesController }: AppProps = {}) {
                         ? "unsaved"
                         : (state.writes[selected.id] ?? "idle"),
               },
-              focusEditor: () =>
-                content.current?.focus({ preventScroll: true }),
+              focusEditor: () => focusEditor.current?.(),
             }
           : undefined
       }
@@ -122,7 +136,7 @@ export function App({ notesController }: AppProps = {}) {
           onSort={setSort}
           onCreate={() => void createNote()}
           onDuplicate={(id) => void duplicateNote(id)}
-          contentRef={content}
+          focusEditorRef={focusEditor}
           onOpen={(noteId) =>
             navigation.navigate(route.destination, { noteId })
           }

@@ -125,9 +125,7 @@ test("preserves focus, draft and content through layout and Focus Mode", async (
     .getByRole("region", { name: "Note content" })
     .elementHandle();
   await page.getByRole("button", { name: "Enter Focus Mode" }).click();
-  await expect(
-    page.getByRole("region", { name: "Note content" }),
-  ).toBeFocused();
+  await expect(page.getByRole("textbox", { name: "Note body" })).toBeFocused();
   await page.keyboard.press("Escape");
   await page.getByRole("button", { name: "Hide context panel" }).click();
   expect(

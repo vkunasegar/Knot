@@ -9,4 +9,6 @@ export interface ShellDocument {
   readonly title: string;
   readonly saveStatus: SaveStatusProps;
   readonly focusEditor: () => void;
+  /** The editor renders its own visible title; retain the shell heading for navigation/AT. */
+  readonly editorOwnsTitle?: boolean;
 }

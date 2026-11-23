@@ -16,6 +16,13 @@ afterEach(() => {
   cleanup();
 });
 
+// jsdom has no layout engine. ProseMirror needs Range geometry during focus;
+// actual cursor/selection/layout behavior is exercised in Playwright instead.
+if (typeof Range !== "undefined" && !Range.prototype.getClientRects) {
+  Range.prototype.getClientRects = () => [] as unknown as DOMRectList;
+  Range.prototype.getBoundingClientRect = () => new DOMRect();
+}
+
 /*
  * jsdom implements <dialog> but not its modal API. This minimal stand-in
  * mirrors the observable state the Dialog component relies on: the `open`
