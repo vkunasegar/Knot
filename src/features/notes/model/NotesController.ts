@@ -7,6 +7,7 @@ import {
   type NoteInput,
   type NoteBody,
   type ThreadId,
+  type JsonValue,
 } from "../../../shared/domain";
 import { copyTitle, emptyBody } from "./noteValues";
 import { editorBody } from "./editorSchema";
@@ -22,8 +23,27 @@ export interface NoteThread {
   readonly position: number;
   readonly total: number;
 }
-const sameBody = (a: NoteBody, b: NoteBody) =>
-  JSON.stringify(a) === JSON.stringify(b);
+/** Rust may reorder JSON object keys. Compare values, or readback of a committed
+ * draft could look like an external edit and block recovery after a lost ack. */
+function sameBody(a: JsonValue, b: JsonValue): boolean {
+  if (a === b) return true;
+  if (!a || !b || typeof a !== "object" || typeof b !== "object") return false;
+  if (Array.isArray(a))
+    return (
+      Array.isArray(b) &&
+      a.length === b.length &&
+      a.every((value, index) => sameBody(value, b[index]))
+    );
+  if (Array.isArray(b)) return false;
+  const left = a as Record<string, JsonValue>;
+  const right = b as Record<string, JsonValue>;
+  return (
+    Object.keys(left).length === Object.keys(right).length &&
+    Object.keys(left).every(
+      (key) => Object.hasOwn(right, key) && sameBody(left[key], right[key]),
+    )
+  );
+}
 
 type WriteState = "saving" | "saved" | "error";
 interface UndoAction {

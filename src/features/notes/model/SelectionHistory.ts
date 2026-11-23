@@ -37,7 +37,15 @@ export const SelectionHistory = UndoRedo.extend({
                     const from = Math.min(...steps.map((step) => step.from));
                     const to = Math.max(...steps.map((step) => step.to));
                     transaction.setSelection(
-                      TextSelection.create(transaction.doc, from, to),
+                      TextSelection.create(
+                        transaction.doc,
+                        state.selection.anchor > state.selection.head
+                          ? to
+                          : from,
+                        state.selection.anchor > state.selection.head
+                          ? from
+                          : to,
+                      ),
                     );
                   }
                   dispatch(transaction);

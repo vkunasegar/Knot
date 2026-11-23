@@ -27,6 +27,16 @@ describe("editor document boundary", () => {
   });
 
   it.each<JsonValue>([
+    {
+      type: "text",
+      text: "keep",
+      content: [{ type: "text", text: "must not be dropped" }],
+    },
+    { type: "paragraph", text: "must not be dropped" },
+    {
+      type: "paragraph",
+      content: [{ type: "text", text: "broken", marks: [{ type: "link" }] }],
+    },
     { type: "futureNode", content: [{ type: "text", text: "keep" }] },
     { type: "paragraph", attrs: { futureAttribute: "keep" } },
     {

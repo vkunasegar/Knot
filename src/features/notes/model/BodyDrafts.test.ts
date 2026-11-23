@@ -130,6 +130,30 @@ describe("document draft lifecycle", () => {
     expect(controller.getSnapshot().bodyDrafts[note.id]).toBeUndefined();
   });
 
+  it("recognizes a lost-acknowledgement readback when native JSON keys arrive in a different order", async () => {
+    const { note, repository, controller } = await setup();
+    controller.draftBody(note.id, document("Committed text"));
+    repository.loseNextAcknowledgement = true;
+    await controller.saveBody(note.id);
+    const list = repository.list.bind(repository);
+    vi.spyOn(repository, "list").mockImplementation(
+      async () =>
+        JSON.parse(
+          JSON.stringify(await list(), (_key, value: unknown) =>
+            value && typeof value === "object" && !Array.isArray(value)
+              ? Object.fromEntries(
+                  Object.entries(value).sort(([a], [b]) => a.localeCompare(b)),
+                )
+              : value,
+          ),
+        ) as Awaited<ReturnType<typeof list>>,
+    );
+    await controller.load();
+    expect(controller.hasBodyConflict(note.id)).toBe(false);
+    expect(await controller.saveBody(note.id)).not.toBeNull();
+    expect(controller.getSnapshot().bodyDrafts[note.id]).toBeUndefined();
+  });
+
   it("does not send oversized bodies and never edits trashed notes", async () => {
     const { note, repository, controller } = await setup();
     const write = vi.spyOn(repository, "update");

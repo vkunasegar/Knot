@@ -73,8 +73,11 @@ export function editableDocument(body: NoteBody): JSONContent | null {
         (key) =>
           ![
             "type",
-            "attrs",
-            ...(mark ? [] : ["content", "marks", "text"]),
+            ...(mark
+              ? ["attrs"]
+              : node.type === "text"
+                ? ["text", "marks"]
+                : ["attrs", "content", "marks"]),
           ].includes(key),
       )
     )
@@ -87,7 +90,11 @@ export function editableDocument(body: NoteBody): JSONContent | null {
       )
         return false;
       const attrs = node.attrs as Record<string, JsonValue>;
-      if (Object.keys(attrs).some((key) => !(key in (spec.spec.attrs ?? {}))))
+      if (
+        Object.keys(attrs).some(
+          (key) => !Object.hasOwn(spec.spec.attrs ?? {}, key),
+        )
+      )
         return false;
       if (
         node.type === "heading" &&
@@ -126,6 +133,7 @@ export function editableDocument(body: NoteBody): JSONContent | null {
       )
         return false;
     }
+    if (node.type === "link" && !node.attrs) return false;
     if (node.type === "text" && typeof node.text !== "string") return false;
     if (
       node.content !== undefined &&
